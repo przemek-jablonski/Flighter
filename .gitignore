@@ -8,3 +8,4 @@
 /build
 /captures
 .externalNativeBuild
+/flighter/src/main/res/values/apikeys.xml
