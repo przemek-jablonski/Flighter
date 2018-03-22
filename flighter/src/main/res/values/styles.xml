@@ -8,4 +8,14 @@
     <item name="colorAccent">@color/colorAccent</item>
   </style>
 
+  <style name="FlighterLayoutStyle">
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">match_parent</item>
+    <!--<item name="tools:background">@android:color/darker_gray</item>-->
+  </style>
+
+  <style name="FlighterTextStandardStyle" parent="TextAppearance.AppCompat.Small">
+    <item name="android:textAllCaps">true</item>
+  </style>
+
 </resources>

@@ -2,23 +2,14 @@ package com.android.szparag.flighter
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.os.PersistableBundle
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.model.MapStyleOptions
-import kotlinx.android.synthetic.main.activity_global.*
+import kotlinx.android.synthetic.main.layout_global_flighter.*
 
 class GlobalActivity : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_global)
+    setContentView(R.layout.layout_global_flighter)
     mapView.onCreate(savedInstanceState)
-    mapView.getMapAsync { googleMap ->
-      googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.googlemapstyle))
-      googleMap.uiSettings.apply {
-        setAllGesturesEnabled(false)
-      }
-    }
   }
 
   override fun onStart() {
