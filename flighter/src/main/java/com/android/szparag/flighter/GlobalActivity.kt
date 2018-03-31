@@ -1,35 +1,48 @@
 package com.android.szparag.flighter
 
 import android.os.Bundle
-import android.support.v4.view.AsyncLayoutInflater
 import android.support.v7.app.AppCompatActivity
-import android.view.ViewGroup
 import android.widget.FrameLayout
-import com.android.szparag.flighter.ActivityLifecycleState.*
+import com.android.szparag.flighter.ActivityLifecycleState.ONCREATE
+import com.android.szparag.flighter.ActivityLifecycleState.ONDESTROY
+import com.android.szparag.flighter.ActivityLifecycleState.ONLOWMMEMORY
+import com.android.szparag.flighter.ActivityLifecycleState.ONPAUSE
+import com.android.szparag.flighter.ActivityLifecycleState.ONRESUME
+import com.android.szparag.flighter.ActivityLifecycleState.ONSAVEINSTANCESTATE
+import com.android.szparag.flighter.ActivityLifecycleState.ONSTART
+import com.android.szparag.flighter.ActivityLifecycleState.ONSTOP
+import com.android.szparag.flighter.worldmap.WorldMapModule
+import com.android.szparag.flighter.worldmap.views.FlighterWorldMapView
 import com.android.szparag.kotterknife.bindView
-import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.ReplaySubject
 import timber.log.Timber
 
 class GlobalActivity : AppCompatActivity() {
 
+  //todo: reset buffer after onResume or onStop or onBundle callbacks are called
   private val activityStateSubject = ReplaySubject.create<ActivityLifecycleState>()
   private val globalContainer: FrameLayout by bindView(R.id.globalContainer)
-//  private val layoutInflater = AsyncLayoutInflater(baseContext)
 
 
   override fun onCreate(savedInstanceState: Bundle?) {
     Timber.d("onCreate, savedInstanceState: $savedInstanceState")
     super.onCreate(savedInstanceState)
     activityStateSubject.onNext(ONCREATE)
+
+    setupDependencyInjection()
+
     setContentView(R.layout.layout_global_flighter)
     constructBackground(globalContainer)
     constructFirstScreen(globalContainer)
   }
 
+  private fun setupDependencyInjection() {
+    DaggerFlighterComponent.builder().worldMapModule(WorldMapModule())
+  }
+
   private fun constructBackground(container: FrameLayout) {
     Timber.d("constructBackground, container: $container")
-    val googleMapView = layoutInflater.inflate(R.layout.layout_google_map, container, false) as FlighterGoogleMapView
+    val googleMapView = layoutInflater.inflate(R.layout.layout_google_map, container, false) as FlighterWorldMapView
     globalContainer.addView(googleMapView)
     googleMapView.registerActivityStateObservable(activityStateSubject)
   }
