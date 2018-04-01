@@ -3,21 +3,22 @@ package com.android.szparag.flighter.worldmap.views
 import android.content.Context
 import android.util.AttributeSet
 import com.android.szparag.flighter.R.raw
-import com.android.szparag.flighter.base.ActivityLifecycleState
-import com.android.szparag.flighter.base.ActivityLifecycleState.ONCREATE
-import com.android.szparag.flighter.base.ActivityLifecycleState.ONDESTROY
-import com.android.szparag.flighter.base.ActivityLifecycleState.ONLOWMMEMORY
-import com.android.szparag.flighter.base.ActivityLifecycleState.ONPAUSE
-import com.android.szparag.flighter.base.ActivityLifecycleState.ONRESUME
-import com.android.szparag.flighter.base.ActivityLifecycleState.ONSAVEINSTANCESTATE
-import com.android.szparag.flighter.base.ActivityLifecycleState.ONSTART
-import com.android.szparag.flighter.base.ActivityLifecycleState.ONSTOP
-import com.android.szparag.flighter.base.util.Injector
-import com.android.szparag.flighter.worldmap.presenters.FlighterWorldMapPresenter
+import com.android.szparag.flighter.common.util.ActivityLifecycleState
+import com.android.szparag.flighter.common.util.ActivityLifecycleState.ONCREATE
+import com.android.szparag.flighter.common.util.ActivityLifecycleState.ONDESTROY
+import com.android.szparag.flighter.common.util.ActivityLifecycleState.ONLOWMMEMORY
+import com.android.szparag.flighter.common.util.ActivityLifecycleState.ONPAUSE
+import com.android.szparag.flighter.common.util.ActivityLifecycleState.ONRESUME
+import com.android.szparag.flighter.common.util.ActivityLifecycleState.ONSAVEINSTANCESTATE
+import com.android.szparag.flighter.common.util.ActivityLifecycleState.ONSTART
+import com.android.szparag.flighter.common.util.ActivityLifecycleState.ONSTOP
+import com.android.szparag.flighter.common.util.Injector
+import com.android.szparag.flighter.worldmap.presenters.WorldMapPresenter
 import com.android.szparag.flighter.worldmap.states.WorldMapViewState
-import com.android.szparag.flighter.worldmap.states.WorldMapViewState.ErrorMapViewState
-import com.android.szparag.flighter.worldmap.states.WorldMapViewState.OnboardingMapViewState
-import com.android.szparag.flighter.worldmap.states.WorldMapViewState.ShowingLocationMapViewState
+import com.android.szparag.flighter.worldmap.states.WorldMapViewState.ErrorViewState
+import com.android.szparag.flighter.worldmap.states.WorldMapViewState.InteractiveViewState
+import com.android.szparag.flighter.worldmap.states.WorldMapViewState.OnboardingViewState
+import com.android.szparag.flighter.worldmap.states.WorldMapViewState.ShowingLocationViewState
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.MapStyleOptions
 import io.reactivex.Observable
@@ -29,7 +30,7 @@ class FlighterWorldMapView @JvmOverloads constructor(context: Context, attrs: At
     context, attrs, defStyleAttr), WorldMapView {
 
   @Inject
-  lateinit var presenter: FlighterWorldMapPresenter
+  lateinit var presenter: WorldMapPresenter
 
   @Volatile
   private var initialized = false
@@ -53,6 +54,7 @@ class FlighterWorldMapView @JvmOverloads constructor(context: Context, attrs: At
       }
       initialized = true
     }
+    presenter.test()
   }
 
   override fun mapInitializedIntent(): Observable<Boolean> = mapInitializedSubject
@@ -60,13 +62,16 @@ class FlighterWorldMapView @JvmOverloads constructor(context: Context, attrs: At
   override fun render(state: WorldMapViewState) {
     Timber.d("render, state: $state")
     when (state) {
-      is OnboardingMapViewState      -> {
+      is OnboardingViewState      -> {
 
       }
-      is ShowingLocationMapViewState -> {
+      is ShowingLocationViewState -> {
 
       }
-      is ErrorMapViewState           -> {
+      is InteractiveViewState     -> {
+
+      }
+      is ErrorViewState           -> {
 
       }
     }

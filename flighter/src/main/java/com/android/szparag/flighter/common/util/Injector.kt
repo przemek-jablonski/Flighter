@@ -1,7 +1,7 @@
-package com.android.szparag.flighter.base.util
+package com.android.szparag.flighter.common.util
 
-import com.android.szparag.flighter.base.FlighterApplication
-import com.android.szparag.flighter.base.FlighterComponent
+import com.android.szparag.flighter.common.FlighterApplication
+import com.android.szparag.flighter.common.FlighterComponent
 
 /**
  * Created by Przemyslaw Jablonski (github.com/sharaquss, pszemek.me) on 01/04/2018.
