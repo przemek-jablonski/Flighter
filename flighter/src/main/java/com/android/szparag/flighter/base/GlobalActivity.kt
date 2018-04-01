@@ -1,9 +1,10 @@
-package com.android.szparag.flighter
+package com.android.szparag.flighter.base
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.widget.FrameLayout
-import com.android.szparag.flighter.base.ActivityLifecycleState
+import com.android.szparag.flighter.R.id
+import com.android.szparag.flighter.R.layout
 import com.android.szparag.flighter.base.ActivityLifecycleState.ONCREATE
 import com.android.szparag.flighter.base.ActivityLifecycleState.ONDESTROY
 import com.android.szparag.flighter.base.ActivityLifecycleState.ONLOWMMEMORY
@@ -21,30 +22,29 @@ class GlobalActivity : AppCompatActivity() {
 
   //todo: reset buffer after onResume or onStop or onBundle callbacks are called
   private val activityStateSubject = ReplaySubject.create<ActivityLifecycleState>()
-  private val globalContainer: FrameLayout by bindView(R.id.globalContainer)
+  private val globalContainer: FrameLayout by bindView(id.globalContainer)
 
 
   override fun onCreate(savedInstanceState: Bundle?) {
     Timber.d("onCreate, savedInstanceState: $savedInstanceState")
     super.onCreate(savedInstanceState)
     activityStateSubject.onNext(ONCREATE)
-    Injector.get().inject(this)
 
-    setContentView(R.layout.layout_global_flighter)
+    setContentView(layout.layout_global_flighter)
     constructBackground(globalContainer)
     constructFirstScreen(globalContainer)
   }
 
   private fun constructBackground(container: FrameLayout) {
     Timber.d("constructBackground, container: $container")
-    val googleMapView = layoutInflater.inflate(R.layout.layout_google_map, container, false) as FlighterWorldMapView
+    val googleMapView = layoutInflater.inflate(layout.layout_google_map, container, false) as FlighterWorldMapView
     globalContainer.addView(googleMapView)
     googleMapView.registerActivityStateObservable(activityStateSubject)
   }
 
   private fun constructFirstScreen(container: FrameLayout) {
     Timber.d("constructFirstScreen, container: $container")
-    globalContainer.addView(layoutInflater.inflate(R.layout.layout_google_login, container, false))
+    globalContainer.addView(layoutInflater.inflate(layout.layout_google_login, container, false))
   }
 
   override fun onStart() {

@@ -2,7 +2,6 @@ package com.android.szparag.flighter.worldmap.views
 
 import android.content.Context
 import android.util.AttributeSet
-import com.android.szparag.flighter.Injector
 import com.android.szparag.flighter.R.raw
 import com.android.szparag.flighter.base.ActivityLifecycleState
 import com.android.szparag.flighter.base.ActivityLifecycleState.ONCREATE
@@ -13,6 +12,7 @@ import com.android.szparag.flighter.base.ActivityLifecycleState.ONRESUME
 import com.android.szparag.flighter.base.ActivityLifecycleState.ONSAVEINSTANCESTATE
 import com.android.szparag.flighter.base.ActivityLifecycleState.ONSTART
 import com.android.szparag.flighter.base.ActivityLifecycleState.ONSTOP
+import com.android.szparag.flighter.base.util.Injector
 import com.android.szparag.flighter.worldmap.presenters.FlighterWorldMapPresenter
 import com.android.szparag.flighter.worldmap.states.WorldMapViewState
 import com.android.szparag.flighter.worldmap.states.WorldMapViewState.ErrorMapViewState

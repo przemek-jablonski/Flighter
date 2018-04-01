@@ -1,6 +1,7 @@
-package com.android.szparag.flighter
+package com.android.szparag.flighter.base
 
 import android.app.Application
+import com.android.szparag.flighter.DaggerFlighterComponent
 import com.android.szparag.flighter.worldmap.WorldMapModule
 import timber.log.Timber
 import timber.log.Timber.DebugTree

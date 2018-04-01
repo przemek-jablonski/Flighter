@@ -1,4 +1,4 @@
-package com.android.szparag.flighter
+package com.android.szparag.flighter.base
 
 import com.android.szparag.flighter.worldmap.WorldMapModule
 import com.android.szparag.flighter.worldmap.views.FlighterWorldMapView
