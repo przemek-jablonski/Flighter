@@ -2,17 +2,18 @@ package com.android.szparag.flighter.worldmap.views
 
 import android.content.Context
 import android.util.AttributeSet
-import com.android.szparag.flighter.ActivityLifecycleState
-import com.android.szparag.flighter.ActivityLifecycleState.ONCREATE
-import com.android.szparag.flighter.ActivityLifecycleState.ONDESTROY
-import com.android.szparag.flighter.ActivityLifecycleState.ONLOWMMEMORY
-import com.android.szparag.flighter.ActivityLifecycleState.ONPAUSE
-import com.android.szparag.flighter.ActivityLifecycleState.ONRESUME
-import com.android.szparag.flighter.ActivityLifecycleState.ONSAVEINSTANCESTATE
-import com.android.szparag.flighter.ActivityLifecycleState.ONSTART
-import com.android.szparag.flighter.ActivityLifecycleState.ONSTOP
+import com.android.szparag.flighter.Injector
 import com.android.szparag.flighter.R.raw
-import com.android.szparag.flighter.worldmap.presenters.WorldMapPresenter
+import com.android.szparag.flighter.base.ActivityLifecycleState
+import com.android.szparag.flighter.base.ActivityLifecycleState.ONCREATE
+import com.android.szparag.flighter.base.ActivityLifecycleState.ONDESTROY
+import com.android.szparag.flighter.base.ActivityLifecycleState.ONLOWMMEMORY
+import com.android.szparag.flighter.base.ActivityLifecycleState.ONPAUSE
+import com.android.szparag.flighter.base.ActivityLifecycleState.ONRESUME
+import com.android.szparag.flighter.base.ActivityLifecycleState.ONSAVEINSTANCESTATE
+import com.android.szparag.flighter.base.ActivityLifecycleState.ONSTART
+import com.android.szparag.flighter.base.ActivityLifecycleState.ONSTOP
+import com.android.szparag.flighter.worldmap.presenters.FlighterWorldMapPresenter
 import com.android.szparag.flighter.worldmap.states.WorldMapViewState
 import com.android.szparag.flighter.worldmap.states.WorldMapViewState.ErrorMapViewState
 import com.android.szparag.flighter.worldmap.states.WorldMapViewState.OnboardingMapViewState
@@ -28,7 +29,7 @@ class FlighterWorldMapView @JvmOverloads constructor(context: Context, attrs: At
     context, attrs, defStyleAttr), WorldMapView {
 
   @Inject
-  lateinit var presenter: WorldMapPresenter
+  lateinit var presenter: FlighterWorldMapPresenter
 
   @Volatile
   private var initialized = false
@@ -41,9 +42,9 @@ class FlighterWorldMapView @JvmOverloads constructor(context: Context, attrs: At
     this.doOnSubscribe { this.onNext(initialized) } //todo: is it correctly implemented?
   }
 
-
   init {
     Timber.d("init")
+    Injector.get().inject(this)
     getMapAsync { googleMap ->
       Timber.d("init.getMapAsync.callback, googleMap: $googleMap")
       googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, raw.googlemapstyle))

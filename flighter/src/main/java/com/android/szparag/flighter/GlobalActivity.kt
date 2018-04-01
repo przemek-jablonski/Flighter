@@ -3,15 +3,15 @@ package com.android.szparag.flighter
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.widget.FrameLayout
-import com.android.szparag.flighter.ActivityLifecycleState.ONCREATE
-import com.android.szparag.flighter.ActivityLifecycleState.ONDESTROY
-import com.android.szparag.flighter.ActivityLifecycleState.ONLOWMMEMORY
-import com.android.szparag.flighter.ActivityLifecycleState.ONPAUSE
-import com.android.szparag.flighter.ActivityLifecycleState.ONRESUME
-import com.android.szparag.flighter.ActivityLifecycleState.ONSAVEINSTANCESTATE
-import com.android.szparag.flighter.ActivityLifecycleState.ONSTART
-import com.android.szparag.flighter.ActivityLifecycleState.ONSTOP
-import com.android.szparag.flighter.worldmap.WorldMapModule
+import com.android.szparag.flighter.base.ActivityLifecycleState
+import com.android.szparag.flighter.base.ActivityLifecycleState.ONCREATE
+import com.android.szparag.flighter.base.ActivityLifecycleState.ONDESTROY
+import com.android.szparag.flighter.base.ActivityLifecycleState.ONLOWMMEMORY
+import com.android.szparag.flighter.base.ActivityLifecycleState.ONPAUSE
+import com.android.szparag.flighter.base.ActivityLifecycleState.ONRESUME
+import com.android.szparag.flighter.base.ActivityLifecycleState.ONSAVEINSTANCESTATE
+import com.android.szparag.flighter.base.ActivityLifecycleState.ONSTART
+import com.android.szparag.flighter.base.ActivityLifecycleState.ONSTOP
 import com.android.szparag.flighter.worldmap.views.FlighterWorldMapView
 import com.android.szparag.kotterknife.bindView
 import io.reactivex.subjects.ReplaySubject
@@ -28,16 +28,11 @@ class GlobalActivity : AppCompatActivity() {
     Timber.d("onCreate, savedInstanceState: $savedInstanceState")
     super.onCreate(savedInstanceState)
     activityStateSubject.onNext(ONCREATE)
-
-    setupDependencyInjection()
+    Injector.get().inject(this)
 
     setContentView(R.layout.layout_global_flighter)
     constructBackground(globalContainer)
     constructFirstScreen(globalContainer)
-  }
-
-  private fun setupDependencyInjection() {
-    DaggerFlighterComponent.builder().worldMapModule(WorldMapModule())
   }
 
   private fun constructBackground(container: FrameLayout) {

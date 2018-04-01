@@ -12,6 +12,6 @@ import dagger.Provides
 class WorldMapModule {
 
   @Provides
-  fun providePresenter(presenter: FlighterWorldMapPresenter): WorldMapPresenter = presenter
+  fun providePresenter(implementation: FlighterWorldMapPresenter): WorldMapPresenter = implementation
 
 }

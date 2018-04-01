@@ -1,5 +1,6 @@
 package com.android.szparag.flighter.worldmap.presenters
 
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -8,5 +9,10 @@ import javax.inject.Singleton
  */
 @Singleton
 class FlighterWorldMapPresenter @Inject constructor() : WorldMapPresenter {
+
+  override fun test() {
+    Timber.d("test")
+  }
+
 
 }
