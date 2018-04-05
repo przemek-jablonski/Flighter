@@ -29,7 +29,9 @@ import javax.inject.Inject
 class FlighterWorldMapView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MapView(
     context, attrs, defStyleAttr), WorldMapView {
 
+
   @Inject
+  @Suppress("MemberVisibilityCanBePrivate")
   lateinit var presenter: WorldMapPresenter
 
   @Volatile
@@ -44,10 +46,10 @@ class FlighterWorldMapView @JvmOverloads constructor(context: Context, attrs: At
   }
 
   init {
-    Timber.d("init")
+    Timber.d("[${hashCode()}]: init")
     Injector.get().inject(this)
     getMapAsync { googleMap ->
-      Timber.d("init.getMapAsync.callback, googleMap: $googleMap")
+      Timber.d("[${hashCode()}]: init.getMapAsync.callback, googleMap: $googleMap")
       googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, raw.googlemapstyle))
       googleMap.uiSettings.apply {
         setAllGesturesEnabled(false)
@@ -60,7 +62,7 @@ class FlighterWorldMapView @JvmOverloads constructor(context: Context, attrs: At
   override fun mapInitializedIntent(): Observable<Boolean> = mapInitializedSubject
 
   override fun render(state: WorldMapViewState) {
-    Timber.d("render, state: $state")
+    Timber.d("[${hashCode()}]: render, state: $state")
     when (state) {
       is OnboardingViewState      -> {
 
@@ -79,9 +81,9 @@ class FlighterWorldMapView @JvmOverloads constructor(context: Context, attrs: At
 
   @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
   fun registerActivityStateObservable(activityStateObservable: Observable<ActivityLifecycleState>) {
-    Timber.d("registerActivityStateObservable, activityStateObservable: $activityStateObservable")
+    Timber.d("[${hashCode()}]: registerActivityStateObservable, activityStateObservable: $activityStateObservable")
     activityStateObservable.subscribe { state ->
-      Timber.d("registerActivityStateObservable.onNext, state: $state")
+      Timber.d("[${hashCode()}]: registerActivityStateObservable.onNext, state: $state")
       when (state) {
         ONCREATE            -> onCreate(null)
         ONSTART             -> onStart()
@@ -95,5 +97,19 @@ class FlighterWorldMapView @JvmOverloads constructor(context: Context, attrs: At
     }
   }
 
+  override fun instantiatePresenter() {
+    Timber.d("[${hashCode()}]: instantiatePresenter")
+    Injector.get().inject(this)
+  }
+
+  override fun attachToPresenter() {
+    Timber.d("[${hashCode()}]: attachToPresenter")
+    presenter.attachView(this)
+  }
+
+  override fun detachFromPresenter() {
+    Timber.d("[${hashCode()}]: detachFromPresenter")
+    presenter.detachView(this)
+  }
 
 }

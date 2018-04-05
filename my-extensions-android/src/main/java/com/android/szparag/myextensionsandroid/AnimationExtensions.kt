@@ -1,4 +1,4 @@
-package com.android.szparag.myextensions_android
+package com.android.szparag.myextensionsandroid
 
 import android.animation.Animator
 import android.animation.TimeInterpolator

@@ -14,15 +14,15 @@ import javax.inject.Singleton
 class FlighterLoginPresenter @Inject constructor() : BaseMviPresenter<LoginView, LoginViewState>(), LoginPresenter {
 
   init {
-    Timber.d("init")
+    Timber.d("[${hashCode()}]: init")
   }
 
   override fun onViewAttached(view: LoginView) {
-    Timber.d("onViewAttached, view: $view")
+    Timber.d("[${hashCode()}]: onViewAttached, view: $view")
   }
 
   override fun onViewDetached(view: LoginView) {
-    Timber.d("onViewDetached, view: $view")
+    Timber.d("[${hashCode()}]: onViewDetached, view: $view")
   }
 
 }

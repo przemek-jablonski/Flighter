@@ -1,4 +1,4 @@
-package com.android.szparag.myextensions_rx
+package com.android.szparag.myextensionsrx
 
 /**
  * Created by Przemyslaw Jablonski (github.com/sharaquss, pszemek.me) on 02/11/2017.
@@ -10,6 +10,7 @@ import io.reactivex.CompletableEmitter
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers

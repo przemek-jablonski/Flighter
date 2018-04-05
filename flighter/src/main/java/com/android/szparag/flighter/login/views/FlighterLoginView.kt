@@ -31,21 +31,21 @@ class FlighterLoginView @JvmOverloads constructor(context: Context, attrs: Attri
   private val descriptionTextView: TextView by bindView(R.id.descriptionTextView)
   private val skipTextView: TextView by bindView(R.id.skipTextView)
   init {
-    Timber.d("init")
+    Timber.d("[${hashCode()}]: init")
   }
 
   override fun onAttachedToWindow() {
-    Timber.d("onAttachedToWindow")
+    Timber.d("[${hashCode()}]: onAttachedToWindow")
     super.onAttachedToWindow()
   }
 
   override fun onDetachedFromWindow() {
-    Timber.d("onDetachedFromWindow")
+    Timber.d("[${hashCode()}]: onDetachedFromWindow")
     super.onDetachedFromWindow()
   }
 
   override fun render(state: LoginViewState) {
-    Timber.d("render, state: $state")
+    Timber.d("[${hashCode()}]: render, state: $state")
     when (state) {
       is OnboardingRegisterViewState -> {
       }
@@ -59,17 +59,17 @@ class FlighterLoginView @JvmOverloads constructor(context: Context, attrs: Attri
   }
 
   override fun instantiatePresenter() {
-    Timber.d("instantiatePresenter")
+    Timber.d("[${hashCode()}]: instantiatePresenter")
     Injector.get().inject(this)
   }
 
   override fun attachToPresenter() {
-    Timber.d("attachToPresenter")
+    Timber.d("[${hashCode()}]: attachToPresenter")
     presenter.onViewAttached(this)
   }
 
   override fun detachFromPresenter() {
-    Timber.d("detachFromPresenter")
+    Timber.d("[${hashCode()}]: detachFromPresenter")
     presenter.onViewDetached(this)
   }
 

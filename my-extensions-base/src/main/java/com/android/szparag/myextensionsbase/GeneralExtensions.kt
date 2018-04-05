@@ -1,4 +1,4 @@
-package com.android.szparag.myextensions_base
+package com.android.szparag.myextensionsbase
 
 import java.util.ArrayList
 import java.util.Arrays

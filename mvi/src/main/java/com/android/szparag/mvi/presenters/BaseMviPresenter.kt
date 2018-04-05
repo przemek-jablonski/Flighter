@@ -11,22 +11,18 @@ abstract class BaseMviPresenter<in V : MviView<VS>, in VS : Any> : MviPresenter<
   private var view: V? = null
 
   init {
-    Timber.d("init")
+    Timber.d("[${hashCode()}]: init")
   }
 
   final override fun attachView(view: V) {
-    Timber.d("attachView, view: $view")
+    Timber.d("[${hashCode()}]: attachView, view: $view")
   }
 
   final override fun detachView(view: V) {
-    Timber.d("detachView, view: $view")
+    Timber.d("[${hashCode()}]: detachView, view: $view")
   }
 
-  override fun onViewAttached(view: V) {
-    Timber.d("onViewAttached, view: $view")
-  }
+  abstract override fun onViewAttached(view: V)
 
-  override fun onViewDetached(view: V) {
-    Timber.d("onViewDetached, view: $view")
-  }
+  abstract override fun onViewDetached(view: V)
 }

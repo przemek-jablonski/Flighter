@@ -1,4 +1,4 @@
-package com.android.szparag.myextensions_android
+package com.android.szparag.myextensionsandroid
 
 import android.content.Intent
 import android.graphics.drawable.Drawable
@@ -8,7 +8,7 @@ import android.os.Bundle
 import android.support.annotation.RequiresApi
 import android.view.View
 import android.view.animation.Animation
-import com.android.szparag.myextensions_base.nullString
+import com.android.szparag.myextensionsbase.nullString
 
 fun Intent.asString() = StringBuilder(1024).append(
     "Intent: [action: ${this.action}, cat: ${this.categories}, component: ${this.component}, " + "flags: ${this.flags} bundle: ${this.extras.asString(

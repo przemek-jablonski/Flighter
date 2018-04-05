@@ -1,4 +1,4 @@
-package com.android.szparag.myextensions_android
+package com.android.szparag.myextensionsandroid
 
 import android.app.PendingIntent
 import android.content.BroadcastReceiver

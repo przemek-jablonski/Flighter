@@ -12,7 +12,7 @@ abstract class BaseMviConstraintLayout<in VS : Any> @JvmOverloads constructor(co
     defStyleAttr: Int = 0) : ConstraintLayout(context, attrs, defStyleAttr), MviView<VS> {
 
   init {
-    Timber.d("init")
+    Timber.d("[${hashCode()}]: init")
   }
 
   abstract override fun attachToPresenter()
@@ -20,14 +20,14 @@ abstract class BaseMviConstraintLayout<in VS : Any> @JvmOverloads constructor(co
   abstract override fun detachFromPresenter()
 
   override fun onAttachedToWindow() {
-    Timber.d("onAttachedToWindow")
+    Timber.d("[${hashCode()}]: onAttachedToWindow")
     super.onAttachedToWindow()
     instantiatePresenter()
     attachToPresenter()
   }
 
   override fun onDetachedFromWindow() {
-    Timber.d("onDetachedFromWindow")
+    Timber.d("[${hashCode()}]: onDetachedFromWindow")
     super.onDetachedFromWindow()
     detachFromPresenter()
   }
