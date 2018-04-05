@@ -10,9 +10,12 @@ import javax.inject.Singleton
 @Singleton
 class FlighterWorldMapPresenter @Inject constructor() : WorldMapPresenter {
 
+  init {
+    Timber.d("init")
+  }
+
   override fun test() {
     Timber.d("test")
   }
-
 
 }

@@ -1,7 +1,6 @@
 package com.android.szparag.flighter.login.views
 
 import android.content.Context
-import android.support.constraint.ConstraintLayout
 import android.util.AttributeSet
 import android.widget.ImageView
 import android.widget.TextView
@@ -14,44 +13,64 @@ import com.android.szparag.flighter.login.states.LoginViewState.OnboardingLoginV
 import com.android.szparag.flighter.login.states.LoginViewState.OnboardingRegisterViewState
 import com.android.szparag.flighter.login.states.LoginViewState.OperationErrorViewState
 import com.android.szparag.kotterknife.bindView
+import com.android.szparag.mvi.views.BaseMviConstraintLayout
 import timber.log.Timber
 import javax.inject.Inject
 
 /**
  * Created by Przemyslaw Jablonski (github.com/sharaquss, pszemek.me) on 01/04/2018.
  */
-class FlighterLoginView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : ConstraintLayout(
-    context, attrs, defStyleAttr), LoginView {
+class FlighterLoginView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0) : BaseMviConstraintLayout<LoginViewState>(context, attrs, defStyleAttr), LoginView {
 
   @Inject
+  @Suppress("MemberVisibilityCanBePrivate")
   lateinit var presenter: LoginPresenter
 
   private val frontImageView: ImageView by bindView(R.id.frontImageView)
   private val descriptionTextView: TextView by bindView(R.id.descriptionTextView)
   private val skipTextView: TextView by bindView(R.id.skipTextView)
-
   init {
     Timber.d("init")
-    Injector.get().inject(this)
+  }
+
+  override fun onAttachedToWindow() {
+    Timber.d("onAttachedToWindow")
+    super.onAttachedToWindow()
+  }
+
+  override fun onDetachedFromWindow() {
+    Timber.d("onDetachedFromWindow")
+    super.onDetachedFromWindow()
   }
 
   override fun render(state: LoginViewState) {
     Timber.d("render, state: $state")
     when (state) {
       is OnboardingRegisterViewState -> {
-
       }
       is OnboardingLoginViewState    -> {
-
       }
       is AskForCredentialsViewState  -> {
-
       }
       is OperationErrorViewState     -> {
-
       }
     }
   }
 
+  override fun instantiatePresenter() {
+    Timber.d("instantiatePresenter")
+    Injector.get().inject(this)
+  }
+
+  override fun attachToPresenter() {
+    Timber.d("attachToPresenter")
+    presenter.onViewAttached(this)
+  }
+
+  override fun detachFromPresenter() {
+    Timber.d("detachFromPresenter")
+    presenter.onViewDetached(this)
+  }
 
 }

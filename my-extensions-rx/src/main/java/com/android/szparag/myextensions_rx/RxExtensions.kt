@@ -98,6 +98,7 @@ fun <T> Observable<T>.flatMap(completable: Completable, onComplete: () -> Unit =
 //  return SpinnerSelectionObservable(view)
 //}
 
+//todo: fix import errors
 fun Completable.ui() = this.subscribeOn(AndroidSchedulers.mainThread())
 
 fun <T> Observable<T>.ui() = this.subscribeOn(AndroidSchedulers.mainThread())
