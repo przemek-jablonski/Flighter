@@ -11,4 +11,5 @@ class Injector {
   companion object {
     fun get(): FlighterComponent = FlighterApplication.component
   }
+
 }

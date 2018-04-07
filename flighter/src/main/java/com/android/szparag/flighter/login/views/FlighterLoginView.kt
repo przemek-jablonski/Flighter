@@ -45,17 +45,33 @@ class FlighterLoginView @JvmOverloads constructor(context: Context, attrs: Attri
   }
 
   override fun render(state: LoginViewState) {
-    Timber.d("[${hashCode()}]: render, state: $state")
+    Timber.i("[${hashCode()}]: render, state: $state")
     when (state) {
-      is OnboardingRegisterViewState -> {
-      }
-      is OnboardingLoginViewState    -> {
-      }
-      is AskForCredentialsViewState  -> {
-      }
-      is OperationErrorViewState     -> {
-      }
+      is OnboardingRegisterViewState -> renderRegisterViewState()
+      is OnboardingLoginViewState    -> renderLoginViewState()
+      is AskForCredentialsViewState  -> renderAskForCredentialsViewState()
+      is OperationErrorViewState     -> renderErrorViewState()
     }
+  }
+
+  private fun renderRegisterViewState() {
+    Timber.d("[${hashCode()}]: renderRegisterViewState")
+
+  }
+
+  private fun renderLoginViewState() {
+    Timber.d("[${hashCode()}]: renderLoginViewState")
+
+  }
+
+  private fun renderAskForCredentialsViewState() {
+    Timber.d("[${hashCode()}]: renderAskForCredentialsViewState")
+
+  }
+
+  private fun renderErrorViewState() {
+    Timber.d("[${hashCode()}]: renderErrorViewState")
+
   }
 
   override fun instantiatePresenter() {
