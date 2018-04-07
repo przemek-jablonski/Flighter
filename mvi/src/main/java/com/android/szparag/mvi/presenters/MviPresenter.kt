@@ -7,6 +7,8 @@ import com.android.szparag.mvi.views.MviView
  */
 interface MviPresenter<in V : MviView<VS>, in VS : Any> {
 
+//  fun onViewBound(view: V)
+
   fun attachView(view: V)
 
   fun detachView(view: V)

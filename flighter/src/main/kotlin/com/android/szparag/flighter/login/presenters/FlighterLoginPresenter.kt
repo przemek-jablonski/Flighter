@@ -17,6 +17,9 @@ class FlighterLoginPresenter @Inject constructor() : BaseMviPresenter<LoginView,
     Timber.d("[${hashCode()}]: init")
   }
 
+  override fun onFirstViewAttached(view: LoginV)
+
+
   override fun onViewAttached(view: LoginView) {
     Timber.d("[${hashCode()}]: onViewAttached, view: $view")
   }

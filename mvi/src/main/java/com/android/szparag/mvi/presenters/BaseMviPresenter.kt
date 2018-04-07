@@ -9,13 +9,20 @@ import timber.log.Timber
 abstract class BaseMviPresenter<in V : MviView<VS>, in VS : Any> : MviPresenter<V, VS> {
 
   private var view: V? = null
+  private var viewAttachedFirstTime = true
 
   init {
     Timber.d("[${hashCode()}]: init")
   }
 
+  abstract fun onFirstViewAttached(view: V)
+
   final override fun attachView(view: V) {
     Timber.d("[${hashCode()}]: attachView, view: $view")
+    if(viewAttachedFirstTime) {
+      viewAttachedFirstTime = false
+      onFirstViewAttached(view)
+    }
   }
 
   final override fun detachView(view: V) {
