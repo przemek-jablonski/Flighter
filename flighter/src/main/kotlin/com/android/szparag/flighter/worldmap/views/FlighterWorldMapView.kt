@@ -19,28 +19,29 @@ import com.android.szparag.flighter.worldmap.states.WorldMapViewState.ErrorViewS
 import com.android.szparag.flighter.worldmap.states.WorldMapViewState.InteractiveViewState
 import com.android.szparag.flighter.worldmap.states.WorldMapViewState.OnboardingViewState
 import com.android.szparag.flighter.worldmap.states.WorldMapViewState.ShowingLocationViewState
+import com.android.szparag.myextensionsrx.ui
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.MapStyleOptions
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
+import java.util.concurrent.CancellationException
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import io.reactivex.android.schedulers.AndroidSchedulers
 
 class FlighterWorldMapView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MapView(
-    context, attrs, defStyleAttr), WorldMapView {
-
-
-  @Inject
-  @Suppress("MemberVisibilityCanBePrivate")
-  lateinit var presenter: WorldMapPresenter
-
-  @Volatile
-  private var initialized = false
+  context, attrs, defStyleAttr
+), WorldMapView {
+  @Inject @Suppress("MemberVisibilityCanBePrivate") lateinit var presenter: WorldMapPresenter
+  @Volatile private var initialized = false
     set(value) {
       field = value
       mapInitializedSubject.onNext(value)
     }
-
   private val mapInitializedSubject = PublishSubject.create<Boolean>().apply {
     this.doOnSubscribe { this.onNext(initialized) } //todo: is it correctly implemented?
   }
@@ -48,15 +49,25 @@ class FlighterWorldMapView @JvmOverloads constructor(context: Context, attrs: At
   init {
     Timber.d("[${hashCode()}]: init")
     Injector.get().inject(this)
-    getMapAsync { googleMap ->
+    this.getMapAsync { googleMap ->
       Timber.d("[${hashCode()}]: init.getMapAsync.callback, googleMap: $googleMap")
       googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, raw.googlemapstyle))
       googleMap.uiSettings.apply {
         setAllGesturesEnabled(false)
       }
       initialized = true
+//      Completable.timer(1000, TimeUnit.MILLISECONDS)
+//        .observeOn(AndroidSchedulers.mainThread())
+//        .ui()
+//        .subscribe {
+//          googleMap.animateCamera(CameraUpdateFactory.scrollBy(-10000f, 0f), 3000, object: GoogleMap.CancelableCallback {
+//            override fun onCancel() {}
+//            override fun onFinish() {}
+//          })
+//        }
     }
     presenter.test()
+
   }
 
   override fun mapInitializedIntent(): Observable<Boolean> = mapInitializedSubject
@@ -64,17 +75,13 @@ class FlighterWorldMapView @JvmOverloads constructor(context: Context, attrs: At
   override fun render(state: WorldMapViewState) {
     Timber.d("[${hashCode()}]: render, state: $state")
     when (state) {
-      is OnboardingViewState      -> {
-
+      is OnboardingViewState -> {
       }
       is ShowingLocationViewState -> {
-
       }
-      is InteractiveViewState     -> {
-
+      is InteractiveViewState -> {
       }
-      is ErrorViewState           -> {
-
+      is ErrorViewState -> {
       }
     }
   }
@@ -85,13 +92,13 @@ class FlighterWorldMapView @JvmOverloads constructor(context: Context, attrs: At
     activityStateObservable.subscribe { state ->
       Timber.d("[${hashCode()}]: registerActivityStateObservable.onNext, state: $state")
       when (state) {
-        ONCREATE            -> onCreate(null)
-        ONSTART             -> onStart()
-        ONRESUME            -> onResume()
-        ONPAUSE             -> onPause()
-        ONSTOP              -> onStop()
-        ONDESTROY           -> onDestroy()
-        ONLOWMMEMORY        -> onLowMemory()
+        ONCREATE -> onCreate(null)
+        ONSTART -> onStart()
+        ONRESUME -> onResume()
+        ONPAUSE -> onPause()
+        ONSTOP -> onStop()
+        ONDESTROY -> onDestroy()
+        ONLOWMMEMORY -> onLowMemory()
         ONSAVEINSTANCESTATE -> onSaveInstanceState(null)
       }
     }
@@ -111,5 +118,4 @@ class FlighterWorldMapView @JvmOverloads constructor(context: Context, attrs: At
     Timber.d("[${hashCode()}]: detachFromPresenter")
     presenter.detachView(this)
   }
-
 }

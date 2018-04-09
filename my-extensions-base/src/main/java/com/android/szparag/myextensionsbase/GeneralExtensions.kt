@@ -34,3 +34,8 @@ infix fun <T : Any> List<T>.shiftIndexesBy(shift: Int) {
 fun Millis.toSeconds() = this / 1000
 fun Millis.toMinutes() = this.toSeconds() / 60
 fun Millis.toHours() = this.toMinutes() / 60
+
+fun <T: Any> T?.requireNotNull(callback: (T) -> (Unit)) {
+  requireNotNull(this)
+  callback.invoke(this!!)
+}

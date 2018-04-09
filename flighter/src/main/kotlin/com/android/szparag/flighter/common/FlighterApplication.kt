@@ -2,6 +2,7 @@ package com.android.szparag.flighter.common
 
 import android.app.Application
 import com.android.szparag.flighter.worldmap.WorldMapModule
+import com.squareup.leakcanary.LeakCanary
 import timber.log.Timber
 import timber.log.Timber.DebugTree
 
@@ -18,6 +19,8 @@ class FlighterApplication : Application() {
 
   override fun onCreate() {
     super.onCreate()
+    if (LeakCanary.isInAnalyzerProcess(this)) { return }
+    LeakCanary.install(this)
     Timber.uprootAll()
     Timber.plant(DebugTree())
     Timber.d("onCreate")

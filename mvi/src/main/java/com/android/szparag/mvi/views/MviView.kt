@@ -5,11 +5,20 @@ package com.android.szparag.mvi.views
  */
 interface MviView<in VS : Any> {
 
-  fun instantiatePresenter()
+  //todo:
+  //open var animation showing
+  //open var animation hiding
+  //open var animation transitioning in
+  //open var animation transitioning out
+  //animation showing - hiding, same type but inverted (by default)
+  //animation trans in - trans out, same type but inverted (by default)
+  //few default primitives defined
 
-  fun attachToPresenter()
-
-  fun detachFromPresenter()
+//  fun instantiatePresenter()
+//
+//  fun attachToPresenter()
+//
+//  fun detachFromPresenter()
 
   fun render(state: VS)
 

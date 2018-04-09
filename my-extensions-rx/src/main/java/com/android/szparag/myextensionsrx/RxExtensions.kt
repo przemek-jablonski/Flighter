@@ -119,4 +119,3 @@ fun <T> Observable<T>.computation() = this.subscribeOn(Schedulers.computation())
 fun Completable.computation() = this.subscribeOn(Schedulers.computation())
 
 fun ui() = AndroidSchedulers.mainThread()
-
