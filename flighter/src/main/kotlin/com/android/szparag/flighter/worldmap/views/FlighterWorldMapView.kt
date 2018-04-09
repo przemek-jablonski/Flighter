@@ -19,23 +19,18 @@ import com.android.szparag.flighter.worldmap.states.WorldMapViewState.ErrorViewS
 import com.android.szparag.flighter.worldmap.states.WorldMapViewState.InteractiveViewState
 import com.android.szparag.flighter.worldmap.states.WorldMapViewState.OnboardingViewState
 import com.android.szparag.flighter.worldmap.states.WorldMapViewState.ShowingLocationViewState
-import com.android.szparag.myextensionsrx.ui
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.MapView
+import com.android.szparag.mvi.views.BaseMviMapView
 import com.google.android.gms.maps.model.MapStyleOptions
-import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
-import java.util.concurrent.CancellationException
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import io.reactivex.android.schedulers.AndroidSchedulers
 
-class FlighterWorldMapView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MapView(
-  context, attrs, defStyleAttr
-), WorldMapView {
+class FlighterWorldMapView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+  BaseMviMapView<WorldMapViewState>(context, attrs, defStyleAttr), WorldMapView {
+
+
+
   @Inject @Suppress("MemberVisibilityCanBePrivate") lateinit var presenter: WorldMapPresenter
   @Volatile private var initialized = false
     set(value) {
@@ -56,15 +51,6 @@ class FlighterWorldMapView @JvmOverloads constructor(context: Context, attrs: At
         setAllGesturesEnabled(false)
       }
       initialized = true
-//      Completable.timer(1000, TimeUnit.MILLISECONDS)
-//        .observeOn(AndroidSchedulers.mainThread())
-//        .ui()
-//        .subscribe {
-//          googleMap.animateCamera(CameraUpdateFactory.scrollBy(-10000f, 0f), 3000, object: GoogleMap.CancelableCallback {
-//            override fun onCancel() {}
-//            override fun onFinish() {}
-//          })
-//        }
     }
     presenter.test()
 
@@ -73,6 +59,7 @@ class FlighterWorldMapView @JvmOverloads constructor(context: Context, attrs: At
   override fun mapInitializedIntent(): Observable<Boolean> = mapInitializedSubject
 
   override fun render(state: WorldMapViewState) {
+    super.render(state)
     Timber.d("[${hashCode()}]: render, state: $state")
     when (state) {
       is OnboardingViewState -> {
