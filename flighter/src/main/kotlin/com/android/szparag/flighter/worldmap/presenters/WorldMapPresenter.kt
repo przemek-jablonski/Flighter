@@ -10,6 +10,5 @@ import com.android.szparag.mvi.presenters.MviPresenter
  */
 interface WorldMapPresenter : MviPresenter<WorldMapView, WorldMapInteractor, WorldMapViewState> {
 
-  fun test()
 
 }

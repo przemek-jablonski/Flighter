@@ -15,25 +15,22 @@ import javax.inject.Singleton
 class FlighterWorldMapPresenter @Inject constructor() : BaseMviPresenter<WorldMapView, WorldMapInteractor, WorldMapViewState>(),
   WorldMapPresenter {
 
-
   init {
-    Timber.d("[${hashCode()}]: null")
-  }
-
-  override fun test() {
-    Timber.d("[${hashCode()}]: test")
+    Timber.d("null")
   }
 
   override fun onFirstViewAttached() {
-    Timber.d("[${hashCode()}]: onFirstViewAttached, view: $view")
+    Timber.d("onFirstViewAttached, view: $view")
   }
 
   override fun onViewAttached(view: WorldMapView) {
-    Timber.d("[${hashCode()}]: onViewAttached, view: $view")
+    super.onViewAttached(view)
+    Timber.d("onViewAttached, view: $view")
   }
 
   override fun onViewDetached(view: WorldMapView) {
-    Timber.d("[${hashCode()}]: onViewDetached, view: $view")
+    super.onViewDetached(view)
+    Timber.d("onViewDetached, view: $view")
   }
 
 }

@@ -20,7 +20,7 @@ abstract class BaseMviConstraintLayout<in VS : Any> @JvmOverloads constructor(
   private var firstStateRendered = false
 
   init {
-    Timber.d("[${hashCode()}]: init")
+    Timber.d("init")
     hide()
   }
 
@@ -32,12 +32,12 @@ abstract class BaseMviConstraintLayout<in VS : Any> @JvmOverloads constructor(
 
   @CallSuper
   override fun render(state: VS) {
-    Timber.d("[${hashCode()}]: render, state: $state")
+    Timber.d("render, state: $state")
     if (!firstStateRendered) { handleFirstRender(state) }
   }
 
   protected open fun handleFirstRender(state: VS) {
-    Timber.d("[${hashCode()}]: handleFirstRender, state: $state")
+    Timber.d("handleFirstRender, state: $state")
     show()
     firstStateRendered = true
   }
@@ -45,7 +45,7 @@ abstract class BaseMviConstraintLayout<in VS : Any> @JvmOverloads constructor(
   @SuppressLint("MissingSuperCall")
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    Timber.d("[${hashCode()}]: onAttachedToWindow")
+    Timber.d("onAttachedToWindow")
     instantiatePresenter()
     attachToPresenter()
   }
@@ -53,7 +53,8 @@ abstract class BaseMviConstraintLayout<in VS : Any> @JvmOverloads constructor(
   @SuppressLint("MissingSuperCall")
   override fun onDetachedFromWindow() {
     super.onDetachedFromWindow()
-    Timber.d("[${hashCode()}]: onDetachedFromWindow")
+    Timber.d("onDetachedFromWindow")
     detachFromPresenter()
   }
+
 }

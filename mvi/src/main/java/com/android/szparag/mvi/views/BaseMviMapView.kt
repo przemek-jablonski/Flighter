@@ -10,6 +10,8 @@ import com.google.android.gms.maps.MapView
 import timber.log.Timber
 
 //todo: extract that as a separate module, as it requires heavy gradle dependency (GooglePlayServices-maps)
+//todo: remove timber, add static logger with a static switch
+//todo: this has EXACT SAME code as BaseMviConstraintLayout, deal with this
 abstract class BaseMviMapView<in VS: Any> @JvmOverloads constructor(
   context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : MapView(context, attrs, defStyleAttr), MviView<VS> {
@@ -17,7 +19,7 @@ abstract class BaseMviMapView<in VS: Any> @JvmOverloads constructor(
   private var firstStateRendered = false
 
   init {
-    Timber.d("[${hashCode()}]: init")
+    Timber.d("init")
     hide()
   }
 
@@ -29,12 +31,12 @@ abstract class BaseMviMapView<in VS: Any> @JvmOverloads constructor(
 
   @CallSuper
   override fun render(state: VS) {
-    Timber.d("[${hashCode()}]: render, state: $state")
+    Timber.d("render, state: $state")
     if (!firstStateRendered) { handleFirstRender(state) }
   }
 
   protected open fun handleFirstRender(state: VS) {
-    Timber.d("[${hashCode()}]: handleFirstRender, state: $state")
+    Timber.d("handleFirstRender, state: $state")
     show()
     firstStateRendered = true
   }
@@ -42,7 +44,7 @@ abstract class BaseMviMapView<in VS: Any> @JvmOverloads constructor(
   @SuppressLint("MissingSuperCall")
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    Timber.d("[${hashCode()}]: onAttachedToWindow")
+    Timber.d("onAttachedToWindow")
     instantiatePresenter()
     attachToPresenter()
   }
@@ -50,7 +52,7 @@ abstract class BaseMviMapView<in VS: Any> @JvmOverloads constructor(
   @SuppressLint("MissingSuperCall")
   override fun onDetachedFromWindow() {
     super.onDetachedFromWindow()
-    Timber.d("[${hashCode()}]: onDetachedFromWindow")
+    Timber.d("onDetachedFromWindow")
     detachFromPresenter()
   }
 

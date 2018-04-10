@@ -31,17 +31,17 @@ import javax.inject.Inject
 class FlighterLoginView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null,
     defStyleAttr: Int = 0) : BaseMviConstraintLayout<LoginViewState>(context, attrs, defStyleAttr), LoginView {
 
-
   @Inject
   @Suppress("MemberVisibilityCanBePrivate")
   lateinit var presenter: LoginPresenter
+
 
   private val frontImageView: ImageView by bindView(R.id.frontImageView)
   private val descriptionTextView: TextView by bindView(R.id.descriptionTextView)
   private val skipTextView: TextView by bindView(R.id.skipTextView)
 
   init {
-    Timber.d("[${hashCode()}]: init")
+    Timber.d("init")
   }
 
   override fun loginRegisterIntent(): Observable<LoginRegisterIntent> =
@@ -57,18 +57,18 @@ class FlighterLoginView @JvmOverloads constructor(context: Context, attrs: Attri
     RxView.clicks(descriptionTextView).map { DialogDismissalIntent() }
 
   override fun onAttachedToWindow() {
-    Timber.d("[${hashCode()}]: onAttachedToWindow")
+    Timber.d("onAttachedToWindow")
     super.onAttachedToWindow()
   }
 
   override fun onDetachedFromWindow() {
-    Timber.d("[${hashCode()}]: onDetachedFromWindow")
+    Timber.d("onDetachedFromWindow")
     super.onDetachedFromWindow()
   }
 
   override fun render(state: LoginViewState) {
     super.render(state)
-    Timber.i("[${hashCode()}]: render, state: $state")
+    Timber.i("render, state: $state")
     when (state) {
       is OnboardingRegisterViewState -> renderRegisterViewState()
       is OnboardingLoginViewState    -> renderLoginViewState()
@@ -78,38 +78,38 @@ class FlighterLoginView @JvmOverloads constructor(context: Context, attrs: Attri
   }
 
   private fun renderRegisterViewState() {
-    Timber.d("[${hashCode()}]: renderRegisterViewState")
+    Timber.d("renderRegisterViewState")
 
   }
 
   private fun renderLoginViewState() {
-    Timber.d("[${hashCode()}]: renderLoginViewState")
+    Timber.d("renderLoginViewState")
 
   }
 
   private fun renderAskForCredentialsViewState() {
-    Timber.d("[${hashCode()}]: renderAskForCredentialsViewState")
+    Timber.d("renderAskForCredentialsViewState")
 
   }
 
   private fun renderErrorViewState() {
-    Timber.d("[${hashCode()}]: renderErrorViewState")
+    Timber.d("renderErrorViewState")
 
   }
 
   override fun instantiatePresenter() {
-    Timber.d("[${hashCode()}]: instantiatePresenter")
+    Timber.d("instantiatePresenter")
     Injector.get().inject(this)
   }
 
   override fun attachToPresenter() {
-    Timber.d("[${hashCode()}]: attachToPresenter")
-    presenter.onViewAttached(this)
+    Timber.d("attachToPresenter")
+    presenter.attachView(this)
   }
 
   override fun detachFromPresenter() {
-    Timber.d("[${hashCode()}]: detachFromPresenter")
-    presenter.onViewDetached(this)
+    Timber.d("detachFromPresenter")
+    presenter.detachView(this)
   }
 
 }

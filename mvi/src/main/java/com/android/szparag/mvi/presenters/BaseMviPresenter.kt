@@ -1,5 +1,6 @@
 package com.android.szparag.mvi.presenters
 
+import android.support.annotation.CallSuper
 import com.android.szparag.mvi.models.MviModel
 import com.android.szparag.mvi.views.MviView
 import timber.log.Timber
@@ -11,33 +12,38 @@ abstract class BaseMviPresenter<V : MviView<VS>, M : MviModel<VS>, VS : Any> : M
 
   protected var view: V? = null
   protected lateinit var state: VS
-  protected lateinit var model: M
+  protected open lateinit var model: M //todo: shouldn't this be called interactor
   private var viewAttachedFirstTime = true
 
   init {
-    Timber.d("[${hashCode()}]: init")
+    Timber.d("init")
   }
 
   abstract fun onFirstViewAttached()
 
   final override fun attachView(view: V) {
-    Timber.d("[${hashCode()}]: attachView, view: $view")
+    Timber.d("attachView, view: $view, viewAttachedFirstTime: $viewAttachedFirstTime")
+    this.view = view
     if(viewAttachedFirstTime) {
       viewAttachedFirstTime = false
       onFirstViewAttached()
     }
+    onViewAttached(view)
   }
 
   final override fun detachView(view: V) {
-    Timber.d("[${hashCode()}]: detachView, view: $view")
+    Timber.d("detachView, view: $view")
+    this.view = null
   }
 
-  override fun onViewAttached(view: V) {
-    Timber.d("[${hashCode()}]: onViewAttached, view: $view")
+  @CallSuper
+  protected open fun onViewAttached(view: V) {
+    Timber.d("onViewAttached, view: $view")
   }
 
-  override fun onViewDetached(view: V) {
-    Timber.d("[${hashCode()}]: onViewDetached, view: $view")
+  @CallSuper
+  protected open fun onViewDetached(view: V) {
+    Timber.d("onViewDetached, view: $view")
   }
 
 }

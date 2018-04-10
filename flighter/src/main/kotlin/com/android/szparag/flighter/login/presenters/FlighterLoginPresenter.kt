@@ -6,8 +6,11 @@ import com.android.szparag.flighter.login.states.LoginViewState.OnboardingLoginV
 import com.android.szparag.flighter.login.states.LoginViewState.OnboardingRegisterViewState
 import com.android.szparag.flighter.login.views.LoginView
 import com.android.szparag.mvi.presenters.BaseMviPresenter
-import com.android.szparag.myextensionsrx.computation
+import io.reactivex.Completable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
+import java.util.concurrent.TimeUnit.MILLISECONDS
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -15,75 +18,84 @@ import javax.inject.Singleton
  * Created by Przemyslaw Jablonski (github.com/sharaquss, pszemek.me) on 01/04/2018.
  */
 @Singleton
-class FlighterLoginPresenter @Inject constructor() : BaseMviPresenter<LoginView, LoginInteractor, LoginViewState>(), LoginPresenter {
+class FlighterLoginPresenter @Inject constructor(
+    override var model: LoginInteractor) : BaseMviPresenter<LoginView, LoginInteractor, LoginViewState>(), LoginPresenter {
 
   init {
-    Timber.d("[${hashCode()}]: init")
+    Timber.d("init")
   }
-
 
   override fun onFirstViewAttached() {
-    Timber.d("[${hashCode()}]: onFirstViewAttached, view: $view")
+    Timber.d("onFirstViewAttached, view: $view")
     requireNotNull(view)
-    
+
     model
-      .isUserRegistered()
-      .computation()
-      .doOnSubscribe {
-        Timber.d("[${hashCode()}]: model.isUserRegistered().onSubscribe")
-        model.checkIfUserRegistered()
-      }
-      .subscribe { registered ->
-        Timber.d("[${hashCode()}]: model.isUserRegistered().onNext, registered: $registered")
-        view?.render(if (registered) OnboardingLoginViewState() else OnboardingRegisterViewState())
-      }
-    
-    processLoginRegisterIntent()
-    processSkipIntent()
-    processDialogAcceptanceIntent()
-    processDialogDismissalIntent()
+        .isUserRegistered()
+        .subscribeOn(AndroidSchedulers.mainThread())
+        .observeOn(AndroidSchedulers.mainThread())
+        .doOnSubscribe {
+          model.checkIfUserRegistered()
+        }
+        .subscribe { registered ->
+          Timber.d("model.isUserRegistered().onNext, registered: $registered")
+          view?.render(if (registered) OnboardingLoginViewState() else OnboardingRegisterViewState())
+        }
 
+    processLoginRegisterIntents()
+    processSkipIntents()
+    processDialogAcceptanceIntents()
+    processDialogDismissalIntents()
+
+//    Completable.timer(100, MILLISECONDS).subscribe { model.checkIfUserRegistered() }
   }
 
-  private fun processLoginRegisterIntent() {
-    Timber.d("[${hashCode()}]: processLoginRegisterIntent")
-    view
-      ?.loginRegisterIntent()
-      ?.computation()
-      ?.subscribe {intent ->
-        Timber.d("[${hashCode()}]: processLoginRegisterIntent.onNext, intent: $intent")
-      }
+  private fun processLoginRegisterIntents() {
+    Timber.d("processLoginRegisterIntents")
+    view?.let {
+      it.loginRegisterIntent()
+          .subscribeOn(AndroidSchedulers.mainThread())
+          .observeOn(Schedulers.single())
+          .subscribe { intent ->
+            Timber.d("processLoginRegisterIntents.onNext, intent: $intent")
+          }
+    }
   }
 
-  private fun processSkipIntent() {
-    Timber.d("[${hashCode()}]: processSkipIntent")
-    view
-      ?.skipIntent()
-      ?.computation()
-      ?.subscribe { intent ->
-        Timber.d("[${hashCode()}]: processSkipIntent.onNext, intent: $intent")
-      }
+  private fun processSkipIntents() {
+    Timber.d("processSkipIntents")
+    view?.let {
+      it.skipIntent()
+          .subscribeOn(AndroidSchedulers.mainThread())
+          .observeOn(Schedulers.single())
+          .subscribe { intent ->
+            Timber.d("processSkipIntents.onNext, intent: $intent")
+          }
+    }
   }
 
-  private fun processDialogAcceptanceIntent() {
-    Timber.d("[${hashCode()}]: processDialogAcceptanceIntent")
-    view
-      ?.dialogAcceptanceIntent()
-      ?.computation()
-      ?.subscribe { intent ->
-        Timber.d("[${hashCode()}]: processDialogAcceptanceIntent.onNext, intent: $intent")
-      }
+  private fun processDialogAcceptanceIntents() {
+    Timber.d("processDialogAcceptanceIntents")
+    view?.let {
+      it.dialogAcceptanceIntent()
+          .subscribeOn(AndroidSchedulers.mainThread())
+          .observeOn(Schedulers.single())
+          .subscribe { intent ->
+            Timber.d("processDialogAcceptanceIntents.onNext, intent: $intent")
+          }
+    }
   }
 
-  private fun processDialogDismissalIntent() {
-    Timber.d("[${hashCode()}]: processDialogDismissalIntent")
-    view
-      ?.dialogDismissalIntent()
-      ?.computation()
-      ?.subscribe { intent ->
-        Timber.d("[${hashCode()}]: processDialogDismissalIntent, intent: $intent")
-        model.checkIfUserRegistered()
-      }
+  private fun processDialogDismissalIntents() {
+    Timber.d("processDialogDismissalIntents")
+    view?.let {
+      it.dialogDismissalIntent()
+          .subscribeOn(AndroidSchedulers.mainThread())
+          .observeOn(Schedulers.single())
+          .subscribe { intent ->
+            Timber.d("processDialogDismissalIntents, intent: $intent")
+            model.checkIfUserRegistered()
+          }
+    }
   }
 
 }

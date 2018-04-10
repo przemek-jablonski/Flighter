@@ -4,14 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import com.android.szparag.flighter.R.raw
 import com.android.szparag.flighter.common.util.ActivityLifecycleState
-import com.android.szparag.flighter.common.util.ActivityLifecycleState.ONCREATE
-import com.android.szparag.flighter.common.util.ActivityLifecycleState.ONDESTROY
-import com.android.szparag.flighter.common.util.ActivityLifecycleState.ONLOWMMEMORY
-import com.android.szparag.flighter.common.util.ActivityLifecycleState.ONPAUSE
-import com.android.szparag.flighter.common.util.ActivityLifecycleState.ONRESUME
-import com.android.szparag.flighter.common.util.ActivityLifecycleState.ONSAVEINSTANCESTATE
-import com.android.szparag.flighter.common.util.ActivityLifecycleState.ONSTART
-import com.android.szparag.flighter.common.util.ActivityLifecycleState.ONSTOP
+import com.android.szparag.flighter.common.util.ActivityLifecycleState.*
 import com.android.szparag.flighter.common.util.Injector
 import com.android.szparag.flighter.worldmap.presenters.WorldMapPresenter
 import com.android.szparag.flighter.worldmap.states.WorldMapViewState
@@ -29,8 +22,6 @@ import javax.inject.Inject
 class FlighterWorldMapView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
   BaseMviMapView<WorldMapViewState>(context, attrs, defStyleAttr), WorldMapView {
 
-
-
   @Inject @Suppress("MemberVisibilityCanBePrivate") lateinit var presenter: WorldMapPresenter
   @Volatile private var initialized = false
     set(value) {
@@ -42,25 +33,27 @@ class FlighterWorldMapView @JvmOverloads constructor(context: Context, attrs: At
   }
 
   init {
-    Timber.d("[${hashCode()}]: init")
+    Timber.d("init")
     Injector.get().inject(this)
+  }
+
+  override fun mapInitializedIntent(): Observable<Boolean> = mapInitializedSubject
+
+  override fun handleFirstRender(state: WorldMapViewState) {
+    super.handleFirstRender(state)
     this.getMapAsync { googleMap ->
-      Timber.d("[${hashCode()}]: init.getMapAsync.callback, googleMap: $googleMap")
+      Timber.d("init.getMapAsync.callback, googleMap: $googleMap")
       googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, raw.googlemapstyle))
       googleMap.uiSettings.apply {
         setAllGesturesEnabled(false)
       }
       initialized = true
     }
-    presenter.test()
-
   }
-
-  override fun mapInitializedIntent(): Observable<Boolean> = mapInitializedSubject
 
   override fun render(state: WorldMapViewState) {
     super.render(state)
-    Timber.d("[${hashCode()}]: render, state: $state")
+    Timber.d("render, state: $state")
     when (state) {
       is OnboardingViewState -> {
       }
@@ -75,9 +68,9 @@ class FlighterWorldMapView @JvmOverloads constructor(context: Context, attrs: At
 
   @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
   fun registerActivityStateObservable(activityStateObservable: Observable<ActivityLifecycleState>) {
-    Timber.d("[${hashCode()}]: registerActivityStateObservable, activityStateObservable: $activityStateObservable")
+    Timber.d("registerActivityStateObservable, activityStateObservable: $activityStateObservable")
     activityStateObservable.subscribe { state ->
-      Timber.d("[${hashCode()}]: registerActivityStateObservable.onNext, state: $state")
+      Timber.d("registerActivityStateObservable.onNext, state: $state")
       when (state) {
         ONCREATE -> onCreate(null)
         ONSTART -> onStart()
@@ -92,17 +85,17 @@ class FlighterWorldMapView @JvmOverloads constructor(context: Context, attrs: At
   }
 
   override fun instantiatePresenter() {
-    Timber.d("[${hashCode()}]: instantiatePresenter")
+    Timber.d("instantiatePresenter")
     Injector.get().inject(this)
   }
 
   override fun attachToPresenter() {
-    Timber.d("[${hashCode()}]: attachToPresenter")
+    Timber.d("attachToPresenter")
     presenter.attachView(this)
   }
 
   override fun detachFromPresenter() {
-    Timber.d("[${hashCode()}]: detachFromPresenter")
+    Timber.d("detachFromPresenter")
     presenter.detachView(this)
   }
 }

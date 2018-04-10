@@ -14,9 +14,9 @@ interface MviPresenter<in V : MviView<VS>, in M: MviModel<VS>, VS : Any> {
 
   fun detachView(view: V)
 
-  fun onViewAttached(view: V)
-
-  fun onViewDetached(view: V)
+//  fun onViewAttached(view: V)
+//
+//  fun onViewDetached(view: V)
 
 
 

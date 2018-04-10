@@ -38,9 +38,9 @@ class GlobalActivity : AppCompatActivity() {
 
   private fun constructBackground(container: FrameLayout) {
     Timber.d("constructBackground, container: $container")
-    val googleMapView = layoutInflater.inflate(layout.layout_google_map, container, false) as FlighterWorldMapView
-    globalContainer.addView(googleMapView)
-    googleMapView.registerActivityStateObservable(activityStateSubject)
+//    val googleMapView = layoutInflater.inflate(layout.layout_google_map, container, false) as FlighterWorldMapView
+//    globalContainer.addView(googleMapView)
+//    googleMapView.registerActivityStateObservable(activityStateSubject)
   }
 
   private fun constructFirstScreen(container: FrameLayout) {
