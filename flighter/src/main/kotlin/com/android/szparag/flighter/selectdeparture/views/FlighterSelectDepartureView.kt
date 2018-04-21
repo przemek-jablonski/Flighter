@@ -3,9 +3,11 @@ package com.android.szparag.flighter.selectdeparture.views
 import android.content.Context
 import android.support.constraint.ConstraintLayout
 import android.util.AttributeSet
+import com.android.szparag.flighter.R.layout
 import com.android.szparag.flighter.common.util.Injector
 import com.android.szparag.flighter.selectdeparture.presenters.SelectDeparturePresenter
 import com.android.szparag.flighter.selectdeparture.states.SelectDepartureViewState
+import com.android.szparag.mvi.navigator.Screen
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -14,6 +16,12 @@ import javax.inject.Inject
  */
 class FlighterSelectDepartureView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null,
     defStyleAttr: Int = 0) : ConstraintLayout(context, attrs, defStyleAttr), SelectDepartureView {
+
+  companion object {
+    val screenData by lazy {
+      Screen(layoutResource = layout.screen_select_departure)
+    }
+  }
 
   @Inject
   lateinit var presenter: SelectDeparturePresenter

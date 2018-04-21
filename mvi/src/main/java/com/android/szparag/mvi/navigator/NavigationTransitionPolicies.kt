@@ -54,4 +54,9 @@ sealed class NavigationTransitionOutPolicy {
    */
   class KILL_ALL: NavigationTransitionOutPolicy()
 
+  /**
+   * Flags this screen as persistent, which means it cannot be 'killed' by KILL_PREVIOUS or KILL_ALL_PREVIOUS policies.
+   */
+  class PERSISTENT_IN_STACK: NavigationTransitionOutPolicy()
+
 }

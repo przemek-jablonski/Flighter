@@ -1,14 +1,14 @@
 package com.android.szparag.mvi.navigator
 
+import timber.log.Timber
 import java.util.Stack
 
-class NavigationStack<T : Screen>(
-    private val onScreenPushed: (T) -> (Unit),
-    private val onScreenPopped: (T) -> (Unit))
-  : Stack<T>() {
+class NavigationStack: Stack<Screen>() {
 
-  override fun push(item: T) = super.push(item).also(onScreenPushed)
-
-  override fun pop() = super.pop().also(onScreenPopped)
+//  override fun toString(): String {
+//    return "${forEachIndexed { index, screen ->
+//      "[$index]: layoutResource: ${screen.layoutResource}, transitionInAnimation: ${screen.transitionInAnimation::class.java.simpleName}"
+//    }}"
+//  }
 
 }

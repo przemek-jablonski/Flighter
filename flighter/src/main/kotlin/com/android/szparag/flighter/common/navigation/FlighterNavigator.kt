@@ -1,18 +1,10 @@
 package com.android.szparag.flighter.common.navigation
 
-import com.android.szparag.mvi.navigator.Navigator
-import com.android.szparag.myextensionsbase.emptyMutableList
+import android.view.LayoutInflater
+import android.widget.FrameLayout
+import com.android.szparag.mvi.navigator.BaseMviNavigator
 
-class FlighterNavigator: Navigator<FlighterScreen> {
-
-  private val navigationStack = emptyMutableList<FlighterScreen>()
-
-  override fun showScreen(screen: FlighterScreen) {
-
-  }
-
-  override fun handleBackPress() {
-
-  }
-
-}
+class FlighterNavigator(
+    globalContainer: FrameLayout,
+    inflater: LayoutInflater
+) : BaseMviNavigator(globalContainer, inflater)

@@ -12,7 +12,6 @@ import timber.log.Timber.DebugTree
 class FlighterApplication : Application() {
 
   companion object {
-    @JvmStatic
     lateinit var component: FlighterComponent
       private set
   }
@@ -20,6 +19,7 @@ class FlighterApplication : Application() {
   override fun onCreate() {
     super.onCreate()
     if (LeakCanary.isInAnalyzerProcess(this)) { return }
+
     LeakCanary.install(this)
     Timber.uprootAll()
     Timber.plant(DebugTree())

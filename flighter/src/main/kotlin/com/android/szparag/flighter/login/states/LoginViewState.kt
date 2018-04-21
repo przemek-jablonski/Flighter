@@ -13,4 +13,8 @@ sealed class LoginViewState {
 
   class OperationErrorViewState : LoginViewState()
 
+  class LoginSkippedViewState: LoginViewState()
+
+  class LoginSuccessfulViewState: LoginViewState()
+
 }

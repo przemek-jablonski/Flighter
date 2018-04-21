@@ -1,6 +1,8 @@
 package com.android.szparag.flighter.worldmap.views
 
+import com.android.szparag.flighter.R
 import com.android.szparag.flighter.worldmap.states.WorldMapViewState
+import com.android.szparag.mvi.navigator.Screen
 import com.android.szparag.mvi.views.MviView
 import io.reactivex.Observable
 

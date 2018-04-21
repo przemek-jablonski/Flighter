@@ -5,6 +5,8 @@ import android.animation.Animator.AnimatorListener
 import android.animation.TimeInterpolator
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.support.annotation.LayoutRes
+import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -114,3 +116,7 @@ internal fun View.visibilityAsString() = when (visibility) {
   View.GONE      -> "gone"
   else           -> "UNKNOWN"
 }
+
+typealias ViewAction = (View) -> (Unit)
+fun ViewGroup.addView(inflater: LayoutInflater, @LayoutRes layoutResource: Int, applyAction: ViewAction? = null) =
+  addView(inflater.inflate(layoutResource, this, false).apply { applyAction?.invoke(this) })

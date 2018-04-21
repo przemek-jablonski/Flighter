@@ -1,8 +1,10 @@
 package com.android.szparag.flighter.login.presenters
 
 import com.android.szparag.flighter.login.interactors.LoginInteractor
-import com.android.szparag.flighter.login.states.LoginViewIntent.SkipIntent
 import com.android.szparag.flighter.login.states.LoginViewState
+import com.android.szparag.flighter.login.states.LoginViewState.AskForCredentialsViewState
+import com.android.szparag.flighter.login.states.LoginViewState.LoginSkippedViewState
+import com.android.szparag.flighter.login.states.LoginViewState.LoginSuccessfulViewState
 import com.android.szparag.flighter.login.states.LoginViewState.OnboardingLoginViewState
 import com.android.szparag.flighter.login.states.LoginViewState.OnboardingRegisterViewState
 import com.android.szparag.flighter.login.views.LoginView
@@ -54,6 +56,7 @@ class FlighterLoginPresenter @Inject constructor(override var model: LoginIntera
           .observeOn(Schedulers.single())
           .subscribe { intent ->
             Timber.d("processLoginRegisterIntents.onNext, intent: $intent")
+            view?.render(AskForCredentialsViewState())
           }
     }
   }
@@ -63,10 +66,9 @@ class FlighterLoginPresenter @Inject constructor(override var model: LoginIntera
     view?.let {
       it.skipIntent()
           .subscribeOn(AndroidSchedulers.mainThread())
-          .observeOn(Schedulers.single())
           .subscribe { intent ->
             Timber.d("processSkipIntents.onNext, intent: $intent")
-//            it.render()
+            view?.render(LoginSkippedViewState())
           }
     }
   }
@@ -76,9 +78,9 @@ class FlighterLoginPresenter @Inject constructor(override var model: LoginIntera
     view?.let {
       it.dialogAcceptanceIntent()
           .subscribeOn(AndroidSchedulers.mainThread())
-          .observeOn(Schedulers.single())
           .subscribe { intent ->
             Timber.d("processDialogAcceptanceIntents.onNext, intent: $intent")
+            view?.render(LoginSuccessfulViewState())
           }
     }
   }

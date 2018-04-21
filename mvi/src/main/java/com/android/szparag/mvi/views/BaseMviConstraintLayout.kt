@@ -5,7 +5,7 @@ import android.content.Context
 import android.support.annotation.CallSuper
 import android.support.constraint.ConstraintLayout
 import android.util.AttributeSet
-import android.view.View
+import com.android.szparag.mvi.navigator.MviNavigator
 import com.android.szparag.myextensionsandroid.hide
 import com.android.szparag.myextensionsandroid.show
 import timber.log.Timber
@@ -18,6 +18,7 @@ abstract class BaseMviConstraintLayout<in VS : Any> @JvmOverloads constructor(
 ) : ConstraintLayout(context, attrs, defStyleAttr), MviView<VS> {
 
   private var firstStateRendered = false
+  lateinit var navigationDelegate: MviNavigator
 
   init {
     Timber.d("init")

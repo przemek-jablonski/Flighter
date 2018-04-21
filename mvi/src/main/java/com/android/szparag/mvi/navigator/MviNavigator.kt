@@ -1,8 +1,8 @@
 package com.android.szparag.mvi.navigator
 
-interface Navigator<in T: Any> {
+interface MviNavigator {
 
-  fun showScreen(screen: T)
+  fun showScreen(screen: Screen)
 
   fun handleBackPress()
 

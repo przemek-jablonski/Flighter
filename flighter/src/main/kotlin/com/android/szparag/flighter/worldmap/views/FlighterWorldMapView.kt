@@ -2,9 +2,17 @@ package com.android.szparag.flighter.worldmap.views
 
 import android.content.Context
 import android.util.AttributeSet
+import com.android.szparag.flighter.R.layout
 import com.android.szparag.flighter.R.raw
 import com.android.szparag.flighter.common.util.ActivityLifecycleState
-import com.android.szparag.flighter.common.util.ActivityLifecycleState.*
+import com.android.szparag.flighter.common.util.ActivityLifecycleState.ONCREATE
+import com.android.szparag.flighter.common.util.ActivityLifecycleState.ONDESTROY
+import com.android.szparag.flighter.common.util.ActivityLifecycleState.ONLOWMMEMORY
+import com.android.szparag.flighter.common.util.ActivityLifecycleState.ONPAUSE
+import com.android.szparag.flighter.common.util.ActivityLifecycleState.ONRESUME
+import com.android.szparag.flighter.common.util.ActivityLifecycleState.ONSAVEINSTANCESTATE
+import com.android.szparag.flighter.common.util.ActivityLifecycleState.ONSTART
+import com.android.szparag.flighter.common.util.ActivityLifecycleState.ONSTOP
 import com.android.szparag.flighter.common.util.Injector
 import com.android.szparag.flighter.worldmap.presenters.WorldMapPresenter
 import com.android.szparag.flighter.worldmap.states.WorldMapViewState
@@ -12,6 +20,8 @@ import com.android.szparag.flighter.worldmap.states.WorldMapViewState.ErrorViewS
 import com.android.szparag.flighter.worldmap.states.WorldMapViewState.InteractiveViewState
 import com.android.szparag.flighter.worldmap.states.WorldMapViewState.OnboardingViewState
 import com.android.szparag.flighter.worldmap.states.WorldMapViewState.ShowingLocationViewState
+import com.android.szparag.mvi.navigator.NavigationTransitionOutPolicy.PERSISTENT_IN_STACK
+import com.android.szparag.mvi.navigator.Screen
 import com.android.szparag.mvi.views.BaseMviMapView
 import com.google.android.gms.maps.model.MapStyleOptions
 import io.reactivex.Observable
@@ -20,10 +30,23 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class FlighterWorldMapView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
-  BaseMviMapView<WorldMapViewState>(context, attrs, defStyleAttr), WorldMapView {
+    BaseMviMapView<WorldMapViewState>(context, attrs, defStyleAttr), WorldMapView {
 
-  @Inject @Suppress("MemberVisibilityCanBePrivate") lateinit var presenter: WorldMapPresenter
-  @Volatile private var initialized = false
+  companion object {
+    val screenData by lazy {
+      Screen(
+          layoutResource = layout.screen_google_map,
+          transitionOutPolicy = PERSISTENT_IN_STACK()
+      )
+    }
+  }
+
+  @Inject
+  @Suppress("MemberVisibilityCanBePrivate")
+  lateinit var presenter: WorldMapPresenter
+
+  @Volatile
+  private var initialized = false
     set(value) {
       field = value
       mapInitializedSubject.onNext(value)

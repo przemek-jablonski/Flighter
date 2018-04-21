@@ -2,6 +2,7 @@ package com.android.szparag.myextensionsbase
 
 import java.util.ArrayList
 import java.util.Arrays
+import kotlin.math.max
 
 typealias Millis = Long
 typealias Seconds = Long
@@ -13,6 +14,8 @@ fun invalidStringValue() = emptyString()
 fun invalidIntValue() = -1
 fun invalidLongValue() = -1L
 fun invalidFloatValue() = -1f
+
+fun Int.decUntilZero() = max(0, dec())
 
 fun getUnixTimestampMillis() = System.currentTimeMillis() //todo: does this work in every timezone?
 
@@ -30,7 +33,6 @@ infix fun <T : Any> List<T>.shiftIndexesBy(shift: Int) {
   val shiftedArray = toMutableList()
   return forEachIndexed { index, _ -> shiftedArray[index] = this[(index + shift).rem(size)] }
 }
-
 
 fun Millis.toSeconds() = this / 1000
 fun Millis.toMinutes() = this.toSeconds() / 60

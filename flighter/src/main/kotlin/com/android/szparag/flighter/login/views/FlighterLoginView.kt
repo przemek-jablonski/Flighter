@@ -1,11 +1,12 @@
 package com.android.szparag.flighter.login.views
 
 import android.content.Context
-import android.support.design.widget.Snackbar
 import android.util.AttributeSet
 import android.widget.ImageView
 import android.widget.TextView
 import com.android.szparag.flighter.R
+import com.android.szparag.flighter.R.layout
+import com.android.szparag.flighter.common.FlighterApplication
 import com.android.szparag.flighter.common.util.Injector
 import com.android.szparag.flighter.login.presenters.LoginPresenter
 import com.android.szparag.flighter.login.states.LoginViewIntent.DialogAcceptanceIntent
@@ -14,11 +15,16 @@ import com.android.szparag.flighter.login.states.LoginViewIntent.LoginRegisterIn
 import com.android.szparag.flighter.login.states.LoginViewIntent.SkipIntent
 import com.android.szparag.flighter.login.states.LoginViewState
 import com.android.szparag.flighter.login.states.LoginViewState.AskForCredentialsViewState
+import com.android.szparag.flighter.login.states.LoginViewState.LoginSkippedViewState
+import com.android.szparag.flighter.login.states.LoginViewState.LoginSuccessfulViewState
 import com.android.szparag.flighter.login.states.LoginViewState.OnboardingLoginViewState
 import com.android.szparag.flighter.login.states.LoginViewState.OnboardingRegisterViewState
 import com.android.szparag.flighter.login.states.LoginViewState.OperationErrorViewState
+import com.android.szparag.flighter.selectdeparture.views.FlighterSelectDepartureView
+import com.android.szparag.flighter.selectdeparture.views.SelectDepartureView
 import com.android.szparag.kotterknife.bindView
-import com.android.szparag.mvi.util.EmptyIntent
+import com.android.szparag.mvi.navigator.NavigationTransitionOutPolicy.KILL_ALL_PREVIOUS
+import com.android.szparag.mvi.navigator.Screen
 import com.android.szparag.mvi.views.BaseMviConstraintLayout
 import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.Observable
@@ -30,6 +36,15 @@ import javax.inject.Inject
  */
 class FlighterLoginView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null,
     defStyleAttr: Int = 0) : BaseMviConstraintLayout<LoginViewState>(context, attrs, defStyleAttr), LoginView {
+
+  companion object {
+    val screenData by lazy {
+      Screen(
+          layoutResource = layout.screen_google_login,
+          transitionOutPolicy = KILL_ALL_PREVIOUS()
+      )
+    }
+  }
 
   @Inject
   @Suppress("MemberVisibilityCanBePrivate")
@@ -45,16 +60,16 @@ class FlighterLoginView @JvmOverloads constructor(context: Context, attrs: Attri
   }
 
   override fun loginRegisterIntent(): Observable<LoginRegisterIntent> =
-    RxView.clicks(frontImageView).map { LoginRegisterIntent() }
+      RxView.clicks(frontImageView).map { LoginRegisterIntent() }
 
   override fun skipIntent(): Observable<SkipIntent> =
-    RxView.clicks(skipTextView).map { SkipIntent() }
+      RxView.clicks(skipTextView).map { SkipIntent() }
 
   override fun dialogAcceptanceIntent(): Observable<DialogAcceptanceIntent> =
-    RxView.clicks(descriptionTextView).map { DialogAcceptanceIntent("Asdasdasd [${System.currentTimeMillis()}") }
+      RxView.clicks(descriptionTextView).map { DialogAcceptanceIntent("Asdasdasd [${System.currentTimeMillis()}") }
 
   override fun dialogDismissalIntent(): Observable<DialogDismissalIntent> =
-    RxView.clicks(descriptionTextView).map { DialogDismissalIntent() }
+      RxView.clicks(descriptionTextView).map { DialogDismissalIntent() }
 
   override fun onAttachedToWindow() {
     Timber.d("onAttachedToWindow")
@@ -71,9 +86,11 @@ class FlighterLoginView @JvmOverloads constructor(context: Context, attrs: Attri
     Timber.i("render, state: $state")
     when (state) {
       is OnboardingRegisterViewState -> renderRegisterViewState()
-      is OnboardingLoginViewState    -> renderLoginViewState()
-      is AskForCredentialsViewState  -> renderAskForCredentialsViewState()
-      is OperationErrorViewState     -> renderErrorViewState()
+      is OnboardingLoginViewState -> renderLoginViewState()
+      is AskForCredentialsViewState -> renderAskForCredentialsViewState()
+      is OperationErrorViewState -> renderErrorViewState()
+      is LoginSkippedViewState -> renderLoginSkippedViewState()
+      is LoginSuccessfulViewState -> renderLoginSuccessfulViewState()
     }
   }
 
@@ -94,6 +111,16 @@ class FlighterLoginView @JvmOverloads constructor(context: Context, attrs: Attri
   private fun renderErrorViewState() {
     Timber.d("renderErrorViewState")
 
+  }
+
+  private fun renderLoginSkippedViewState() {
+    Timber.d("renderLoginSkippedViewState")
+    navigationDelegate.showScreen(FlighterSelectDepartureView.screenData)
+  }
+
+  private fun renderLoginSuccessfulViewState() {
+    Timber.d("renderLoginSuccessfulViewState")
+    navigationDelegate.showScreen(FlighterSelectDepartureView.screenData)
   }
 
   override fun instantiatePresenter() {
