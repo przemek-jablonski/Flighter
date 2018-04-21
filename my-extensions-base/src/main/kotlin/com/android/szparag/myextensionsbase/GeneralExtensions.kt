@@ -8,6 +8,7 @@ typealias Seconds = Long
 
 fun nullString() = "NULL"
 fun emptyString() = ""
+fun <T: Any> emptyMutableList() = mutableListOf<T>()
 fun invalidStringValue() = emptyString()
 fun invalidIntValue() = -1
 fun invalidLongValue() = -1L

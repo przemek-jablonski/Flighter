@@ -89,7 +89,6 @@ class FlighterLoginView @JvmOverloads constructor(context: Context, attrs: Attri
 
   private fun renderAskForCredentialsViewState() {
     Timber.d("renderAskForCredentialsViewState")
-
   }
 
   private fun renderErrorViewState() {

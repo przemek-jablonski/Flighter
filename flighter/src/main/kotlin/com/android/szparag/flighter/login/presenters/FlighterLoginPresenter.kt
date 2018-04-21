@@ -1,16 +1,15 @@
 package com.android.szparag.flighter.login.presenters
 
 import com.android.szparag.flighter.login.interactors.LoginInteractor
+import com.android.szparag.flighter.login.states.LoginViewIntent.SkipIntent
 import com.android.szparag.flighter.login.states.LoginViewState
 import com.android.szparag.flighter.login.states.LoginViewState.OnboardingLoginViewState
 import com.android.szparag.flighter.login.states.LoginViewState.OnboardingRegisterViewState
 import com.android.szparag.flighter.login.views.LoginView
 import com.android.szparag.mvi.presenters.BaseMviPresenter
-import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
-import java.util.concurrent.TimeUnit.MILLISECONDS
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -18,8 +17,8 @@ import javax.inject.Singleton
  * Created by Przemyslaw Jablonski (github.com/sharaquss, pszemek.me) on 01/04/2018.
  */
 @Singleton
-class FlighterLoginPresenter @Inject constructor(
-    override var model: LoginInteractor) : BaseMviPresenter<LoginView, LoginInteractor, LoginViewState>(), LoginPresenter {
+class FlighterLoginPresenter @Inject constructor(override var model: LoginInteractor)
+  : BaseMviPresenter<LoginView, LoginInteractor, LoginViewState>(), LoginPresenter {
 
   init {
     Timber.d("init")
@@ -45,8 +44,6 @@ class FlighterLoginPresenter @Inject constructor(
     processSkipIntents()
     processDialogAcceptanceIntents()
     processDialogDismissalIntents()
-
-//    Completable.timer(100, MILLISECONDS).subscribe { model.checkIfUserRegistered() }
   }
 
   private fun processLoginRegisterIntents() {
@@ -69,6 +66,7 @@ class FlighterLoginPresenter @Inject constructor(
           .observeOn(Schedulers.single())
           .subscribe { intent ->
             Timber.d("processSkipIntents.onNext, intent: $intent")
+//            it.render()
           }
     }
   }
