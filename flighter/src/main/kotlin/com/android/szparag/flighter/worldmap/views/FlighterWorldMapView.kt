@@ -58,7 +58,8 @@ class FlighterWorldMapView @JvmOverloads constructor(context: Context, attrs: At
 
   init {
     Timber.d("init")
-    Injector.get().inject(this)
+    if (!isInEditMode)
+      Injector.get().inject(this)
   }
 
   override fun mapInitializedIntent(): Observable<Boolean> = mapInitializedSubject
@@ -110,7 +111,7 @@ class FlighterWorldMapView @JvmOverloads constructor(context: Context, attrs: At
 
   override fun instantiatePresenter() {
     Timber.d("instantiatePresenter")
-    Injector.get().inject(this)
+    if (!isInEditMode) Injector.get().inject(this) //todo: this is doubled in init method
   }
 
   override fun attachToPresenter() {

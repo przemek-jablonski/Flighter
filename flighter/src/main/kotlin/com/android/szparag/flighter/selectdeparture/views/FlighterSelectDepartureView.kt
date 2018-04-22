@@ -1,15 +1,18 @@
 package com.android.szparag.flighter.selectdeparture.views
 
 import android.content.Context
-import android.support.constraint.ConstraintLayout
 import android.util.AttributeSet
+import android.widget.TextView
+import com.android.szparag.flighter.R
 import com.android.szparag.flighter.R.layout
 import com.android.szparag.flighter.common.util.Injector
 import com.android.szparag.flighter.selectdeparture.presenters.SelectDeparturePresenter
 import com.android.szparag.flighter.selectdeparture.states.SelectDepartureViewState
 import com.android.szparag.flighter.selectdeparture.states.SelectDepartureViewState.SearchNotStartedViewState
+import com.android.szparag.kotterknife.bindView
 import com.android.szparag.mvi.navigator.Screen
 import com.android.szparag.mvi.views.BaseMviConstraintLayout
+import com.android.szparag.myextensionsandroid.show
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -31,9 +34,10 @@ class FlighterSelectDepartureView @JvmOverloads constructor(context: Context, at
   @Inject
   lateinit var presenter: SelectDeparturePresenter
 
+  private val testTextView: TextView  by bindView(R.id.testTextView)
+
   init {
     Timber.d("init")
-    Injector.get().inject(this)
   }
 
   override fun render(state: SelectDepartureViewState) {
@@ -41,22 +45,24 @@ class FlighterSelectDepartureView @JvmOverloads constructor(context: Context, at
     Timber.d("render, state: $state")
     when (state) {
       is SearchNotStartedViewState -> {
-
+        testTextView.show()
       }
     }
   }
 
   override fun instantiatePresenter() {
     Timber.d("instantiatePresenter")
+    Injector.get().inject(this)
   }
 
   override fun attachToPresenter() {
     Timber.d("attachToPresenter")
+    presenter.attachView(this)
   }
 
   override fun detachFromPresenter() {
     Timber.d("detachFromPresenter")
-    presenter
+    presenter.detachView(this)
   }
 
 }

@@ -20,7 +20,7 @@ abstract class BaseMviMapView<in VS: Any> @JvmOverloads constructor(
 
   init {
     Timber.d("init")
-    hide()
+    if(!isInEditMode) hide()
   }
 
   abstract fun instantiatePresenter()
@@ -31,12 +31,10 @@ abstract class BaseMviMapView<in VS: Any> @JvmOverloads constructor(
 
   @CallSuper
   override fun render(state: VS) {
-    Timber.d("render, state: $state")
     if (!firstStateRendered) { handleFirstRender(state) }
   }
 
   protected open fun handleFirstRender(state: VS) {
-    Timber.d("handleFirstRender, state: $state")
     show()
     firstStateRendered = true
   }
@@ -44,7 +42,7 @@ abstract class BaseMviMapView<in VS: Any> @JvmOverloads constructor(
   @SuppressLint("MissingSuperCall")
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    Timber.d("onAttachedToWindow")
+    if (isInEditMode) return
     instantiatePresenter()
     attachToPresenter()
   }
@@ -52,7 +50,7 @@ abstract class BaseMviMapView<in VS: Any> @JvmOverloads constructor(
   @SuppressLint("MissingSuperCall")
   override fun onDetachedFromWindow() {
     super.onDetachedFromWindow()
-    Timber.d("onDetachedFromWindow")
+    if (isInEditMode) return
     detachFromPresenter()
   }
 

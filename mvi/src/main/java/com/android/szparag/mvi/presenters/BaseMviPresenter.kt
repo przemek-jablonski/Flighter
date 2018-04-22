@@ -8,21 +8,19 @@ import timber.log.Timber
 /**
  * Created by Przemyslaw Jablonski (github.com/sharaquss, pszemek.me) on 02/04/2018.
  */
-abstract class BaseMviPresenter<V : MviView<VS>, M : MviInteractor<VS>, VS : Any> : MviPresenter<V, M, VS> {
+abstract class BaseMviPresenter<V : MviView<VS>, I : MviInteractor<VS>, VS : Any> : MviPresenter<V, I, VS> {
 
   protected var view: V? = null
   protected lateinit var state: VS
-  protected open lateinit var model: M //todo: shouldn't this be called interactor
+  abstract var interactor: I
   private var viewAttachedFirstTime = true
 
-  init {
-    Timber.d("init")
+  @CallSuper
+  open fun onFirstViewAttached() {
+    requireNotNull(view)
   }
 
-  abstract fun onFirstViewAttached()
-
   final override fun attachView(view: V) {
-    Timber.d("attachView, view: $view, viewAttachedFirstTime: $viewAttachedFirstTime")
     this.view = view
     if(viewAttachedFirstTime) {
       viewAttachedFirstTime = false
@@ -32,18 +30,16 @@ abstract class BaseMviPresenter<V : MviView<VS>, M : MviInteractor<VS>, VS : Any
   }
 
   final override fun detachView(view: V) {
-    Timber.d("detachView, view: $view")
+    onViewDetached(view)
     this.view = null
   }
 
   @CallSuper
   protected open fun onViewAttached(view: V) {
-    Timber.d("onViewAttached, view: $view")
   }
 
   @CallSuper
   protected open fun onViewDetached(view: V) {
-    Timber.d("onViewDetached, view: $view")
   }
 
 }

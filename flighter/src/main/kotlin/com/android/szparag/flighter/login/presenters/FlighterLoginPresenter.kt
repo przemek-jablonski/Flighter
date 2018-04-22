@@ -19,7 +19,7 @@ import javax.inject.Singleton
  * Created by Przemyslaw Jablonski (github.com/sharaquss, pszemek.me) on 01/04/2018.
  */
 @Singleton
-class FlighterLoginPresenter @Inject constructor(override var model: LoginInteractor)
+class FlighterLoginPresenter @Inject constructor(override var interactor: LoginInteractor)
   : BaseMviPresenter<LoginView, LoginInteractor, LoginViewState>(), LoginPresenter {
 
   init {
@@ -27,15 +27,15 @@ class FlighterLoginPresenter @Inject constructor(override var model: LoginIntera
   }
 
   override fun onFirstViewAttached() {
+    super.onFirstViewAttached()
     Timber.d("onFirstViewAttached, view: $view")
-    requireNotNull(view)
 
-    model
+    interactor
         .isUserRegistered()
         .subscribeOn(AndroidSchedulers.mainThread())
         .observeOn(AndroidSchedulers.mainThread())
         .doOnSubscribe {
-          model.checkIfUserRegistered()
+          interactor.checkIfUserRegistered()
         }
         .subscribe { registered ->
           Timber.d("model.isUserRegistered().onNext, registered: $registered")
@@ -93,9 +93,21 @@ class FlighterLoginPresenter @Inject constructor(override var model: LoginIntera
           .observeOn(Schedulers.single())
           .subscribe { intent ->
             Timber.d("processDialogDismissalIntents, intent: $intent")
-            model.checkIfUserRegistered()
+            interactor.checkIfUserRegistered() //todo: why here?
           }
     }
   }
 
+
+  //____________________________temporary
+
+  override fun onViewAttached(view: LoginView) {
+    super.onViewAttached(view)
+    Timber.d("onViewAttached, view: $view")
+  }
+
+  override fun onViewDetached(view: LoginView) {
+    super.onViewDetached(view)
+    Timber.d("onViewDetached, view: $view")
+  }
 }

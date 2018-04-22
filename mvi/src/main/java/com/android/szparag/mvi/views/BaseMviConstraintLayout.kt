@@ -21,8 +21,7 @@ abstract class BaseMviConstraintLayout<in VS : Any> @JvmOverloads constructor(
   lateinit var navigationDelegate: MviNavigator
 
   init {
-    Timber.d("init")
-    hide()
+    if (!isInEditMode) hide()
   }
 
   abstract fun instantiatePresenter()
@@ -33,28 +32,24 @@ abstract class BaseMviConstraintLayout<in VS : Any> @JvmOverloads constructor(
 
   @CallSuper
   override fun render(state: VS) {
-    Timber.d("render, state: $state")
     if (!firstStateRendered) { handleFirstRender(state) }
   }
 
   protected open fun handleFirstRender(state: VS) {
-    Timber.d("handleFirstRender, state: $state")
     show()
     firstStateRendered = true
   }
 
-  @SuppressLint("MissingSuperCall")
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-    Timber.d("onAttachedToWindow")
+    if (isInEditMode) return
     instantiatePresenter()
     attachToPresenter()
   }
 
-  @SuppressLint("MissingSuperCall")
   override fun onDetachedFromWindow() {
     super.onDetachedFromWindow()
-    Timber.d("onDetachedFromWindow")
+    if (isInEditMode) return
     detachFromPresenter()
   }
 

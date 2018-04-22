@@ -26,4 +26,6 @@ class FlighterApplication : Application() {
     Timber.d("onCreate")
     component = DaggerFlighterComponent.builder().worldMapModule(WorldMapModule()).build()
   }
+
+
 }
