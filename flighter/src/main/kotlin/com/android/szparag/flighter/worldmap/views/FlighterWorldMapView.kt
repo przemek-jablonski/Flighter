@@ -35,6 +35,7 @@ class FlighterWorldMapView @JvmOverloads constructor(context: Context, attrs: At
   companion object {
     val screenData by lazy {
       Screen(
+          viewClass = FlighterWorldMapView::class.java,
           layoutResource = layout.screen_google_map,
           transitionOutPolicy = PERSISTENT_IN_STACK()
       )

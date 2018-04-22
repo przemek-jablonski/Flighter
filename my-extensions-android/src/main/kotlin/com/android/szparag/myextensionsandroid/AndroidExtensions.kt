@@ -5,11 +5,14 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.res.Resources
 import android.support.design.widget.Snackbar
 import android.support.design.widget.Snackbar.LENGTH_LONG
 import android.support.design.widget.Snackbar.LENGTH_SHORT
 import android.view.View
 import android.widget.Toast
+
+typealias ResourceInt = Int
 
 fun Context.createRegisteredBroadcastReceiver(vararg intentFilterActions: String, callback: (Intent) -> (Unit)): BroadcastReceiver {
   val broadcastReceiver = object : BroadcastReceiver() {
@@ -36,3 +39,5 @@ fun Context.toast(content: CharSequence, longDuration: Boolean = true) =
 
 fun View.toast(content: CharSequence, longDuration: Boolean = true) =
   this.context.toast(content, longDuration)
+
+infix fun ResourceInt.idAsString(resources: Resources) = resources.getResourceEntryName(this)

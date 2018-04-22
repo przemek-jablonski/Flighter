@@ -1,3 +1,5 @@
+//@file:Suppress("unused")
+
 package com.android.szparag.myextensionsandroid
 
 import android.animation.Animator
@@ -17,6 +19,7 @@ import android.view.animation.Animation.AnimationListener
 import android.view.animation.AnimationSet
 import android.view.animation.LayoutAnimationController.AnimationParameters
 import android.widget.ImageView
+import com.android.szparag.myextensionsbase.findFirstIndexedOrNull
 
 typealias Widget = View
 
@@ -26,11 +29,17 @@ private const val DEBUG_VIEW_STRING_DEFAULT_CAPACITY = 256
 
 fun noIdString() = "NO-ID"
 
-infix fun View.doOnClick(action: (View) -> Unit) = setOnClickListener(action)
+infix fun View.doOnClick(action: (View) -> Unit) =
+    setOnClickListener(action)
 
-fun Dp.toPx(context: Context) = (this * context.resources.displayMetrics.density).toInt()
+fun Dp.toPx(context: Context) =
+    (this * context.resources.displayMetrics.density).toInt()
 
-fun ViewGroup.getChildren() = (0 until childCount).map { childIndex -> getChildAt(childIndex) }
+fun ViewGroup.getChildren() =
+    (0 until childCount).map { childIndex -> getChildAt(childIndex) }
+
+fun ViewGroup.indexOfChildByClass(viewClass: Class<*>) = //todo: Class<*> -> Class<View>
+    getChildren().findFirstIndexedOrNull { it::class.java == viewClass }.second
 
 //<editor-fold desc="Widgets visibility">
 fun Widget.hide() {

@@ -1,14 +1,15 @@
 package com.android.szparag.mvi.navigator
 
-import timber.log.Timber
 import java.util.Stack
 
-class NavigationStack: Stack<Screen>() {
+/**
+ * Stack of screens wrapper.
+ */
+class NavigationStack : Stack<Screen>() {
 
-//  override fun toString(): String {
-//    return "${forEachIndexed { index, screen ->
-//      "[$index]: layoutResource: ${screen.layoutResource}, transitionInAnimation: ${screen.transitionInAnimation::class.java.simpleName}"
-//    }}"
-//  }
+  /**
+   * Prevents stack from throwing an Exception when there are no items to pop.
+   */
+  override fun pop(): Screen? = if (size == 0) null else super.pop()
 
 }

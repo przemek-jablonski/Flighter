@@ -25,7 +25,7 @@ fun Bundle?.asString(stringBuilder: StringBuilder): String {
 
 fun View.asString() = asShortString()
 
-fun View.asShortString() = "${this::class.java.simpleName}@${hashCode()}"
+fun View.asShortString() = "${this.resources.getResourceTypeName(id)}/${this.resources.getResourceEntryName(id)} (${this::class.java.simpleName}@${hashCode()})"
 
 internal val View.complexString
   get() = StringBuilder(2048).append(

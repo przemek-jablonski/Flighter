@@ -15,6 +15,13 @@ fun invalidIntValue() = -1
 fun invalidLongValue() = -1L
 fun invalidFloatValue() = -1f
 
+inline fun <T> List<T>.findFirstIndexedOrNull(predicate: (T) -> Boolean): Pair<T?, Int> {
+  return indices
+      .firstOrNull { predicate(get(it)) }
+      ?.let { Pair(get(it), it) }
+      ?: Pair(null, invalidIntValue())
+}
+
 fun Int.decUntilZero() = max(0, dec())
 
 fun getUnixTimestampMillis() = System.currentTimeMillis() //todo: does this work in every timezone?

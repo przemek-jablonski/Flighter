@@ -1,14 +1,14 @@
 package com.android.szparag.mvi.presenters
 
 import android.support.annotation.CallSuper
-import com.android.szparag.mvi.models.MviModel
+import com.android.szparag.mvi.models.MviInteractor
 import com.android.szparag.mvi.views.MviView
 import timber.log.Timber
 
 /**
  * Created by Przemyslaw Jablonski (github.com/sharaquss, pszemek.me) on 02/04/2018.
  */
-abstract class BaseMviPresenter<V : MviView<VS>, M : MviModel<VS>, VS : Any> : MviPresenter<V, M, VS> {
+abstract class BaseMviPresenter<V : MviView<VS>, M : MviInteractor<VS>, VS : Any> : MviPresenter<V, M, VS> {
 
   protected var view: V? = null
   protected lateinit var state: VS

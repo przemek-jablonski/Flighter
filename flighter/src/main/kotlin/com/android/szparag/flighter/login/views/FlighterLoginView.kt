@@ -5,8 +5,6 @@ import android.util.AttributeSet
 import android.widget.ImageView
 import android.widget.TextView
 import com.android.szparag.flighter.R
-import com.android.szparag.flighter.R.layout
-import com.android.szparag.flighter.common.FlighterApplication
 import com.android.szparag.flighter.common.util.Injector
 import com.android.szparag.flighter.login.presenters.LoginPresenter
 import com.android.szparag.flighter.login.states.LoginViewIntent.DialogAcceptanceIntent
@@ -21,7 +19,6 @@ import com.android.szparag.flighter.login.states.LoginViewState.OnboardingLoginV
 import com.android.szparag.flighter.login.states.LoginViewState.OnboardingRegisterViewState
 import com.android.szparag.flighter.login.states.LoginViewState.OperationErrorViewState
 import com.android.szparag.flighter.selectdeparture.views.FlighterSelectDepartureView
-import com.android.szparag.flighter.selectdeparture.views.SelectDepartureView
 import com.android.szparag.kotterknife.bindView
 import com.android.szparag.mvi.navigator.NavigationTransitionOutPolicy.KILL_ALL_PREVIOUS
 import com.android.szparag.mvi.navigator.Screen
@@ -40,7 +37,8 @@ class FlighterLoginView @JvmOverloads constructor(context: Context, attrs: Attri
   companion object {
     val screenData by lazy {
       Screen(
-          layoutResource = layout.screen_google_login,
+          viewClass = FlighterLoginView::class.java,
+          layoutResource = R.layout.screen_google_login,
           transitionOutPolicy = KILL_ALL_PREVIOUS()
       )
     }
@@ -106,6 +104,7 @@ class FlighterLoginView @JvmOverloads constructor(context: Context, attrs: Attri
 
   private fun renderAskForCredentialsViewState() {
     Timber.d("renderAskForCredentialsViewState")
+
   }
 
   private fun renderErrorViewState() {

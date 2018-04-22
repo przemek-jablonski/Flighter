@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.android.szparag.mvi.navigator
 
 /**
@@ -6,7 +8,7 @@ package com.android.szparag.mvi.navigator
 sealed class NavigationTransitionInPolicy {
 
   /**
-   * Default policy - add the screen to the Navigation Stack and don't apply any other modifications to it.
+   * Default policy - add the screen to the Navigation Stack and don't apply any further modifications to it.
    */
   class DEFAULT_ADD_TO_STACK : NavigationTransitionInPolicy()
 

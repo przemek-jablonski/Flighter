@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.android.szparag.mvi.navigator
 
 import android.view.animation.AccelerateDecelerateInterpolator
