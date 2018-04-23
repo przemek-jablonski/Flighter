@@ -13,7 +13,7 @@ sealed class NavigationTransitionInPolicy {
   class DEFAULT_ADD_TO_STACK : NavigationTransitionInPolicy()
 
   /**
-   * In addition to adding the screen to the Navigation Stack, pop specified amount of screens from the stack.
+   * In addition to adding the screen to the Navigation Stack, pop specified amount of screens from the foregroundStack.
    */
   class KILL_PREVIOUS(val itemCount: Int = 1) : NavigationTransitionInPolicy()
 
@@ -36,7 +36,7 @@ sealed class NavigationTransitionOutPolicy {
   class DEFAULT_NONE : NavigationTransitionOutPolicy()
 
   /**
-   * Pop current item from the stack.
+   * Pop current item from the foregroundStack.
    * May be useful when using Dialog-type screens - when dismissed, it will be removed from the Navigation Stack.
    */
   class KILL_ITSELF : NavigationTransitionOutPolicy()
@@ -47,12 +47,12 @@ sealed class NavigationTransitionOutPolicy {
   class KILL_LAST(val itemCount: Int = 1) : NavigationTransitionOutPolicy()
 
   /**
-   * Pop every item from the stack, except the current one.
+   * Pop every item from the foregroundStack, except the current one.
    */
   class KILL_ALL_PREVIOUS : NavigationTransitionOutPolicy()
 
   /**
-   * Pop every item from the stack, including the current one.
+   * Pop every item from the foregroundStack, including the current one.
    */
   class KILL_ALL: NavigationTransitionOutPolicy()
 

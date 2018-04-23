@@ -48,7 +48,6 @@ class FlighterLoginView @JvmOverloads constructor(context: Context, attrs: Attri
   @Suppress("MemberVisibilityCanBePrivate")
   lateinit var presenter: LoginPresenter
 
-
   private val frontImageView: ImageView by bindView(R.id.frontImageView)
   private val descriptionTextView: TextView by bindView(R.id.descriptionTextView)
   private val skipTextView: TextView by bindView(R.id.skipTextView)

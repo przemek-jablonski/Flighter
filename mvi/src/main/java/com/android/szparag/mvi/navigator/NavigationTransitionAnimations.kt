@@ -17,6 +17,9 @@ sealed class NavigationTransitionAnimation {
     val DEGREES_DIRECTION_TOP = 90
     val DEGREES_DIRECTION_BOTTOM = 270
   }
+
+  class INSTANT: NavigationTransitionAnimation()
+
 }
 
 //todo: scale_in
@@ -31,6 +34,8 @@ sealed class NavigationTransitionInAnimation : NavigationTransitionAnimation() {
       val interpolator: BaseInterpolator = AccelerateDecelerateInterpolator(),
       val duration: Millis = DURATION_NORMAL
   ) : NavigationTransitionInAnimation()
+
+  override fun toString(): String = this::class.java.simpleName
 }
 
 //todo: scale_out
@@ -46,4 +51,5 @@ sealed class NavigationTransitionOutAnimation : NavigationTransitionAnimation() 
       val duration: Millis = DURATION_NORMAL
   ) : NavigationTransitionOutAnimation()
 
+  override fun toString(): String = this::class.java.simpleName
 }
