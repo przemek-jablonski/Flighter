@@ -9,7 +9,7 @@ typealias OnScreenPoppedListener = (Screen?) -> (Unit)
 /**
  * Stack of screens wrapper.
  */
-class NavigationStack : Stack<Screen>() {
+internal class NavigationStack : Stack<Screen>() {
 
   internal var onScreenPushedListener: OnScreenPushedListener? = null
   internal var onScreenPoppedListener: OnScreenPoppedListener? = null

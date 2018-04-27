@@ -110,13 +110,11 @@ class MyNavigator(
   private fun handleOutgoingScreen(screen: Screen?) {
     Timber.d("handleOutgoingScreen, screen: $screen")
     screen?.let {
-      val screenView = globalContainer.childByClass(screen.viewClass)?.let { view ->
+      globalContainer.childByClass(screen.viewClass)?.let { view ->
         constructScreenAnimation(view, screen.transitionOutAnimation)
         globalContainer.removeViewInLayout(view)
       }
-
       //todo: start anim and kill view in onEnd callback
-
     }
   }
 
@@ -134,38 +132,6 @@ class MyNavigator(
       is NavigationTransitionOutAnimation.MOVE_OUT -> {}
       is NavigationTransitionAnimation.INSTANT -> {}
     }
-  }
-
-  //________________________________________________________________________________
-
-
-  private fun handleScreenTransitionOut(container: ViewGroup, screen: Screen?) {
-    Timber.d("handleScreenTransitionOut, container: ${container.asShortString()}, screen: $screen")
-    screen?.let {
-      if (it.transitionOutPolicy != PERSISTENT_IN_STACK()) {
-        removeScreenFromContainer(container, it.viewClass)
-      }
-    }
-  }
-
-  private fun handleScreenTransitionIn(container: ViewGroup, screen: Screen) {
-    Timber.d("handleScreenTransitionIn,  container: ${container.asShortString()}, screen: $screen")
-    showScreenInContainer(container, screen.layoutResource)
-  }
-
-
-  private fun showScreenInContainer(container: ViewGroup, @LayoutRes screenLayoutResource: LayoutId) {
-    Timber.d("showScreenInContainer, container: ${container.asShortString()}, screenLayoutResource: ${screenLayoutResource.idAsString(
-        globalContainer.resources)}")
-    container.addView(inflater, screenLayoutResource, {
-      it as BaseMviConstraintLayout<*>
-      it.navigationDelegate = this
-    })
-  }
-
-  private fun removeScreenFromContainer(container: ViewGroup, screenViewClass: Class<*>) {
-    Timber.d("removeScreenFromContainer, container: ${container.asShortString()}, screenViewClass: $screenViewClass")
-    container.removeViewAt(container.indexOfChildByClass(screenViewClass))
   }
 
 }
