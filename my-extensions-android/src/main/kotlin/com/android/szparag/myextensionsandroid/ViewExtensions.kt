@@ -41,6 +41,9 @@ fun ViewGroup.getChildren() =
 fun ViewGroup.indexOfChildByClass(viewClass: Class<*>) = //todo: Class<*> -> Class<View>
     getChildren().findFirstIndexedOrNull { it::class.java == viewClass }.second
 
+fun ViewGroup.childByClass(viewClass: Class<*>) = //todo: Class<*> -> Class<View>
+    getChildren().findFirstIndexedOrNull { it::class.java == viewClass }.first
+
 //<editor-fold desc="Widgets visibility">
 fun Widget.hide() {
   if (visibility != GONE) this.visibility = GONE

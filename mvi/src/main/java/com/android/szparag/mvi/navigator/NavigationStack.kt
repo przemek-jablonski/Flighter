@@ -1,5 +1,6 @@
 package com.android.szparag.mvi.navigator
 
+import timber.log.Timber
 import java.util.Stack
 
 typealias OnScreenPushedListener = (Screen) -> (Unit)
@@ -31,9 +32,9 @@ class NavigationStack : Stack<Screen>() {
         onScreenPoppedListener?.invoke(it)
       }
 
-  fun peekCurrent() = if (size - 1 < 0) peek() else null //todo: prevent exceptions
+  fun peekCurrent() = if (size >= 1) get(size - 1) else null
 
-  fun peekPrevious() = if (size - 2 < 0) get(size - 2) else null
+  fun peekPrevious() = if (size >= 2) get(size - 2) else null
 
 
 }

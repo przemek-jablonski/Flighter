@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.support.annotation.CallSuper
 import android.util.AttributeSet
+import com.android.szparag.mvi.navigator.Navigator
 import com.android.szparag.myextensionsandroid.hide
 import com.android.szparag.myextensionsandroid.show
 import com.google.android.gms.maps.MapView
@@ -17,6 +18,7 @@ abstract class BaseMviMapView<in VS: Any> @JvmOverloads constructor(
 ) : MapView(context, attrs, defStyleAttr), MviView<VS> {
 
   private var firstStateRendered = false
+  override lateinit var navigationDelegate: Navigator
 
   init {
     Timber.d("init")

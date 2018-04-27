@@ -113,12 +113,12 @@ class FlighterLoginView @JvmOverloads constructor(context: Context, attrs: Attri
 
   private fun renderLoginSkippedViewState() {
     Timber.d("renderLoginSkippedViewState")
-    navigationDelegate.showScreen(FlighterSelectDepartureView.screenData)
+    navigationDelegate.goToScreen(FlighterSelectDepartureView.screenData)
   }
 
   private fun renderLoginSuccessfulViewState() {
     Timber.d("renderLoginSuccessfulViewState")
-    navigationDelegate.showScreen(FlighterSelectDepartureView.screenData)
+    navigationDelegate.goToScreen(FlighterSelectDepartureView.screenData)
   }
 
   override fun instantiatePresenter() {

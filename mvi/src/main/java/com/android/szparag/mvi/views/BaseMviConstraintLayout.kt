@@ -1,14 +1,12 @@
 package com.android.szparag.mvi.views
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.support.annotation.CallSuper
 import android.support.constraint.ConstraintLayout
 import android.util.AttributeSet
-import com.android.szparag.mvi.navigator.MviNavigator
+import com.android.szparag.mvi.navigator.Navigator
 import com.android.szparag.myextensionsandroid.hide
 import com.android.szparag.myextensionsandroid.show
-import timber.log.Timber
 
 /**
  * Created by Przemyslaw Jablonski (github.com/sharaquss, pszemek.me) on 02/04/2018.
@@ -18,7 +16,7 @@ abstract class BaseMviConstraintLayout<in VS : Any> @JvmOverloads constructor(
 ) : ConstraintLayout(context, attrs, defStyleAttr), MviView<VS> {
 
   private var firstStateRendered = false
-  lateinit var navigationDelegate: MviNavigator
+  override lateinit var navigationDelegate: Navigator
 
   init {
     if (!isInEditMode) hide()
