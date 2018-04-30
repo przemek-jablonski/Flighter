@@ -42,6 +42,8 @@ class FlighterWorldMapView @JvmOverloads constructor(context: Context, attrs: At
     }
   }
 
+  override fun getScreen(): Screen = screenData
+
   @Inject
   @Suppress("MemberVisibilityCanBePrivate")
   lateinit var presenter: WorldMapPresenter

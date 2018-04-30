@@ -7,29 +7,31 @@ import com.android.szparag.flighter.R
 import com.android.szparag.flighter.common.util.ActivityLifecycleState
 import com.android.szparag.flighter.common.util.ActivityLifecycleState.*
 import com.android.szparag.flighter.login.views.FlighterLoginView
+import com.android.szparag.flighter.worldmap.views.FlighterWorldMapView
 import com.android.szparag.kotterknife.bindView
+import com.android.szparag.mvi.navigator.GlobalActivity
 import com.android.szparag.mvi.navigator.MyNavigator
 import com.android.szparag.mvi.navigator.Navigator
 import io.reactivex.subjects.ReplaySubject
 import timber.log.Timber
 
-class FlighterGlobalActivity : AppCompatActivity() {
+class FlighterGlobalActivity : AppCompatActivity(), GlobalActivity {
 
   //todo: reset buffer after onResume or onStop or onBundle callbacks are called
   private val activityStateSubject = ReplaySubject.create<ActivityLifecycleState>()
-  private val globalContainer: FrameLayout by bindView(R.id.globalContainer)
-  private val navigationDelegate: Navigator by lazy { MyNavigator(globalContainer, layoutInflater) } //todo: daggerize dat
+  override val globalContainer: FrameLayout by bindView(R.id.globalContainer)
+  override val navigationDelegate: Navigator by lazy { MyNavigator(globalContainer, layoutInflater) } //todo: daggerize dat
 
   override fun onCreate(savedInstanceState: Bundle?) {
     Timber.d("onCreate, savedInstanceState: $savedInstanceState")
     super.onCreate(savedInstanceState)
     activityStateSubject.onNext(ONCREATE)
-
     setContentView(R.layout.container_global_flighter)
     instantiateFirstScreens()
   }
 
-  private fun instantiateFirstScreens() {
+  override fun instantiateFirstScreens() {
+    navigationDelegate.goToScreen(FlighterWorldMapView.screenData)
     navigationDelegate.goToScreen(FlighterLoginView.screenData)
   }
 

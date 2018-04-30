@@ -34,6 +34,7 @@ abstract class BaseMviConstraintLayout<in VS : Any> @JvmOverloads constructor(
   }
 
   protected open fun handleFirstRender(state: VS) {
+    navigationDelegate.onHandleFirstRender(getScreen())
     show()
     firstStateRendered = true
   }

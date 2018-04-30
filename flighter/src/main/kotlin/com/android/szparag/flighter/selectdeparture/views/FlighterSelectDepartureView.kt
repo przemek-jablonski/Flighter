@@ -31,8 +31,11 @@ class FlighterSelectDepartureView @JvmOverloads constructor(context: Context, at
     }
   }
 
+  override fun getScreen(): Screen = screenData
+
   @Inject
-  lateinit var presenter: SelectDeparturePresenter
+  lateinit var presenter: SelectDeparturePresenter //todo: this presenter should be overriden from parent class
+  //todo: and methods instantiatePresenter, attachToPresenter and detachFromPresenter - removed
 
   private val testTextView: TextView  by bindView(R.id.testTextView)
 

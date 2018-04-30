@@ -1,1 +1,1 @@
-include ':flighter', ':mvi', ':my-extensions-android', ':my-extensions-android', ':my-extensions-base', ':my-extensions-rx'
+include ':flighter', ':mvi', ':my-extensions-android', ':my-extensions-android', ':my-extensions-base', ':my-extensions-rx', ':columbus'

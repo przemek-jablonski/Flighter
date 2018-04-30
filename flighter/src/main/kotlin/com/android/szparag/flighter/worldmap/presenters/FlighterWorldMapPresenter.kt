@@ -20,6 +20,11 @@ class FlighterWorldMapPresenter @Inject constructor(override var interactor: Wor
     Timber.d("null")
   }
 
+  override fun onFirstViewAttached() {
+    super.onFirstViewAttached()
+    Timber.d("onFirstViewAttached")
+    view?.render(WorldMapViewState.OnboardingViewState())
+  }
 
   //____________________________temporary
 

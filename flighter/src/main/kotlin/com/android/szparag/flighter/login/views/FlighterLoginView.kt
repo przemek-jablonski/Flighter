@@ -44,6 +44,9 @@ class FlighterLoginView @JvmOverloads constructor(context: Context, attrs: Attri
     }
   }
 
+
+  override fun getScreen(): Screen = screenData
+
   @Inject
   @Suppress("MemberVisibilityCanBePrivate")
   lateinit var presenter: LoginPresenter
