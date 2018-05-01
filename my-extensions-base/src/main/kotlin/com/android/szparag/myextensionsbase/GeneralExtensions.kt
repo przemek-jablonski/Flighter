@@ -49,3 +49,6 @@ fun <T: Any> T?.requireNotNull(callback: (T) -> (Unit)) {
   requireNotNull(this)
   callback.invoke(this!!)
 }
+
+fun <E> Collection<E>.containsOneItem() = size == 1
+

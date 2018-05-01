@@ -1,6 +1,6 @@
 package com.android.szparag.mvi.views
 
-import com.android.szparag.mvi.navigator.ColumbusNavigableScreen
+import com.android.szparag.columbus.ColumbusNavigableScreen
 
 /**
  * Created by Przemyslaw Jablonski (github.com/sharaquss, pszemek.me) on 02/04/2018.

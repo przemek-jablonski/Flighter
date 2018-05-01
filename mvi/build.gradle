@@ -31,8 +31,8 @@ android {
 dependencies {
 
   implementation project(':my-extensions-android')
-
   implementation project(':my-extensions-base')
+  api project(':columbus')
 
   implementation 'com.android.support:appcompat-v7:27.1.1' //todo: is it needed?
   implementation 'com.android.support:support-v4:27.1.1'

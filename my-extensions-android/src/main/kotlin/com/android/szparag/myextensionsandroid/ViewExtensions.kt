@@ -20,6 +20,7 @@ import android.view.animation.AnimationSet
 import android.view.animation.LayoutAnimationController.AnimationParameters
 import android.widget.ImageView
 import com.android.szparag.myextensionsbase.findFirstIndexedOrNull
+import kotlin.math.absoluteValue
 
 typealias Widget = View
 
@@ -132,3 +133,7 @@ internal fun View.visibilityAsString() = when (visibility) {
 typealias ViewAction = (View) -> (Unit)
 fun ViewGroup.addView(inflater: LayoutInflater, @LayoutRes layoutResource: Int, applyAction: ViewAction? = null) =
   addView(inflater.inflate(layoutResource, this, false).apply { applyAction?.invoke(this) })
+
+fun View.generateId() {
+  id = hashCode().absoluteValue
+}

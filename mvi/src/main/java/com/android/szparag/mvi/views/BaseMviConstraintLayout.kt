@@ -4,7 +4,7 @@ import android.content.Context
 import android.support.annotation.CallSuper
 import android.support.constraint.ConstraintLayout
 import android.util.AttributeSet
-import com.android.szparag.mvi.navigator.Navigator
+import com.android.szparag.columbus.Navigator
 import com.android.szparag.myextensionsandroid.hide
 import com.android.szparag.myextensionsandroid.show
 
