@@ -80,7 +80,7 @@ class FlighterWorldMapView @JvmOverloads constructor(context: Context, attrs: At
 
   override fun render(state: WorldMapViewState) {
     super.render(state)
-    Timber.d("render, state: $state")
+    Timber.i("render, state: $state")
     when (state) {
       is OnboardingViewState -> {
       }

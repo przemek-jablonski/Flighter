@@ -14,30 +14,15 @@ android {
     testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
   }
   buildTypes {
-    release {
+    debug {
       minifyEnabled false
+    }
+    release {
+      minifyEnabled true
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
     }
   }
   flavorDimensions "standard"
-  productFlavors {
-    europe {
-      applicationIdSuffix ".eur"
-      versionNameSuffix "-eur"
-    }
-    northamerica {
-      applicationIdSuffix ".northamerica"
-      versionNameSuffix "-northamerica"
-    }
-    southamerica {
-      applicationIdSuffix ".southamerica"
-      versionNameSuffix "-southamerica"
-    }
-    asia {
-      applicationIdSuffix ".asia"
-      versionNameSuffix "-asia"
-    }
-  }
   sourceSets{ main.java.srcDirs += 'src/main/kotlin' }
 
   configurations.all { config ->

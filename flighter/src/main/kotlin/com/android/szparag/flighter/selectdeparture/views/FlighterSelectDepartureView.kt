@@ -45,7 +45,7 @@ class FlighterSelectDepartureView @JvmOverloads constructor(context: Context, at
 
   override fun render(state: SelectDepartureViewState) {
     super.render(state)
-    Timber.d("render, state: $state")
+    Timber.i("render, state: $state")
     when (state) {
       is SearchNotStartedViewState -> {
         testTextView.show()
