@@ -2,6 +2,8 @@ package com.android.szparag.flighter.worldmap.views
 
 import android.content.Context
 import android.util.AttributeSet
+import com.android.szparag.columbus.NavigationTransitionOutPolicy.PERSISTENT_IN_STACK
+import com.android.szparag.columbus.Screen
 import com.android.szparag.flighter.R.layout
 import com.android.szparag.flighter.R.raw
 import com.android.szparag.flighter.common.util.ActivityLifecycleState
@@ -20,8 +22,6 @@ import com.android.szparag.flighter.worldmap.states.WorldMapViewState.ErrorViewS
 import com.android.szparag.flighter.worldmap.states.WorldMapViewState.InteractiveViewState
 import com.android.szparag.flighter.worldmap.states.WorldMapViewState.OnboardingViewState
 import com.android.szparag.flighter.worldmap.states.WorldMapViewState.ShowingLocationViewState
-import com.android.szparag.mvi.navigator.NavigationTransitionOutPolicy.PERSISTENT_IN_STACK
-import com.android.szparag.mvi.navigator.Screen
 import com.android.szparag.mvi.views.BaseMviMapView
 import com.google.android.gms.maps.model.MapStyleOptions
 import io.reactivex.Observable

@@ -3,6 +3,7 @@ package com.android.szparag.flighter.selectdeparture.views
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.TextView
+import com.android.szparag.columbus.Screen
 import com.android.szparag.flighter.R
 import com.android.szparag.flighter.R.layout
 import com.android.szparag.flighter.common.util.Injector
@@ -10,7 +11,6 @@ import com.android.szparag.flighter.selectdeparture.presenters.SelectDeparturePr
 import com.android.szparag.flighter.selectdeparture.states.SelectDepartureViewState
 import com.android.szparag.flighter.selectdeparture.states.SelectDepartureViewState.SearchNotStartedViewState
 import com.android.szparag.kotterknife.bindView
-import com.android.szparag.mvi.navigator.Screen
 import com.android.szparag.mvi.views.BaseMviConstraintLayout
 import com.android.szparag.myextensionsandroid.show
 import timber.log.Timber

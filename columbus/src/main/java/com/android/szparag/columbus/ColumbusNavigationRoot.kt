@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
 
-interface ColumbusNavigationController {
+interface ColumbusNavigationRoot {
   val navigationDelegate: Navigator
   val globalContainer: RelativeLayout
   fun instantiateFirstScreens()

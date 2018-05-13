@@ -1,6 +1,7 @@
 package com.android.szparag.flighter.worldmap.presenters
 
 import com.android.szparag.flighter.login.views.LoginView
+import com.android.szparag.flighter.worldmap.WorldCoordinates
 import com.android.szparag.flighter.worldmap.interactors.WorldMapInteractor
 import com.android.szparag.flighter.worldmap.states.WorldMapViewState
 import com.android.szparag.flighter.worldmap.views.WorldMapView
@@ -23,7 +24,7 @@ class FlighterWorldMapPresenter @Inject constructor(override var interactor: Wor
   override fun onFirstViewAttached() {
     super.onFirstViewAttached()
     Timber.d("onFirstViewAttached")
-    view?.render(WorldMapViewState.OnboardingViewState())
+    view?.render(WorldMapViewState.OnboardingViewState(WorldCoordinates(0.0, 0.0)))
   }
 
   //____________________________temporary

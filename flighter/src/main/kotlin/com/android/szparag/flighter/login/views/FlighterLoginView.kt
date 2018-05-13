@@ -4,7 +4,10 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.ImageView
 import android.widget.TextView
+import com.android.szparag.columbus.NavigationTransitionOutPolicy.KILL_ALL_PREVIOUS
+import com.android.szparag.columbus.Screen
 import com.android.szparag.flighter.R
+import com.android.szparag.flighter.R.layout
 import com.android.szparag.flighter.common.util.Injector
 import com.android.szparag.flighter.login.presenters.LoginPresenter
 import com.android.szparag.flighter.login.states.LoginViewIntent.DialogAcceptanceIntent
@@ -20,8 +23,6 @@ import com.android.szparag.flighter.login.states.LoginViewState.OnboardingRegist
 import com.android.szparag.flighter.login.states.LoginViewState.OperationErrorViewState
 import com.android.szparag.flighter.selectdeparture.views.FlighterSelectDepartureView
 import com.android.szparag.kotterknife.bindView
-import com.android.szparag.mvi.navigator.NavigationTransitionOutPolicy.KILL_ALL_PREVIOUS
-import com.android.szparag.mvi.navigator.Screen
 import com.android.szparag.mvi.views.BaseMviConstraintLayout
 import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.Observable
@@ -38,7 +39,7 @@ class FlighterLoginView @JvmOverloads constructor(context: Context, attrs: Attri
     val screenData by lazy {
       Screen(
           viewClass = FlighterLoginView::class.java,
-          layoutResource = R.layout.screen_google_login,
+          layoutResource = layout.screen_google_login,
           transitionOutPolicy = KILL_ALL_PREVIOUS()
       )
     }
