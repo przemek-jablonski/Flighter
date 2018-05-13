@@ -2,6 +2,7 @@ package com.android.szparag.flighter.worldmap.views
 
 import android.content.Context
 import android.util.AttributeSet
+import com.android.szparag.columbus.NavigationLayer.BACKGROUND
 import com.android.szparag.columbus.NavigationTransitionOutPolicy.PERSISTENT_IN_STACK
 import com.android.szparag.columbus.Screen
 import com.android.szparag.flighter.R.layout
@@ -37,7 +38,8 @@ class FlighterWorldMapView @JvmOverloads constructor(context: Context, attrs: At
       Screen(
           viewClass = FlighterWorldMapView::class.java,
           layoutResource = layout.screen_google_map,
-          transitionOutPolicy = PERSISTENT_IN_STACK()
+          transitionOutPolicy = PERSISTENT_IN_STACK(),
+          layer = BACKGROUND
       )
     }
   }
@@ -45,8 +47,11 @@ class FlighterWorldMapView @JvmOverloads constructor(context: Context, attrs: At
   override fun getScreen(): Screen = screenData
 
   @Inject
-  @Suppress("MemberVisibilityCanBePrivate")
+//  @Suppress("MemberVisibilityCanBePrivate")
   lateinit var presenter: WorldMapPresenter
+
+  @Inject
+  lateinit var lifecycleBus: Observable<ActivityLifecycleState>
 
   @Volatile
   private var initialized = false
@@ -54,14 +59,18 @@ class FlighterWorldMapView @JvmOverloads constructor(context: Context, attrs: At
       field = value
       mapInitializedSubject.onNext(value)
     }
+
+
   private val mapInitializedSubject = PublishSubject.create<Boolean>().apply {
     this.doOnSubscribe { this.onNext(initialized) } //todo: is it correctly implemented?
   }
 
   init {
     Timber.d("init")
-    if (!isInEditMode)
+    if (!isInEditMode) {
       Injector.get().inject(this)
+      registerActivityStateObservable(lifecycleBus)
+    }
   }
 
   override fun mapInitializedIntent(): Observable<Boolean> = mapInitializedSubject
@@ -72,7 +81,7 @@ class FlighterWorldMapView @JvmOverloads constructor(context: Context, attrs: At
       Timber.d("init.getMapAsync.callback, googleMap: $googleMap")
       googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, raw.googlemapstyle))
       googleMap.uiSettings.apply {
-        setAllGesturesEnabled(false)
+        setAllGesturesEnabled(true)
       }
       initialized = true
     }

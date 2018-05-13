@@ -10,16 +10,21 @@ import com.android.szparag.columbus.Navigator
 import com.android.szparag.flighter.R
 import com.android.szparag.flighter.common.util.ActivityLifecycleState
 import com.android.szparag.flighter.common.util.ActivityLifecycleState.*
+import com.android.szparag.flighter.common.util.Injector
 import com.android.szparag.flighter.login.views.FlighterLoginView
 import com.android.szparag.flighter.worldmap.views.FlighterWorldMapView
 import com.android.szparag.kotterknife.bindView
 import io.reactivex.subjects.ReplaySubject
+import io.reactivex.subjects.Subject
 import timber.log.Timber
+import javax.inject.Inject
 
 class FlighterGlobalActivity : AppCompatActivity(), ColumbusNavigationRoot {
 
   //todo: reset buffer after onResume or onStop or onBundle callbacks are called
-  private val activityStateSubject = ReplaySubject.create<ActivityLifecycleState>()
+  @Inject
+  lateinit var activityStateSubject : Subject<ActivityLifecycleState>
+
   override val globalContainer: RelativeLayout by bindView(R.id.globalContainer)
   override val navigationDelegate: Navigator by lazy { ColumbusNavigator(
       globalContainer = globalContainer,
@@ -32,14 +37,15 @@ class FlighterGlobalActivity : AppCompatActivity(), ColumbusNavigationRoot {
   override fun onCreate(savedInstanceState: Bundle?) {
     Timber.d("onCreate, savedInstanceState: $savedInstanceState")
     super.onCreate(savedInstanceState)
+    Injector.get().inject(this)
     activityStateSubject.onNext(ONCREATE)
     setContentView(R.layout.container_global_flighter)
     instantiateFirstScreens()
   }
 
   override fun instantiateFirstScreens() {
-    navigationDelegate.goToScreen(FlighterWorldMapView.screenData)
     navigationDelegate.goToScreen(FlighterLoginView.screenData)
+    navigationDelegate.goToScreen(FlighterWorldMapView.screenData)
   }
 
   override fun onStart() {
