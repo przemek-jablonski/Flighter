@@ -9,14 +9,14 @@ sealed class SelectDepartureViewState {
 
   class SearchNotStartedViewState : SelectDepartureViewState()
 
-  class QueryingWithTextViewState(val inputText: String): SelectDepartureViewState()
+  data class QueryingWithTextViewState(val inputText: String): SelectDepartureViewState()
 
-  class FetchingResultWithTextViewState(val inputText: String): SelectDepartureViewState()
+  data class FetchingResultWithTextViewState(val inputText: String): SelectDepartureViewState()
 
   class FetchingResultWithGpsViewState: SelectDepartureViewState()
 
   class EmptySearchResult: SelectDepartureViewState()
 
-  class SearchResult(val results: List<AirportModel>): SelectDepartureViewState()
+  data class SearchResult(val results: List<AirportModel>): SelectDepartureViewState()
 
 }

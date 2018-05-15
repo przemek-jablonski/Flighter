@@ -8,7 +8,7 @@
 
 
   <EditText
-      android:id="@+id/editText"
+      android:id="@+id/view_select_departure_input_edit_text"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginBottom="8dp"
@@ -16,15 +16,16 @@
       android:layout_marginTop="8dp"
       android:ems="10"
       android:inputType="textPersonName"
-      android:text="Name"
+      android:hint="City"
       app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toStartOf="@+id/imageButton"
+      app:layout_constraintEnd_toStartOf="@+id/view_select_departure_input_gps_button"
       app:layout_constraintHorizontal_bias="0.5"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
       />
+
   <ImageButton
-      android:id="@+id/imageButton"
+      android:id="@+id/view_select_departure_input_gps_button"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginBottom="8dp"
@@ -33,8 +34,9 @@
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintHorizontal_bias="0.5"
-      app:layout_constraintStart_toEndOf="@+id/editText"
+      app:layout_constraintStart_toEndOf="@+id/view_select_departure_input_edit_text"
       app:layout_constraintTop_toTopOf="parent"
       app:srcCompat="@drawable/ic_action_my_location"
       />
+
 </com.android.szparag.flighter.selectdeparture.views.FlighterSelectDepartureInputView>
