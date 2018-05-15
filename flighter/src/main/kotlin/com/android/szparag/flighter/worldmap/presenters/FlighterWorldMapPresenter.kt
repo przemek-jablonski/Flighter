@@ -24,7 +24,7 @@ class FlighterWorldMapPresenter @Inject constructor(override var interactor: Wor
   override fun onFirstViewAttached() {
     super.onFirstViewAttached()
     Timber.d("onFirstViewAttached")
-    view?.render(WorldMapViewState.OnboardingViewState(WorldCoordinates(0.0, 0.0)))
+    view?.render(WorldMapViewState.OnboardingViewState(WorldCoordinates(51.509865, -0.118092)))
   }
 
   //____________________________temporary

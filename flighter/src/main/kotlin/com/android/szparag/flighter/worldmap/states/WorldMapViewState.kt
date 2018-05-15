@@ -20,7 +20,7 @@ sealed class WorldMapViewState {
    *
    * @param initialCoordinates initial coordinates to center the map on and start animating from.
    */
-  data class OnboardingViewState(private val initialCoordinates: WorldCoordinates) : WorldMapViewState()
+  data class OnboardingViewState(val initialCoordinates: WorldCoordinates) : WorldMapViewState()
 
   /**
    * Showing Location state.
@@ -29,9 +29,9 @@ sealed class WorldMapViewState {
    *
    * @param coordinates coordinates to center the map on.
    */
-  data class ShowingLocationViewState(private val coordinates: WorldCoordinates) : WorldMapViewState()
+  data class ShowingLocationViewState(val coordinates: WorldCoordinates) : WorldMapViewState()
 
-  data class InteractiveViewState(private val coordinates: WorldCoordinates) : WorldMapViewState()
+  data class InteractiveViewState(val coordinates: WorldCoordinates) : WorldMapViewState()
   /**
    * Error map state.
    * Communicates that there was an error accessing/instantiating/rendering map.

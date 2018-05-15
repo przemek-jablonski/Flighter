@@ -2,19 +2,24 @@ package com.android.szparag.flighter.common
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import com.android.szparag.columbus.ColumbusNavigationRoot
 import com.android.szparag.columbus.ColumbusNavigator
 import com.android.szparag.columbus.Navigator
 import com.android.szparag.flighter.R
 import com.android.szparag.flighter.common.util.ActivityLifecycleState
-import com.android.szparag.flighter.common.util.ActivityLifecycleState.*
+import com.android.szparag.flighter.common.util.ActivityLifecycleState.ONCREATE
+import com.android.szparag.flighter.common.util.ActivityLifecycleState.ONDESTROY
+import com.android.szparag.flighter.common.util.ActivityLifecycleState.ONLOWMMEMORY
+import com.android.szparag.flighter.common.util.ActivityLifecycleState.ONPAUSE
+import com.android.szparag.flighter.common.util.ActivityLifecycleState.ONRESUME
+import com.android.szparag.flighter.common.util.ActivityLifecycleState.ONSAVEINSTANCESTATE
+import com.android.szparag.flighter.common.util.ActivityLifecycleState.ONSTART
+import com.android.szparag.flighter.common.util.ActivityLifecycleState.ONSTOP
 import com.android.szparag.flighter.common.util.Injector
 import com.android.szparag.flighter.login.views.FlighterLoginView
 import com.android.szparag.flighter.worldmap.views.FlighterWorldMapView
 import com.android.szparag.kotterknife.bindView
-import io.reactivex.subjects.ReplaySubject
 import io.reactivex.subjects.Subject
 import timber.log.Timber
 import javax.inject.Inject
@@ -23,14 +28,16 @@ class FlighterGlobalActivity : AppCompatActivity(), ColumbusNavigationRoot {
 
   //todo: reset buffer after onResume or onStop or onBundle callbacks are called
   @Inject
-  lateinit var activityStateSubject : Subject<ActivityLifecycleState>
+  lateinit var activityStateSubject: Subject<ActivityLifecycleState>
 
   override val globalContainer: RelativeLayout by bindView(R.id.globalContainer)
-  override val navigationDelegate: Navigator by lazy { ColumbusNavigator(
-      globalContainer = globalContainer,
-      inflater = layoutInflater,
-      closeAppRequestResponse = this::finish
-  ) }
+  override val navigationDelegate: Navigator by lazy {
+    ColumbusNavigator(
+        globalContainer = globalContainer,
+        inflater = layoutInflater,
+        closeAppRequestResponse = this::finish
+    )
+  }
   //todo: daggerize dat
   //todo: builder
 

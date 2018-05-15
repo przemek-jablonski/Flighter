@@ -12,7 +12,6 @@ import com.android.szparag.flighter.selectdeparture.states.SelectDepartureViewSt
 import com.android.szparag.flighter.selectdeparture.states.SelectDepartureViewState.SearchNotStartedViewState
 import com.android.szparag.kotterknife.bindView
 import com.android.szparag.mvi.views.BaseMviConstraintLayout
-import com.android.szparag.myextensionsandroid.show
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -37,8 +36,6 @@ class FlighterSelectDepartureView @JvmOverloads constructor(context: Context, at
   lateinit var presenter: SelectDeparturePresenter //todo: this presenter should be overriden from parent class
   //todo: and methods instantiatePresenter, attachToPresenter and detachFromPresenter - removed
 
-  private val testTextView: TextView  by bindView(R.id.testTextView)
-
   init {
     Timber.d("init")
   }
@@ -48,7 +45,7 @@ class FlighterSelectDepartureView @JvmOverloads constructor(context: Context, at
     Timber.i("render, state: $state")
     when (state) {
       is SearchNotStartedViewState -> {
-        testTextView.show()
+
       }
     }
   }

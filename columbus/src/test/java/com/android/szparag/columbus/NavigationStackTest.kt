@@ -1,4 +1,4 @@
-package com.android.szparag.mvi.navigator
+package com.android.szparag.columbus
 
 import junit.framework.TestCase.assertTrue
 import org.junit.Before

@@ -1,14 +1,22 @@
 package com.android.szparag.flighter.selectdeparture.states
 
+import com.android.szparag.flighter.selectdeparture.models.AirportModel
+
 /**
  * Created by Przemyslaw Jablonski (github.com/sharaquss, pszemek.me) on 01/04/2018.
  */
 sealed class SelectDepartureViewState {
 
-  //todo: should have AirportModel as a val
-  //todo: there will be gps button
-  class SearchNotStartedViewState() : SelectDepartureViewState()
+  class SearchNotStartedViewState : SelectDepartureViewState()
 
-  //todo: rest of them
+  class QueryingWithTextViewState(val inputText: String): SelectDepartureViewState()
+
+  class FetchingResultWithTextViewState(val inputText: String): SelectDepartureViewState()
+
+  class FetchingResultWithGpsViewState: SelectDepartureViewState()
+
+  class EmptySearchResult: SelectDepartureViewState()
+
+  class SearchResult(val results: List<AirportModel>): SelectDepartureViewState()
 
 }

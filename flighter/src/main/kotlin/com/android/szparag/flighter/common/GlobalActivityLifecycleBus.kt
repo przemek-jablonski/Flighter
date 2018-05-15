@@ -13,12 +13,6 @@ class GlobalActivityLifecycleBus @Inject constructor() {
 
   private val lifecycleSubject = ReplaySubject.create<ActivityLifecycleState>()
 
-  init {
-    lifecycleSubject.subscribe {
-      Timber.w("lifecycleSubject.subscribe, event: $it")
-    }
-  }
-
   fun getSubject(): Subject<ActivityLifecycleState> = lifecycleSubject
   fun getBus(): Observable<ActivityLifecycleState> = lifecycleSubject
 

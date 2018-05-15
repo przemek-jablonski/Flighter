@@ -10,18 +10,44 @@
 
 
   <TextView
-      android:id="@+id/testTextView"
+      android:id="@+id/textView"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="SearchNotStarted"
-      android:textSize="24sp"
-      app:layout_constraintStart_toStartOf="parent"
+      android:layout_marginBottom="8dp"
+      android:layout_marginEnd="8dp"
+      android:layout_marginStart="8dp"
+      android:layout_marginTop="8dp"
+      android:fontFamily="@font/duru_sans"
+      android:text="Select Departure"
+      android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+      app:layout_constraintBottom_toTopOf="@+id/flighterSelectDepartureInputView"
       app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.5"
+      app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
-      app:layout_constraintBottom_toBottomOf="parent"
-      android:visibility="gone"
-      tools:visibility="visible"
       />
 
+  <!--<com.android.szparag.flighter.selectdeparture.views.FlighterSelectDepartureInputView-->
+      <!--android:id="@+id/flighterSelectDepartureInputView"-->
+      <!--android:layout_width="wrap_content"-->
+      <!--android:layout_height="wrap_content"-->
+      <!--android:layout_marginBottom="8dp"-->
+      <!--android:layout_marginEnd="24dp"-->
+      <!--android:layout_marginLeft="24dp"-->
+      <!--android:layout_marginRight="24dp"-->
+      <!--android:layout_marginStart="24dp"-->
+      <!--android:layout_marginTop="8dp"-->
+      <!--app:layout_constraintBottom_toBottomOf="parent"-->
+      <!--app:layout_constraintEnd_toEndOf="@+id/textView"-->
+      <!--app:layout_constraintHorizontal_bias="0.5"-->
+      <!--app:layout_constraintStart_toStartOf="@+id/textView"-->
+      <!--app:layout_constraintTop_toTopOf="parent"-->
+      <!--/>-->
+
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="asdasd"
+      />
 
 </com.android.szparag.flighter.selectdeparture.views.FlighterSelectDepartureView>
