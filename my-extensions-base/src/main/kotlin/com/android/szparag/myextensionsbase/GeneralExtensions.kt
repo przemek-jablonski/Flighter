@@ -10,10 +10,11 @@ typealias Seconds = Long
 fun nullString() = "NULL"
 fun emptyString() = ""
 fun <T: Any> emptyMutableList() = mutableListOf<T>()
-fun invalidStringValue() = emptyString()
+fun invalidStringValue() = nullString()
 fun invalidIntValue() = -1
 fun invalidLongValue() = -1L
 fun invalidFloatValue() = -1f
+fun invalidDoubleValue() = -1.0
 
 inline fun <T> List<T>.findFirstIndexedOrNull(predicate: (T) -> Boolean): Pair<T?, Int> {
   return indices

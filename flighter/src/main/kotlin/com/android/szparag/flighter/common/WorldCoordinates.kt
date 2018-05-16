@@ -1,4 +1,4 @@
-package com.android.szparag.flighter.worldmap
+package com.android.szparag.flighter.common
 
 /**
  * Created by Przemyslaw Jablonski (github.com/sharaquss, pszemek.me) on 31/03/2018.

@@ -1,7 +1,6 @@
 package com.android.szparag.flighter.worldmap.presenters
 
-import com.android.szparag.flighter.login.views.LoginView
-import com.android.szparag.flighter.worldmap.WorldCoordinates
+import com.android.szparag.flighter.common.WorldCoordinates
 import com.android.szparag.flighter.worldmap.interactors.WorldMapInteractor
 import com.android.szparag.flighter.worldmap.states.WorldMapViewState
 import com.android.szparag.flighter.worldmap.views.WorldMapView

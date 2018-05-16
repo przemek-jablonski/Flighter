@@ -1,6 +1,6 @@
 package com.android.szparag.flighter.worldmap.states
 
-import com.android.szparag.flighter.worldmap.WorldCoordinates
+import com.android.szparag.flighter.common.WorldCoordinates
 import com.android.szparag.flighter.worldmap.views.WorldMapView
 
 /**

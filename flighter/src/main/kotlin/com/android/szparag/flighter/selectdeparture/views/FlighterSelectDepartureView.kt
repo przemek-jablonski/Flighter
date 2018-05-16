@@ -69,7 +69,7 @@ class FlighterSelectDepartureView @JvmOverloads constructor(context: Context, at
   }
 
   private var layoutMorphed = false
-  private val firebaseReference: DatabaseReference
+//  private val firebaseReference: DatabaseReference
 
   override fun getScreen(): Screen = screenData
 
@@ -79,19 +79,7 @@ class FlighterSelectDepartureView @JvmOverloads constructor(context: Context, at
 
   init {
     Timber.d("init")
-    firebaseReference = FirebaseDatabase.getInstance().reference
-
-//    firebaseReference.addValueEventListener(object: ValueEventListener {
-//      override fun onCancelled(p0: DatabaseError?) {
-//        Timber.e("onCancelled, error: $p0")
-//      }
-//
-//      override fun onDataChange(p0: DataSnapshot?) {
-//        Timber.d("onDataChange, p0: $p0")
-////        p0.getValue()
-//      }
-//
-//    })
+//    firebaseReference = FirebaseDatabase.getInstance().reference
   }
 
   override fun render(state: SelectDepartureViewState) {
@@ -109,15 +97,6 @@ class FlighterSelectDepartureView @JvmOverloads constructor(context: Context, at
       }
       is FetchingResultWithGpsViewState -> {
         morphLayout()
-        firebaseReference.orderByChild("city").equalTo("Krakow").limitToFirst(10).addValueEventListener(object: ValueEventListener {
-          override fun onCancelled(error: DatabaseError?) {
-            Timber.e("onCancelled, error: $error")
-          }
-
-          override fun onDataChange(snapshot: DataSnapshot?) {
-            Timber.e("onDataChange, snapshot: $snapshot")
-          }
-        })
       }
       is EmptySearchResult -> {
 

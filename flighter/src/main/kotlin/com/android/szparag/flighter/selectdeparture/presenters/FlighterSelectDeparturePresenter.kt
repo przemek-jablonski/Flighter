@@ -40,6 +40,9 @@ class FlighterSelectDeparturePresenter @Inject constructor(override var interact
           .subscribe {
             Timber.d("processSearchWithTextIntent.onNext, event: $it")
             view?.render(SelectDepartureViewState.QueryingWithTextViewState(emptyString()))
+            if(it.searchInput.length >= 2) {
+              interactor.getAirportsByCity(it.searchInput)
+            }
           }
     }
   }
