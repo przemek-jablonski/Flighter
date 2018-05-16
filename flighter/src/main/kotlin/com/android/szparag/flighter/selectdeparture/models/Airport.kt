@@ -1,11 +1,9 @@
 package com.android.szparag.flighter.selectdeparture.models
 
-import com.android.szparag.myextensionsbase.emptyString
 import com.android.szparag.myextensionsbase.invalidDoubleValue
 import com.android.szparag.myextensionsbase.invalidIntValue
 import com.android.szparag.myextensionsbase.invalidStringValue
 import com.google.firebase.database.IgnoreExtraProperties
-
 
 //cannot really do data class here, because Firebase Database can't handle that stuff :/
 @IgnoreExtraProperties
@@ -21,9 +19,17 @@ class AirportDTO() {
   var state: String = invalidStringValue()
   var tz: String = invalidStringValue()
 
-  override fun toString(): String {
-    return "AirportDTO(city='$city', country='$country', elevation=$elevation, iata='$iata', icao='$icao', lat=$lat, lon=$lon, name='$name', state='$state', tz='$tz')"
-  }
-
+  override fun toString() =
+    "AirportDTO(city='$city', country='$country', elevation=$elevation, iata='$iata', icao='$icao', lat=$lat, lon=$lon, name='$name', state='$state', tz='$tz')"
 
 }
+
+data class AirportModel(
+    val airportName: String,
+    val airportIataCode: String,
+    val cityName: String,
+    val countryCode: String
+)
+
+fun AirportDTO.mapToModel() = AirportModel(name, iata, city, country)
+

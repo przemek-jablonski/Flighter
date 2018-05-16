@@ -1,12 +1,14 @@
 package com.android.szparag.flighter.selectdeparture.interactors
 
+import com.android.szparag.flighter.common.FirebaseQueryModel.FirebaseQuerySuccessful
 import com.android.szparag.flighter.common.WorldCoordinates
+import com.android.szparag.flighter.common.asObservable
+import com.android.szparag.flighter.common.asSingle
 import com.android.szparag.flighter.selectdeparture.models.AirportDTO
 import com.android.szparag.flighter.selectdeparture.models.AirportModel
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
+import com.android.szparag.flighter.selectdeparture.models.mapToModel
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
+import io.reactivex.Observable
 import io.reactivex.Single
 import timber.log.Timber
 import javax.inject.Inject
@@ -21,54 +23,21 @@ class FlighterSelectDepartureInteractor @Inject constructor(
     Timber.d("init")
   }
 
-  override fun getAirportsByCity(input: String): Single<List<AirportModel>> {
+  override fun getAirportsByCity(input: String): Observable<List<AirportModel>> {
     Timber.w("getAirportsByCity, input: $input")
 
-    firebaseReference.orderByChild("city").equalTo(input).limitToFirst(10).addListenerForSingleValueEvent(object : ValueEventListener {
-      override fun onCancelled(error: DatabaseError?) {
-        Timber.e("(exact) onCancelled, p0: $error")
-      }
-
-      override fun onDataChange(snapshot: DataSnapshot?) {
-        Timber.d("(exact) onDataChange, p0: $snapshot")
-        if (snapshot!!.children.count() == 0) {
-
-          firebaseReference.orderByChild("city").startAt(input).limitToFirst(
-              10).addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onCancelled(error: DatabaseError?) {
-              Timber.e("(startAt) onCancelled, error: $error")
-            }
-
-            override fun onDataChange(snapshot: DataSnapshot?) {
-              Timber.d("(startAt) onDataChange, snapshot: $snapshot")
-
-              snapshot!!.children.forEachIndexed { index, child ->
-                Timber.e("(startAt) onDataChange, index: $index, child: ${child.getValue(AirportDTO::class.java)}")
-              }
-
-            }
-          })
-
-
-        } else {
-
-          snapshot.children.forEachIndexed { index, child ->
-            Timber.e("(exact) onDataChange, index: $index, child: ${child.getValue(AirportDTO::class.java)}")
-          }
-
+    return firebaseReference.orderByChild("city").equalTo(input).limitToFirst(10).asObservable()
+        .filter { it is FirebaseQuerySuccessful }
+        .filter { (it as FirebaseQuerySuccessful).snapshot!!.childrenCount == 0L }
+        .flatMap{ firebaseReference.orderByChild("city").startAt(input).limitToFirst(10).asObservable() }
+        .map { query ->
+          query as FirebaseQuerySuccessful
+          query.snapshot!!.children.map { snapshotChild -> snapshotChild.getValue(AirportDTO::class.java)!!.mapToModel() } //todo: !!s
         }
-
-
-      }
-
-    })
-
-
-    return Single.never()
   }
 
-  override fun getAirportsByGpsCoordinates(worldCoordinates: WorldCoordinates): Single<List<AirportModel>> {
-    return Single.never()
+  override fun getAirportsByGpsCoordinates(worldCoordinates: WorldCoordinates): Observable<List<AirportModel>> {
+    return Observable.just(null)
   }
 
 }
