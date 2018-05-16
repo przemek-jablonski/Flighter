@@ -5,7 +5,6 @@ import android.support.constraint.ConstraintSet
 import android.transition.ChangeBounds
 import android.transition.TransitionManager
 import android.util.AttributeSet
-import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import com.android.szparag.columbus.Screen
 import com.android.szparag.flighter.R
@@ -23,10 +22,11 @@ import com.android.szparag.flighter.selectdeparture.states.SelectDepartureViewSt
 import com.android.szparag.flighter.selectdeparture.states.SelectDepartureViewState.SearchResult
 import com.android.szparag.mvi.views.BaseMviConstraintLayout
 import com.android.szparag.myextensionsbase.emptyString
-//import com.google.firebase.database.DataSnapshot
-//import com.google.firebase.database.DatabaseError
-//import com.google.firebase.database.FirebaseDatabase
-//import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxTextView
 import io.reactivex.Observable
@@ -69,6 +69,7 @@ class FlighterSelectDepartureView @JvmOverloads constructor(context: Context, at
   }
 
   private var layoutMorphed = false
+  private val firebaseReference: DatabaseReference
 
   override fun getScreen(): Screen = screenData
 
@@ -78,7 +79,8 @@ class FlighterSelectDepartureView @JvmOverloads constructor(context: Context, at
 
   init {
     Timber.d("init")
-//    val firebaseReference = FirebaseDatabase.getInstance().reference
+    firebaseReference = FirebaseDatabase.getInstance().reference
+
 //    firebaseReference.addValueEventListener(object: ValueEventListener {
 //      override fun onCancelled(p0: DatabaseError?) {
 //        Timber.e("onCancelled, error: $p0")
@@ -107,6 +109,15 @@ class FlighterSelectDepartureView @JvmOverloads constructor(context: Context, at
       }
       is FetchingResultWithGpsViewState -> {
         morphLayout()
+        firebaseReference.orderByChild("city").equalTo("Krakow").limitToFirst(10).addValueEventListener(object: ValueEventListener {
+          override fun onCancelled(error: DatabaseError?) {
+            Timber.e("onCancelled, error: $error")
+          }
+
+          override fun onDataChange(snapshot: DataSnapshot?) {
+            Timber.e("onDataChange, snapshot: $snapshot")
+          }
+        })
       }
       is EmptySearchResult -> {
 

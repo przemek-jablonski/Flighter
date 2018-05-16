@@ -2,7 +2,7 @@ package com.android.szparag.flighter.common
 
 import android.app.Application
 import com.android.szparag.flighter.worldmap.WorldMapModule
-//import com.google.firebase.FirebaseApp
+import com.google.firebase.FirebaseApp
 import com.squareup.leakcanary.LeakCanary
 import timber.log.Timber
 import timber.log.Timber.DebugTree
@@ -26,7 +26,7 @@ class FlighterApplication : Application() {
     Timber.plant(DebugTree())
     Timber.d("onCreate")
     component = DaggerFlighterComponent.builder().worldMapModule(WorldMapModule()).build()
-//    FirebaseApp.initializeApp(applicationContext)
+    FirebaseApp.initializeApp(applicationContext)
   }
 
 
