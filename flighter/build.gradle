@@ -23,7 +23,7 @@ android {
     }
   }
   flavorDimensions "standard"
-  sourceSets{ main.java.srcDirs += 'src/main/kotlin' }
+  sourceSets { main.java.srcDirs += 'src/main/kotlin' }
 
   configurations.all { config ->
     if (config.name.contains('UnitTest') || config.name.contains('AndroidTest')) {
@@ -50,8 +50,8 @@ dependencies {
 
   //testing
   testImplementation 'junit:junit:4.12'
-  androidTestImplementation 'com.android.support.test:runner:1.0.1'
-  androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+  androidTestImplementation 'com.android.support.test:runner:1.0.2'
+  androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
   //kotlin
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
@@ -64,8 +64,12 @@ dependencies {
   implementation 'com.android.support:design:27.1.1'
 
   //google play services
-  implementation 'com.google.android.gms:play-services-maps:15.0.0'
-  implementation 'com.google.android.gms:play-services-auth:15.0.0'
+  implementation 'com.google.android.gms:play-services-maps:15.0.1'
+//  implementation 'com.google.android.gms:play-services-auth:15.0.0'
+
+  //  //firebase
+  implementation 'com.google.firebase:firebase-core:15.0.2'
+  implementation 'com.google.firebase:firebase-database:15.0.1'
 
   //dagger
   implementation 'com.google.dagger:dagger:2.12'
@@ -85,5 +89,7 @@ dependencies {
   //leakcanary
   debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
   releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
-
 }
+
+
+apply plugin: 'com.google.gms.google-services'
