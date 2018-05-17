@@ -4,8 +4,10 @@ import com.android.szparag.flighter.selectdeparture.interactors.SelectDepartureI
 import com.android.szparag.flighter.selectdeparture.states.SelectDepartureViewState
 import com.android.szparag.flighter.selectdeparture.views.SelectDepartureView
 import com.android.szparag.mvi.presenters.BaseMviPresenter
+import com.android.szparag.myextensionsbase.emptyString
 import io.reactivex.android.schedulers.AndroidSchedulers
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -15,6 +17,8 @@ import javax.inject.Singleton
 @Singleton
 class FlighterSelectDeparturePresenter @Inject constructor(override var interactor: SelectDepartureInteractor)
   : BaseMviPresenter<SelectDepartureView, SelectDepartureInteractor, SelectDepartureViewState>(), SelectDeparturePresenter {
+
+  private var cachedSearchTextInput = emptyString()
 
   init {
     Timber.d("init")
@@ -35,6 +39,12 @@ class FlighterSelectDeparturePresenter @Inject constructor(override var interact
       it.searchWithTextIntent()
           .subscribeOn(AndroidSchedulers.mainThread())
           .observeOn(AndroidSchedulers.mainThread())
+//          .filter { intent -> intent.searchInput.length > cachedSearchTextInput.length }
+//          .doOnEach {
+//            cachedSearchTextInput =
+//          }
+          .filter { it.searchInput.length >= 2 }
+          .sample(1000, TimeUnit.MILLISECONDS)
           .switchMap { interactor.getAirportsByCity(it.searchInput).map { list -> SelectDepartureViewState.SearchResult(list) } }
           .subscribe {
             Timber.d("processSearchWithTextIntent.onNext, event: $it")

@@ -12,8 +12,8 @@ import io.reactivex.Single
 typealias FirebaseQuery = Query
 
 sealed class FirebaseQueryModel {
-  class FirebaseQuerySuccessful(val snapshot: DataSnapshot?) : FirebaseQueryModel()
-  class FirebaseQueryFailed(val error: DatabaseError?) : FirebaseQueryModel()
+  data class FirebaseQuerySuccessful(val snapshot: DataSnapshot?) : FirebaseQueryModel()
+  data class FirebaseQueryFailed(val error: DatabaseError?) : FirebaseQueryModel()
 }
 
 fun FirebaseQuery.asSingle(): Single<FirebaseQueryModel> =
@@ -25,10 +25,13 @@ fun FirebaseQuery.asSingle(): Single<FirebaseQueryModel> =
     })
 
 
-fun FirebaseQuery.asObservable(): Observable<FirebaseQueryModel> =
+fun FirebaseQuery.asObservable(): Observable<FirebaseQuerySuccessful> =
     Observable.fromPublisher({
       this.addListenerForSingleValueEvent(object : ValueEventListener {
         override fun onDataChange(snapshot: DataSnapshot?) = it.onNext(FirebaseQuerySuccessful(snapshot))
-        override fun onCancelled(error: DatabaseError?) = it.onNext(FirebaseQueryFailed(error))
+        override fun onCancelled(error: DatabaseError?) = it.onError(RuntimeException())
       })
     })
+
+
+fun DataSnapshot.asString() = String().apply { children.forEach { this.plus(it) } }
