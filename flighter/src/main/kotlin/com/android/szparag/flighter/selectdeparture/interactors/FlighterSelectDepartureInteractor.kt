@@ -2,6 +2,7 @@ package com.android.szparag.flighter.selectdeparture.interactors
 
 import com.android.szparag.flighter.common.WorldCoordinates
 import com.android.szparag.flighter.common.asObservable
+import com.android.szparag.flighter.common.isEmpty
 import com.android.szparag.flighter.selectdeparture.models.AirportDTO
 import com.android.szparag.flighter.selectdeparture.models.AirportModel
 import com.android.szparag.flighter.selectdeparture.models.mapToModel
@@ -31,7 +32,7 @@ class FlighterSelectDepartureInteractor @Inject constructor(
     Timber.d("getAirportsByCity, input: $input")
     return constructQueryAirportCityNameEquality(input).asObservable()
         .flatMap { query ->
-          if (query.snapshot!!.childrenCount == 0L)
+          if (query.isEmpty())
             constructQueryAirportCityNameStartsWith(input).asObservable()
           else
             Observable.just(query)
@@ -43,9 +44,21 @@ class FlighterSelectDepartureInteractor @Inject constructor(
 
   override fun getAirportsByGpsCoordinates(worldCoordinates: WorldCoordinates): Observable<List<AirportModel>> {
     Timber.d("getAirportsByGpsCoordinates, worldCoordinates: $worldCoordinates")
-    constructQueryAirportLatitude(worldCoordinates.latitude).asObservable()
-
-    return Observable.never()
+    return constructQueryAirportLatitude(worldCoordinates.latitude).asObservable()
+        .doOnEach {
+          Timber.d("getAirportsByGpsCoordinates.LATITUDE.STANDARD, snapshot: ${it.value!!.snapshot}")
+        }
+        .flatMap { query ->
+          if(query.isEmpty())
+            constructQueryAirportLatitudeExtended(worldCoordinates.latitude).asObservable()
+          else
+            Observable.just(query)
+        }
+        .doOnEach {
+          Timber.d("getAirportsByGpsCoordinates.LATITUDE.AFTER, snapshot: ${it.value!!.snapshot}")
+        }.map { query ->
+          query.snapshot!!.children.map { snapshotChild -> snapshotChild.getValue(AirportDTO::class.java)!!.mapToModel() }
+        }
   }
 
   private fun constructQueryAirportCityNameEquality(queryInput: String) =

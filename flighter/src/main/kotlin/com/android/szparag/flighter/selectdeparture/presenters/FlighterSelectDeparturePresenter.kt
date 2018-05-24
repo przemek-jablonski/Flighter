@@ -39,10 +39,6 @@ class FlighterSelectDeparturePresenter @Inject constructor(override var interact
       it.searchWithTextIntent()
           .subscribeOn(AndroidSchedulers.mainThread())
           .observeOn(AndroidSchedulers.mainThread())
-//          .filter { intent -> intent.searchInput.length > cachedSearchTextInput.length }
-//          .doOnEach {
-//            cachedSearchTextInput =
-//          }
           .filter { it.searchInput.length >= 2 }
           .sample(1000, TimeUnit.MILLISECONDS)
           .switchMap { interactor.getAirportsByCity(it.searchInput).map { list -> SelectDepartureViewState.SearchResult(list) } }

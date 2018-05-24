@@ -35,3 +35,5 @@ fun FirebaseQuery.asObservable(): Observable<FirebaseQuerySuccessful> =
 
 
 fun DataSnapshot.asString() = String().apply { children.forEach { this.plus(it) } }
+
+fun FirebaseQuerySuccessful.isEmpty() = if (snapshot != null) snapshot.childrenCount == 0L else true

@@ -1,6 +1,10 @@
 package com.android.szparag.flighter.common
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.widget.RelativeLayout
 import com.android.szparag.columbus.ColumbusNavigationRoot
@@ -23,6 +27,7 @@ import com.android.szparag.kotterknife.bindView
 import io.reactivex.subjects.Subject
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.math.absoluteValue
 
 class FlighterGlobalActivity : AppCompatActivity(), ColumbusNavigationRoot {
 
@@ -97,4 +102,51 @@ class FlighterGlobalActivity : AppCompatActivity(), ColumbusNavigationRoot {
     activityStateSubject.onNext(ONLOWMMEMORY)
   }
 
+  fun requestPermission() {
+//     Here, thisActivity is the current activity
+    if (isPermissionGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+      // Permission is not granted
+      // Should we show an explanation?
+      if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_CONTACTS)) {
+        // Show an explanation to the user *asynchronously* -- don't block
+        // this thread waiting for the user's response! After the user
+        // sees the explanation, try again to request the permission.
+      } else {
+        // No explanation needed, we can request the permission.
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_CONTACTS), 1231231231)
+
+        // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+        // app-defined int constant. The callback method gets the
+        // result of the request.
+      }
+    } else {
+      // Permission has already been granted
+    }
+  }
+
+  fun isPermissionGranted(permissionString: String) =
+      ContextCompat.checkSelfPermission(this, permissionString) == PackageManager.PERMISSION_GRANTED
+
+  fun askForPermission(permissionString: String) {
+    if (!ActivityCompat.shouldShowRequestPermissionRationale(this, permissionString)) {
+      // No explanation needed, we can request the permission.
+      ActivityCompat.requestPermissions(this, arrayOf(permissionString), parsePermissionStringToRequestCode(permissionString))
+    } else {
+      // todo: Show an explanation to the user *asynchronously* -- don't block
+      // this thread waiting for the user's response! After the user
+      // sees the explanation, try again to request the permission.
+    }
+  }
+
+  private fun requestPermission(permissionString: String) {
+    ActivityCompat.requestPermissions(this, arrayOf(permissionString), permissionString.toInt()) //todo: make tests for permission
+  }
+
+  override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+  }
+
+  private fun parsePermissionStringToRequestCode(permissionString: String) =
+      permissionString.hashCode().absoluteValue
 }
