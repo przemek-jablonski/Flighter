@@ -8,6 +8,7 @@ import com.android.szparag.columbus.Navigator
 import com.android.szparag.myextensionsandroid.hide
 import com.android.szparag.myextensionsandroid.show
 import com.google.android.gms.maps.MapView
+import com.szparag.android.mypermissions.PermissionRequestAction
 import timber.log.Timber
 
 //todo: extract that as a separate module, as it requires heavy gradle dependency (GooglePlayServices-maps)
@@ -19,6 +20,7 @@ abstract class BaseMviMapView<in VS: Any> @JvmOverloads constructor(
 
   private var firstStateRendered = false
   override lateinit var navigationDelegate: Navigator
+  override lateinit var permissionRequestAction: PermissionRequestAction
 
   init {
     Timber.d("init")

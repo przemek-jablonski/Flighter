@@ -7,6 +7,7 @@ import android.util.AttributeSet
 import com.android.szparag.columbus.Navigator
 import com.android.szparag.myextensionsandroid.hide
 import com.android.szparag.myextensionsandroid.show
+import com.szparag.android.mypermissions.PermissionRequestAction
 
 /**
  * Created by Przemyslaw Jablonski (github.com/sharaquss, pszemek.me) on 02/04/2018.
@@ -17,6 +18,8 @@ abstract class BaseMviConstraintLayout<in VS : Any> @JvmOverloads constructor(
 
   private var firstStateRendered = false
   override lateinit var navigationDelegate: Navigator
+  override lateinit var permissionRequestAction: PermissionRequestAction
+
 
   init {
     if (!isInEditMode) hide()

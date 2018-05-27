@@ -7,14 +7,22 @@ import com.android.szparag.columbus.ColumbusNavigationRoot
 import com.android.szparag.columbus.ColumbusNavigator
 import com.android.szparag.columbus.Navigator
 import com.android.szparag.flighter.R
-import com.android.szparag.flighter.common.permissions.AndroidPermission
-import com.android.szparag.flighter.common.permissions.PermissionManager
 import com.android.szparag.flighter.common.util.ActivityLifecycleState
-import com.android.szparag.flighter.common.util.ActivityLifecycleState.*
+import com.android.szparag.flighter.common.util.ActivityLifecycleState.ONCREATE
+import com.android.szparag.flighter.common.util.ActivityLifecycleState.ONDESTROY
+import com.android.szparag.flighter.common.util.ActivityLifecycleState.ONLOWMMEMORY
+import com.android.szparag.flighter.common.util.ActivityLifecycleState.ONPAUSE
+import com.android.szparag.flighter.common.util.ActivityLifecycleState.ONRESUME
+import com.android.szparag.flighter.common.util.ActivityLifecycleState.ONSAVEINSTANCESTATE
+import com.android.szparag.flighter.common.util.ActivityLifecycleState.ONSTART
+import com.android.szparag.flighter.common.util.ActivityLifecycleState.ONSTOP
 import com.android.szparag.flighter.common.util.Injector
 import com.android.szparag.flighter.login.views.FlighterLoginView
 import com.android.szparag.flighter.worldmap.views.FlighterWorldMapView
 import com.android.szparag.kotterknife.bindView
+import com.szparag.android.mypermissions.AndroidPermission
+import com.szparag.android.mypermissions.PermissionManager
+import com.szparag.android.mypermissions.PermissionRequestsDelegate
 import io.reactivex.subjects.Subject
 import timber.log.Timber
 import javax.inject.Inject
@@ -29,16 +37,24 @@ class FlighterGlobalActivity : AppCompatActivity(), ColumbusNavigationRoot {
   lateinit var permissionManager: PermissionManager
 
   override val globalContainer: RelativeLayout by bindView(R.id.globalContainer)
+
+  //todo: daggerize dat
+  //todo: or builder
+  //todo: idk
   override val navigationDelegate: Navigator by lazy {
     ColumbusNavigator(
         globalContainer = globalContainer,
         inflater = layoutInflater,
-        closeAppRequestResponse = this::finish
+        closeAppRequestAction = this::onCloseAppRequested,
+        inflationFinishedAction = { screen ->
+          if (screen is PermissionRequestsDelegate) {
+            screen.permissionRequestAction = { permission -> onPermissionRequested(permission) }
+          }
+        }
     )
   }
-  //todo: daggerize dat
-  //todo: builder
 
+  //<editor-fold desc="Lifecycle callbacks">
   override fun onCreate(savedInstanceState: Bundle?) {
     Timber.d("onCreate, savedInstanceState: $savedInstanceState")
     super.onCreate(savedInstanceState)
@@ -94,11 +110,16 @@ class FlighterGlobalActivity : AppCompatActivity(), ColumbusNavigationRoot {
     super.onLowMemory()
     activityStateSubject.onNext(ONLOWMMEMORY)
   }
+  //</editor-fold>
 
-  fun requestPermission(permission: AndroidPermission) {
-    Timber.d("requestPermission, permission: $permission")
-    permissionManager.requestPermission(this, permission.androidPermissionString)
-  }
+
+  //<editor-fold desc="Screens callbacks">
+  private fun onCloseAppRequested() =
+      finish()
+
+  private fun onPermissionRequested(permission: AndroidPermission) =
+      permissionManager.askForPermission(this, permission)
+  //</editor-fold>
 
   override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
     Timber.d("onRequestPermissionsResult, requestCode: $requestCode, permissions: $permissions, grantResults: $grantResults")

@@ -22,14 +22,13 @@ import com.android.szparag.flighter.selectdeparture.states.SelectDepartureViewSt
 import com.android.szparag.flighter.selectdeparture.states.SelectDepartureViewState.SearchResult
 import com.android.szparag.mvi.views.BaseMviConstraintLayout
 import com.android.szparag.myextensionsbase.emptyString
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxTextView
+import com.szparag.android.mypermissions.AndroidPermission.AccessFineLocationPermission
+import com.szparag.android.mypermissions.PermissionCheckEvent
 import io.reactivex.Observable
+import io.reactivex.Single
+import io.reactivex.rxkotlin.cast
 import kotlinx.android.synthetic.main.view_select_departure_input.view.view_select_departure_input_edit_text
 import kotlinx.android.synthetic.main.view_select_departure_input.view.view_select_departure_input_gps_button
 import timber.log.Timber
@@ -41,22 +40,9 @@ import javax.inject.Inject
 class FlighterSelectDepartureView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null,
     defStyleAttr: Int = 0) : BaseMviConstraintLayout<SelectDepartureViewState>(context, attrs, defStyleAttr), SelectDepartureView {
 
-  override fun searchWithTextIntent(): Observable<TextSearchIntent> {
-    return RxView.focusChanges(view_select_departure_input_edit_text)
-        .filter { it }
-        .map { TextSearchIntent(emptyString()) }
-        .switchMap {
-          RxTextView
-              .textChanges(view_select_departure_input_edit_text)
-              .map { TextSearchIntent(it.toString()) }
-        }
-
-
-//    return RxTextView.textChanges(view_select_departure_input_edit_text).map { TextSearchIntent(it.toString()) }
-  }
-
-  override fun searchWithGpsIntent(): Observable<GpsSearchIntent> {
-    return RxView.clicks(view_select_departure_input_gps_button).map { GpsSearchIntent() }
+  override fun requestGpsPermission(): Single<PermissionCheckEvent<AccessFineLocationPermission>> {
+    Timber.d("requestGpsPermission, permission: $AccessFineLocationPermission")
+    return permissionRequestAction.invoke(AccessFineLocationPermission).cast()
   }
 
   companion object {
@@ -69,17 +55,29 @@ class FlighterSelectDepartureView @JvmOverloads constructor(context: Context, at
   }
 
   private var layoutMorphed = false
-//  private val firebaseReference: DatabaseReference
 
-  override fun getScreen(): Screen = screenData
 
   @Inject
-  lateinit var presenter: SelectDeparturePresenter //todo: this presenter should be overriden from parent class
-  //todo: and methods instantiatePresenter, attachToPresenter and detachFromPresenter - removed
+  lateinit var presenter: SelectDeparturePresenter //todo: this presenter should be overriden from parent class //todo: and methods instantiatePresenter, attachToPresenter and detachFromPresenter - removed
 
   init {
     Timber.d("init")
-//    firebaseReference = FirebaseDatabase.getInstance().reference
+  }
+
+  override fun searchWithTextIntent(): Observable<TextSearchIntent> {
+    return RxView.focusChanges(view_select_departure_input_edit_text)
+        .filter { it }
+        .map { TextSearchIntent(emptyString()) }
+        .switchMap {
+          RxTextView
+              .textChanges(view_select_departure_input_edit_text)
+              .map { TextSearchIntent(it.toString()) }
+        }
+//    return RxTextView.textChanges(view_select_departure_input_edit_text).map { TextSearchIntent(it.toString()) }
+  }
+
+  override fun searchWithGpsIntent(): Observable<GpsSearchIntent> {
+    return RxView.clicks(view_select_departure_input_gps_button).map { GpsSearchIntent() }
   }
 
   override fun render(state: SelectDepartureViewState) {
@@ -108,7 +106,7 @@ class FlighterSelectDepartureView @JvmOverloads constructor(context: Context, at
   }
 
   private fun morphLayout() {
-    if(!layoutMorphed) {
+    if (!layoutMorphed) {
       val constaintSet = ConstraintSet()
       constaintSet.clone(context, R.layout.screen_select_departure_final)
       val transition = ChangeBounds()
@@ -134,5 +132,7 @@ class FlighterSelectDepartureView @JvmOverloads constructor(context: Context, at
     Timber.d("detachFromPresenter")
     presenter.detachView(this)
   }
+
+  override fun getScreen(): Screen = screenData
 
 }

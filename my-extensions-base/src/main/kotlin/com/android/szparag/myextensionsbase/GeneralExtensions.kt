@@ -16,6 +16,8 @@ fun invalidLongValue() = -1L
 fun invalidFloatValue() = -1f
 fun invalidDoubleValue() = -1.0
 
+val Any?.exhaustive get() = Unit
+
 inline fun <T> List<T>.findFirstIndexedOrNull(predicate: (T) -> Boolean): Pair<T?, Int> {
   return indices
       .firstOrNull { predicate(get(it)) }

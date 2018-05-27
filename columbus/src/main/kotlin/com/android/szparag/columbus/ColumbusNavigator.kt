@@ -13,6 +13,9 @@ import com.android.szparag.myextensionsandroid.*
 import com.android.szparag.myextensionsbase.containsOneItem
 import kotlin.math.max
 
+typealias CloseAppRequestAction = () -> (Unit)
+
+typealias InflationFinishedAction = (ColumbusNavigableScreen) -> (Unit)
 //todo: navigator should be singleton with builder pattern
 //todo: how about persistentElement is NavigationBar at the bottom?
 //todo: or what if there are multiple persistentElements?
@@ -21,7 +24,8 @@ class ColumbusNavigator(
     private val globalContainer: RelativeLayout,
     private val inflater: LayoutInflater,
     private val persistentElement: Screen? = null,
-    private val closeAppRequestResponse: () -> (Unit),
+    private val closeAppRequestAction: CloseAppRequestAction,
+    private val inflationFinishedAction: InflationFinishedAction? = null,
     private val onlyOneDialogLimit: Boolean = true,
     private val loggingEnabled: Boolean = false
 ) : Navigator {
@@ -37,7 +41,7 @@ class ColumbusNavigator(
   private lateinit var persistentContainer: ViewGroup
 
   init {
-    ColumbusLogger.navigatorLog("init, dialogStack: $dialogStack, foregroundStack: $foregroundStack, backgroundStack: $foregroundStack")
+    ColumbusLogger.log("init, dialogStack: $dialogStack, foregroundStack: $foregroundStack, backgroundStack: $foregroundStack")
     setupSubContainers(globalContainer)
     dialogStack.onScreenPushedListener = this::onDialogPushed
     dialogStack.onScreenPoppedListener = this::onDialogPopped
@@ -48,39 +52,33 @@ class ColumbusNavigator(
   }
 
   private fun setupSubContainers(globalContainer: RelativeLayout) {
-    ColumbusLogger.navigatorLog("setupSubContainers, globalContainer: $globalContainer")
+    ColumbusLogger.log("setupSubContainers, globalContainer: $globalContainer")
     persistentElement?.let { element ->
-      persistentContainer = inflater.inflate(element.layoutResource, globalContainer, false) as ViewGroup
-      persistentContainer.generateId()
-      val layoutParams = persistentContainer.layoutParams.toRelativeLayoutParams()
-      layoutParams.alignParentTop()
-      globalContainer.addView(persistentContainer, layoutParams)
-      (persistentContainer as? ColumbusNavigableScreen
-          ?: throw NotImplementingNavigableViewException()).navigationDelegate = this
+      persistentContainer = (inflater.inflate(element.layoutResource, globalContainer, false) as ViewGroup).apply { generateId() }
+      globalContainer.addView(persistentContainer, persistentContainer.layoutParams.toRelativeLayoutParams().alignParentTop())
+      (persistentContainer as? ColumbusNavigableScreen ?: throw NotImplementingNavigableViewException()).navigationDelegate = this
       persistentContainer.show()
     }
     screensContainer = FrameLayout(inflater.context)
-    val layoutParams = RelativeLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
-    if (::persistentContainer.isInitialized) layoutParams.belowId(persistentContainer.id)
-    globalContainer.addView(screensContainer, layoutParams)
+    globalContainer.addView(screensContainer, RelativeLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT).apply { if (::persistentContainer.isInitialized) this.belowId(persistentContainer.id) })
   }
 
 
-  //xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxtodo: dialogs (just showing)
+  //xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
   //todo: transition policies
 
   override fun goToScreen(screen: Screen) {
-    ColumbusLogger.navigatorLog("goToScreen, screen: $screen")
+    ColumbusLogger.log("goToScreen, screen: $screen")
     goToScreen(screen, getStackByLayer(screen.layer))
   }
 
   private fun goToScreen(screen: Screen, stack: NavigationStack) {
-    ColumbusLogger.navigatorLog("goToScreen, screen: $screen, stack: $stack")
+    ColumbusLogger.log("goToScreen, screen: $screen, stack: $stack")
     stack.push(screen)
   }
 
   override fun goBack(layer: NavigationLayer) {
-    ColumbusLogger.navigatorLog("goBack")
+    ColumbusLogger.log("goBack")
     when (layer) {
       DIALOG -> dialogStack.pop()
       BACKGROUND -> if (!backgroundStack.containsOneItem()) backgroundStack.pop()
@@ -92,44 +90,44 @@ class ColumbusNavigator(
 
 
   private fun goBackDefault() {
-    ColumbusLogger.navigatorLog("goBackDefault")
+    ColumbusLogger.log("goBackDefault")
     if (dialogStack.isNotEmpty()) {
       dialogStack.pop()
     } else {
       foregroundStack.pop()
       if (foregroundStack.isEmpty()) {
-        closeAppRequestResponse.invoke()
+        closeAppRequestAction.invoke()
       }
     }
   }
 
   override fun onHandleFirstRender(screen: Screen) {
-    ColumbusLogger.navigatorLog("onHandleFirstRender, screen: $screen")
+    ColumbusLogger.log("onHandleFirstRender, screen: $screen")
 //    globalContainer.childByClass(screen.viewClass)?.let { view ->
 //      constructScreenAnimation(view, screen.transitionInAnimation)
 //    }
   }
 
   override fun handleBackPress() {
-    ColumbusLogger.navigatorLog("handleBackPress")
+    ColumbusLogger.log("handleBackPress")
     goBack()
   }
 
   private fun onDialogPushed(screen: Screen) {
-    ColumbusLogger.navigatorLog("onDialogPushed, screen: $screen")
+    ColumbusLogger.log("onDialogPushed, screen: $screen")
     handleOutgoingScreen(dialogStack.peekPrevious())
     handleInTransitionPolicy(screen.transitionInPolicy, getStackByLayer(screen.layer))
     handleIncomingScreen(dialogStack.peekCurrent())
   }
 
   private fun onDialogPopped(screen: Screen?) {
-    ColumbusLogger.navigatorLog("onDialogPopped, screen: $screen")
+    ColumbusLogger.log("onDialogPopped, screen: $screen")
     handleOutgoingScreen(screen)
     handleIncomingScreen(dialogStack.peekCurrent())
   }
 
   private fun onForegroundPushed(screen: Screen) {
-    ColumbusLogger.navigatorLog("onForegroundPushed, screen: $screen")
+    ColumbusLogger.log("onForegroundPushed, screen: $screen")
     foregroundStack.peekPrevious()?.let { previousScreen ->
       handleOutgoingScreen(previousScreen)
       handleOutTransitionPolicy(previousScreen.transitionOutPolicy, getStackByLayer(previousScreen.layer)) //todo: !!
@@ -141,13 +139,13 @@ class ColumbusNavigator(
   }
 
   private fun onForegroundPopped(screen: Screen?) {
-    ColumbusLogger.navigatorLog("onForegroundPopped, screen: $screen")
+    ColumbusLogger.log("onForegroundPopped, screen: $screen")
     handleOutgoingScreen(screen)
     handleIncomingScreen(foregroundStack.peekCurrent())
   }
 
   private fun onBackgroundPushed(screen: Screen) {
-    ColumbusLogger.navigatorLog("onBackgroundPushed, screen: $screen")
+    ColumbusLogger.log("onBackgroundPushed, screen: $screen")
     handleOutgoingScreen(backgroundStack.peekPrevious())
     handleInTransitionPolicy(screen.transitionInPolicy, getStackByLayer(screen.layer))
     handleIncomingScreen(backgroundStack.peekCurrent())
@@ -155,7 +153,7 @@ class ColumbusNavigator(
   }
 
   private fun handleInTransitionPolicy(policy: NavigationTransitionInPolicy, stack: NavigationStack) {
-    ColumbusLogger.navigatorLog("handleInTransitionPolicy, policy: $policy, stack: $stack")
+    ColumbusLogger.log("handleInTransitionPolicy, policy: $policy, stack: $stack")
     when (policy) {
       is KILL_LAST -> {
 //        require(policy.itemCount > 0, { throw TransitionPolicyTooLowItemCountException() })
@@ -170,7 +168,7 @@ class ColumbusNavigator(
   }
 
   private fun handleOutTransitionPolicy(policy: NavigationTransitionOutPolicy, stack: NavigationStack) {
-    ColumbusLogger.navigatorLog("handleOutTransitionPolicy, policy: $policy, stack: $stack")
+    ColumbusLogger.log("handleOutTransitionPolicy, policy: $policy, stack: $stack")
     when (policy) {
       is NavigationTransitionOutPolicy.KILL_ITSELF -> {
         stack.removeLastItemsPreserveTop(1)
@@ -192,14 +190,14 @@ class ColumbusNavigator(
   }
 
   private fun onBackgroundPopped(screen: Screen?) {
-    ColumbusLogger.navigatorLog("onBackgroundPopped, screen: $screen")
+    ColumbusLogger.log("onBackgroundPopped, screen: $screen")
     handleOutgoingScreen(screen)
     handleIncomingScreen(backgroundStack.peekCurrent())
   }
 
 
   private fun handleIncomingScreen(screen: Screen?) {
-    ColumbusLogger.navigatorLog("handleIncomingScreen, screen: $screen")
+    ColumbusLogger.log("handleIncomingScreen, screen: $screen")
     screen?.let {
       handleIncomingScreen(
           screen.layoutResource,
@@ -211,11 +209,12 @@ class ColumbusNavigator(
   }
 
   private fun handleIncomingScreen(layoutId: LayoutId, transitionInAnimation: NavigationTransitionInAnimation, layer: NavigationLayer, container: ViewGroup) {
-    ColumbusLogger.navigatorLog("handleIncomingScreen, layoutId: $layoutId, transitionInAnimation: $transitionInAnimation, layer: $layer, container: $container")
+    ColumbusLogger.log("handleIncomingScreen, layoutId: $layoutId, transitionInAnimation: $transitionInAnimation, layer: $layer, container: $container")
     inflateScreen(inflater, container, layoutId).apply {
       this as? ColumbusNavigableScreen ?: throw NotImplementingNavigableViewException()
       constructScreenAnimation(this, transitionInAnimation)?.start()
       this.navigationDelegate = this@ColumbusNavigator
+      inflationFinishedAction?.invoke(this)
       container.addView(this, when (layer) {
         DIALOG -> -1
         FOREGROUND -> -1
@@ -227,7 +226,7 @@ class ColumbusNavigator(
 
 
   private fun handleOutgoingScreen(screen: Screen?) {
-    ColumbusLogger.navigatorLog("handleOutgoingScreen, screen: $screen")
+    ColumbusLogger.log("handleOutgoingScreen, screen: $screen")
     screen?.let {
       handleOutgoingScreen(
           screen.viewClass,
@@ -238,7 +237,7 @@ class ColumbusNavigator(
   }
 
   private fun handleOutgoingScreen(viewClass: Class<*>, transitionOutAnimation: NavigationTransitionOutAnimation, container: ViewGroup) {
-    ColumbusLogger.navigatorLog("handleOutgoingScreen, viewClass: $viewClass, transitionOutAnimation: $transitionOutAnimation, container: $container")
+    ColumbusLogger.log("handleOutgoingScreen, viewClass: $viewClass, transitionOutAnimation: $transitionOutAnimation, container: $container")
     container.childByClass(viewClass)?.let { view ->
       constructScreenAnimation(view, transitionOutAnimation)?.start()
       container.removeViewInLayout(view)
@@ -246,12 +245,12 @@ class ColumbusNavigator(
   }
 
   private fun inflateScreen(inflater: LayoutInflater, container: ViewGroup, screenLayoutResource: LayoutId): View {
-    ColumbusLogger.navigatorLog("inflateScreen, inflater: $inflater, screenLayoutResource: $screenLayoutResource")
+    ColumbusLogger.log("inflateScreen, inflater: $inflater, screenLayoutResource: $screenLayoutResource")
     return inflater.inflate(screenLayoutResource, container, false)
   }
 
   private fun constructScreenAnimation(target: View, animation: NavigationTransitionAnimation): ViewPropertyAnimator? {
-    ColumbusLogger.navigatorLog("constructScreenAnimation, target: $target, animation: $animation")
+    ColumbusLogger.log("constructScreenAnimation, target: $target, animation: $animation")
     return when (animation) {
       is NavigationTransitionInAnimation.FADE_IN -> {
         target

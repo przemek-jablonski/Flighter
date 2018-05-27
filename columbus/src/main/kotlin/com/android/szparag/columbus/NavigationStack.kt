@@ -66,7 +66,7 @@ internal class NavigationStack : Stack<Screen>() {
   private fun logChanges() {
     var log = "\n${this::class.java}(${hashCode()})\n"
     (0 until size).forEach { log += "[$it]: ${get(it)}\n" }
-    ColumbusLogger.stackLog(log)
+    ColumbusLogger.log(log)
   }
 
 

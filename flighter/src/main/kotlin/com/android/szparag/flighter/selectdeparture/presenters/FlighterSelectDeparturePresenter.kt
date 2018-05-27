@@ -55,6 +55,7 @@ class FlighterSelectDeparturePresenter @Inject constructor(override var interact
       it.searchWithGpsIntent()
           .subscribeOn(AndroidSchedulers.mainThread())
           .observeOn(AndroidSchedulers.mainThread())
+//          .flatMapSingle {  }
           .subscribe {
             Timber.d("processSearchWithGpsIntent.onNext, event: $it")
             view?.render(SelectDepartureViewState.FetchingResultWithGpsViewState())

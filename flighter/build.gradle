@@ -47,6 +47,7 @@ dependencies {
   implementation project(':my-extensions-base')
   implementation project(':my-extensions-android')
   implementation project(':my-extensions-rx')
+  implementation project(':my-permissions')
 
   //testing
   testImplementation 'junit:junit:4.12'
@@ -77,7 +78,7 @@ dependencies {
   compileOnly 'org.glassfish:javax.annotation:10.0-b28'
 
   //rx
-  implementation 'io.reactivex.rxjava2:rxjava:2.1.9'
+  implementation 'io.reactivex.rxjava2:rxjava:2.1.13'
   implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
   implementation 'com.jakewharton.rxbinding2:rxbinding:2.1.1'
   implementation 'io.reactivex:rxkotlin:2.0.0-RC1'

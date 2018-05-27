@@ -2,6 +2,7 @@ package com.android.szparag.flighter.common
 
 import com.android.szparag.flighter.common.util.ActivityLifecycleState
 import com.google.firebase.database.FirebaseDatabase
+import com.szparag.android.mypermissions.PermissionManager
 import dagger.Module
 import dagger.Provides
 import io.reactivex.Observable
@@ -20,5 +21,9 @@ class FlighterGlobalModule {
   @Provides
   @Singleton
   fun provideFirebaseDatabaseReference() = FirebaseDatabase.getInstance().reference
+
+  @Provides
+  @Singleton
+  fun providePermissionManager() = PermissionManager()
 
 }

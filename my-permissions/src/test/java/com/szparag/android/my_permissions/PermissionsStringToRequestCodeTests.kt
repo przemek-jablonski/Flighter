@@ -1,4 +1,4 @@
-package com.android.szparag.flighter.utils
+package com.szparag.android.my_permissions
 
 import android.Manifest
 import org.junit.Assert.assertEquals
