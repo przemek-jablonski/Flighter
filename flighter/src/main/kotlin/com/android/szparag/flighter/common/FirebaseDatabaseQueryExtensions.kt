@@ -12,8 +12,8 @@ import io.reactivex.Single
 typealias FirebaseQuery = Query
 
 sealed class FirebaseQueryModel {
-  data class FirebaseQuerySuccessful(val snapshot: DataSnapshot?) : FirebaseQueryModel()
-  data class FirebaseQueryFailed(val error: DatabaseError?) : FirebaseQueryModel()
+  data class FirebaseQuerySuccessful(val snapshot: DataSnapshot) : FirebaseQueryModel()
+  data class FirebaseQueryFailed(val error: DatabaseError) : FirebaseQueryModel()
 }
 
 fun FirebaseQuery.asSingle(): Single<FirebaseQueryModel> =
@@ -24,7 +24,7 @@ fun FirebaseQuery.asSingle(): Single<FirebaseQueryModel> =
       })
     })
 
-
+//todo: I guess this should not return FQSuccessful, just FirebaseQueryModel
 fun FirebaseQuery.asObservable(): Observable<FirebaseQuerySuccessful> =
     Observable.fromPublisher({
       this.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -33,8 +33,8 @@ fun FirebaseQuery.asObservable(): Observable<FirebaseQuerySuccessful> =
       })
     })
 
-fun FirebaseQuerySuccessful.getChildrenSafe():Iterable<DataSnapshot> = snapshot?.children ?: emptyList()
+fun FirebaseQuerySuccessful.getChildren(): Iterable<DataSnapshot> = snapshot.children
 
 fun DataSnapshot.asString() = String().apply { children.forEach { this.plus(it) } }
 
-fun FirebaseQuerySuccessful.isEmpty() = if (snapshot != null) snapshot.childrenCount == 0L else true
+fun FirebaseQuerySuccessful.isEmpty() = snapshot.childrenCount == 0L

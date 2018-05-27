@@ -1,14 +1,14 @@
 package com.android.szparag.flighter.selectdeparture.interactors
 
-import com.android.szparag.flighter.common.location.WorldCoordinates
 import com.android.szparag.flighter.common.asObservable
-import com.android.szparag.flighter.common.getChildrenSafe
-import com.android.szparag.flighter.common.isEmpty
+import com.android.szparag.flighter.common.getChildren
 import com.android.szparag.flighter.common.location.LocationFetchingEvent
 import com.android.szparag.flighter.common.location.LocationServicesWrapper
+import com.android.szparag.flighter.common.location.WorldCoordinates
 import com.android.szparag.flighter.selectdeparture.models.AirportDTO
 import com.android.szparag.flighter.selectdeparture.models.AirportModel
 import com.android.szparag.flighter.selectdeparture.models.mapToModel
+import com.android.szparag.myextensionsandroid.isInRange
 import com.google.firebase.database.DatabaseReference
 import io.reactivex.Observable
 import timber.log.Timber
@@ -41,14 +41,14 @@ class FlighterSelectDepartureInteractor @Inject constructor(
     Timber.d("getAirportsByCity, input: $input")
     return constructQueryAirportCityNameEquality(input).asObservable()
         .flatMap { query ->
-          if (query.snapshot!!.childrenCount == 0L)
+          if (query.snapshot.childrenCount == 0L)
             constructQueryAirportCityNameStartsWith(input).asObservable()
           else
             Observable.just(query)
         }
         .map { query ->
-          query.getChildrenSafe().map {
-            snapshotChild -> snapshotChild.getValue(AirportDTO::class.java)!!.mapToModel()//todo: !!s
+          query.getChildren().map { snapshotChild ->
+            snapshotChild.getValue(AirportDTO::class.java)!!.mapToModel()//todo: !!s
           }
         }
   }
@@ -56,19 +56,15 @@ class FlighterSelectDepartureInteractor @Inject constructor(
   override fun getAirportsByGpsCoordinates(worldCoordinates: WorldCoordinates): Observable<List<AirportModel>> {
     Timber.d("getAirportsByGpsCoordinates, worldCoordinates: $worldCoordinates")
     return constructQueryAirportLatitude(worldCoordinates.latitude).asObservable()
-        .doOnEach {
-          Timber.d("getAirportsByGpsCoordinates.LATITUDE.STANDARD, snapshot: ${it.value!!.snapshot}")
+        .flatMap { constructQueryAirportLongitude(worldCoordinates.longitude).asObservable() }
+        .map { query ->
+          query
+              .getChildren()
+              .map { snapshotChild -> snapshotChild.getValue(AirportDTO::class.java)!! } //todo: !!s
+              .filter { airportDTO -> validateAirportCoordinates(worldCoordinates, airportDTO) }
         }
-        .flatMap { query ->
-          if(query.isEmpty())
-            constructQueryAirportLatitudeExtended(worldCoordinates.latitude).asObservable()
-          else
-            Observable.just(query)
-        }
-        .doOnEach {
-          Timber.d("getAirportsByGpsCoordinates.LATITUDE.AFTER, snapshot: ${it.value!!.snapshot}")
-        }.map { query ->
-          query.snapshot!!.children.map { snapshotChild -> snapshotChild.getValue(AirportDTO::class.java)!!.mapToModel() }
+        .map { airportDTOs ->
+          airportDTOs.map { airportDTO -> airportDTO.mapToModel() }
         }
   }
 
@@ -92,7 +88,7 @@ class FlighterSelectDepartureInteractor @Inject constructor(
 
   private fun constructQueryAirportLongitude(userLongitude: Double) =
       firebaseReference
-          .orderByChild(FIREBASE_QUERY_CHILD_LATITUDE)
+          .orderByChild(FIREBASE_QUERY_CHILD_LONGITUDE)
           .startAt(userLongitude - QUERY_GPS_COORDINATES_SIDE_BOUND)
           .endAt(userLongitude + QUERY_GPS_COORDINATES_SIDE_BOUND)
 
@@ -104,8 +100,18 @@ class FlighterSelectDepartureInteractor @Inject constructor(
 
   private fun constructQueryAirportLongitudeExtended(userLongitude: Double) =
       firebaseReference
-          .orderByChild(FIREBASE_QUERY_CHILD_LATITUDE)
+          .orderByChild(FIREBASE_QUERY_CHILD_LONGITUDE)
           .startAt(userLongitude - QUERY_GPS_COORDINATES_SIDE_BOUND_EXTENDED)
           .endAt(userLongitude + QUERY_GPS_COORDINATES_SIDE_BOUND_EXTENDED)
+
+  private fun validateAirportCoordinates(originalCoordinates: WorldCoordinates, airportDTO: AirportDTO) =
+      airportDTO.lat.isInRange(
+          originalCoordinates.latitude - QUERY_GPS_COORDINATES_SIDE_BOUND,
+          originalCoordinates.latitude + QUERY_GPS_COORDINATES_SIDE_BOUND
+      ) &&
+          airportDTO.lon.isInRange(
+              originalCoordinates.longitude - QUERY_GPS_COORDINATES_SIDE_BOUND,
+              originalCoordinates.longitude + QUERY_GPS_COORDINATES_SIDE_BOUND)
+
 
 }
