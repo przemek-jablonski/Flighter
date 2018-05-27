@@ -2,6 +2,7 @@ package com.android.szparag.flighter.selectdeparture.interactors
 
 import com.android.szparag.flighter.common.WorldCoordinates
 import com.android.szparag.flighter.common.asObservable
+import com.android.szparag.flighter.common.getChildrenSafe
 import com.android.szparag.flighter.common.isEmpty
 import com.android.szparag.flighter.selectdeparture.models.AirportDTO
 import com.android.szparag.flighter.selectdeparture.models.AirportModel
@@ -32,13 +33,15 @@ class FlighterSelectDepartureInteractor @Inject constructor(
     Timber.d("getAirportsByCity, input: $input")
     return constructQueryAirportCityNameEquality(input).asObservable()
         .flatMap { query ->
-          if (query.isEmpty())
+          if (query.snapshot!!.childrenCount == 0L)
             constructQueryAirportCityNameStartsWith(input).asObservable()
           else
             Observable.just(query)
         }
         .map { query ->
-          query.snapshot!!.children.map { snapshotChild -> snapshotChild.getValue(AirportDTO::class.java)!!.mapToModel() } //todo: !!s
+          query.getChildrenSafe().map {
+            snapshotChild -> snapshotChild.getValue(AirportDTO::class.java)!!.mapToModel()//todo: !!s
+          }
         }
   }
 

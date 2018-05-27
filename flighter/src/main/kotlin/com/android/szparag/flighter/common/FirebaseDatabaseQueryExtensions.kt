@@ -33,6 +33,7 @@ fun FirebaseQuery.asObservable(): Observable<FirebaseQuerySuccessful> =
       })
     })
 
+fun FirebaseQuerySuccessful.getChildrenSafe():Iterable<DataSnapshot> = snapshot?.children ?: emptyList()
 
 fun DataSnapshot.asString() = String().apply { children.forEach { this.plus(it) } }
 
