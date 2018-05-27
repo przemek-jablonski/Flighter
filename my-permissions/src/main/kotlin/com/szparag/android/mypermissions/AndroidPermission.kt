@@ -14,5 +14,6 @@ sealed class AndroidPermission(val androidPermissionString: String) {
   }
 
   object AccessFineLocationPermission: AndroidPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+  object AccessCoarseLocationPermission: AndroidPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
 
 }

@@ -1,5 +1,7 @@
 package com.android.szparag.flighter.common
 
+import android.content.Context
+import android.location.LocationManager
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.widget.RelativeLayout
@@ -21,8 +23,10 @@ import com.android.szparag.flighter.login.views.FlighterLoginView
 import com.android.szparag.flighter.worldmap.views.FlighterWorldMapView
 import com.android.szparag.kotterknife.bindView
 import com.szparag.android.mypermissions.AndroidPermission
+import com.szparag.android.mypermissions.PermissionCheckEvent
 import com.szparag.android.mypermissions.PermissionManager
 import com.szparag.android.mypermissions.PermissionRequestsDelegate
+import io.reactivex.Single
 import io.reactivex.subjects.Subject
 import timber.log.Timber
 import javax.inject.Inject
@@ -114,11 +118,15 @@ class FlighterGlobalActivity : AppCompatActivity(), ColumbusNavigationRoot {
 
 
   //<editor-fold desc="Screens callbacks">
-  private fun onCloseAppRequested() =
-      finish()
+  private fun onCloseAppRequested() {
+    Timber.w("onCloseAppRequested")
+    finish()
+  }
 
-  private fun onPermissionRequested(permission: AndroidPermission) =
-      permissionManager.askForPermission(this, permission)
+  private fun onPermissionRequested(permission: AndroidPermission): Single<PermissionCheckEvent<AndroidPermission>> {
+    Timber.d("onPermissionRequested, permission: $permission")
+    return permissionManager.askForPermission(this, permission)
+  }
   //</editor-fold>
 
   override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

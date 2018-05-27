@@ -25,7 +25,7 @@ class FlighterApplication : Application() {
     Timber.uprootAll()
     Timber.plant(DebugTree())
     Timber.d("onCreate")
-    component = DaggerFlighterComponent.builder().worldMapModule(WorldMapModule()).build()
+    component = DaggerFlighterComponent.builder().flighterGlobalModule(FlighterGlobalModule(applicationContext)).build()
     FirebaseApp.initializeApp(applicationContext)
   }
 

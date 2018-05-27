@@ -19,8 +19,8 @@ sealed class FirebaseQueryModel {
 fun FirebaseQuery.asSingle(): Single<FirebaseQueryModel> =
     Single.fromPublisher({
       this.addListenerForSingleValueEvent(object : ValueEventListener {
-        override fun onDataChange(snapshot: DataSnapshot?) = it.onNext(FirebaseQuerySuccessful(snapshot))
-        override fun onCancelled(error: DatabaseError?) = it.onNext(FirebaseQueryFailed(error))
+        override fun onDataChange(snapshot: DataSnapshot) = it.onNext(FirebaseQuerySuccessful(snapshot))
+        override fun onCancelled(error: DatabaseError) = it.onNext(FirebaseQueryFailed(error))
       })
     })
 
@@ -28,8 +28,8 @@ fun FirebaseQuery.asSingle(): Single<FirebaseQueryModel> =
 fun FirebaseQuery.asObservable(): Observable<FirebaseQuerySuccessful> =
     Observable.fromPublisher({
       this.addListenerForSingleValueEvent(object : ValueEventListener {
-        override fun onDataChange(snapshot: DataSnapshot?) = it.onNext(FirebaseQuerySuccessful(snapshot))
-        override fun onCancelled(error: DatabaseError?) = it.onError(RuntimeException())
+        override fun onDataChange(snapshot: DataSnapshot) = it.onNext(FirebaseQuerySuccessful(snapshot))
+        override fun onCancelled(error: DatabaseError) = it.onError(RuntimeException())
       })
     })
 

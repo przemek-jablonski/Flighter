@@ -1,6 +1,8 @@
 package com.android.szparag.flighter.common
 
+import android.content.Context
 import com.android.szparag.flighter.common.util.ActivityLifecycleState
+import com.google.android.gms.location.LocationServices
 import com.google.firebase.database.FirebaseDatabase
 import com.szparag.android.mypermissions.PermissionManager
 import dagger.Module
@@ -10,7 +12,7 @@ import io.reactivex.subjects.Subject
 import javax.inject.Singleton
 
 @Module
-class FlighterGlobalModule {
+class FlighterGlobalModule(val context: Context) {
 
   @Provides
   fun provideActivityStateBus(implementation: GlobalActivityLifecycleBus): Observable<ActivityLifecycleState> = implementation.getBus()
@@ -25,5 +27,9 @@ class FlighterGlobalModule {
   @Provides
   @Singleton
   fun providePermissionManager() = PermissionManager()
+
+  @Provides
+  @Singleton
+  fun provideFusedLocationProviderClient() = LocationServices.getFusedLocationProviderClient(context)
 
 }

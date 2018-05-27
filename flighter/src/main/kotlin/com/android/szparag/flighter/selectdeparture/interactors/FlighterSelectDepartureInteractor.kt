@@ -1,9 +1,11 @@
 package com.android.szparag.flighter.selectdeparture.interactors
 
-import com.android.szparag.flighter.common.WorldCoordinates
+import com.android.szparag.flighter.common.location.WorldCoordinates
 import com.android.szparag.flighter.common.asObservable
 import com.android.szparag.flighter.common.getChildrenSafe
 import com.android.szparag.flighter.common.isEmpty
+import com.android.szparag.flighter.common.location.LocationFetchingEvent
+import com.android.szparag.flighter.common.location.LocationServicesWrapper
 import com.android.szparag.flighter.selectdeparture.models.AirportDTO
 import com.android.szparag.flighter.selectdeparture.models.AirportModel
 import com.android.szparag.flighter.selectdeparture.models.mapToModel
@@ -21,12 +23,18 @@ private const val QUERY_GPS_COORDINATES_SIDE_BOUND_EXTENDED = QUERY_GPS_COORDINA
 
 @Singleton
 class FlighterSelectDepartureInteractor @Inject constructor(
-    private val firebaseReference: DatabaseReference
+    private val firebaseReference: DatabaseReference,
+    private val locationServicesWrapper: LocationServicesWrapper
 ) : SelectDepartureInteractor {
 
 
   init {
     Timber.d("init")
+  }
+
+  override fun getUserGpsCoordinates(): Observable<LocationFetchingEvent> {
+    Timber.d("getUserGpsCoordinates")
+    return locationServicesWrapper.getLocation()
   }
 
   override fun getAirportsByCity(input: String): Observable<List<AirportModel>> {

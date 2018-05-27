@@ -46,9 +46,11 @@ class PermissionManager
    *
    * @return true if permission has already been granted, false if otherwise
    */
-  private fun isPermissionAlreadyGranted(context: Context, permission: AndroidPermission) =
+  fun isPermissionAlreadyGranted(context: Context, permission: AndroidPermission) =
       ContextCompat.checkSelfPermission(context, permission.androidPermissionString) == PackageManager.PERMISSION_GRANTED
 
+  fun arePermissionsAlreadyGranted(context: Context, permissions: Iterable<AndroidPermission>) =
+      !permissions.any { permission -> !isPermissionAlreadyGranted(context, permission) }
 
   /**
    * Requests given permission.
@@ -111,6 +113,9 @@ class PermissionManager
   }
 
   private fun parsePermissionStringToRequestCode(permissionString: PermissionString) =
-      permissionString.hashCode().absoluteValue
+      convertToLower16bits(permissionString.hashCode().absoluteValue.toLong())
+
+  fun convertToLower16bits(source: Long) = (source and 0xFFFFL shl 16).ushr(16).toInt()
+
 
 }
