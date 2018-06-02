@@ -2,6 +2,7 @@ package com.android.szparag.flighter.selectdeparture.views
 
 import android.content.Context
 import android.support.constraint.ConstraintSet
+import android.support.v7.widget.LinearLayoutManager
 import android.transition.ChangeBounds
 import android.transition.TransitionManager
 import android.util.AttributeSet
@@ -10,6 +11,7 @@ import com.android.szparag.columbus.Screen
 import com.android.szparag.flighter.R
 import com.android.szparag.flighter.R.layout
 import com.android.szparag.flighter.common.util.Injector
+import com.android.szparag.flighter.selectdeparture.AirportsAdapter
 import com.android.szparag.flighter.selectdeparture.presenters.SelectDeparturePresenter
 import com.android.szparag.flighter.selectdeparture.states.SelectDepartureIntent.GpsSearchIntent
 import com.android.szparag.flighter.selectdeparture.states.SelectDepartureIntent.TextSearchIntent
@@ -29,8 +31,9 @@ import com.szparag.android.mypermissions.PermissionCheckEvent
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.cast
-import kotlinx.android.synthetic.main.view_select_departure_input.view.view_select_departure_input_edit_text
-import kotlinx.android.synthetic.main.view_select_departure_input.view.view_select_departure_input_gps_button
+import kotlinx.android.synthetic.main.screen_select_departure_final.view.screen_select_departure_initial_recycler_airports as airportsRecycler
+import kotlinx.android.synthetic.main.view_select_departure_input.view.view_select_departure_input_edit_text as inputEditText
+import kotlinx.android.synthetic.main.view_select_departure_input.view.view_select_departure_input_gps_button as inputGpsButton
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -39,11 +42,6 @@ import javax.inject.Inject
  */
 class FlighterSelectDepartureView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null,
     defStyleAttr: Int = 0) : BaseMviConstraintLayout<SelectDepartureViewState>(context, attrs, defStyleAttr), SelectDepartureView {
-
-  override fun requestGpsPermission(): Single<PermissionCheckEvent<AccessFineLocationPermission>> {
-    Timber.d("requestGpsPermission, permission: $AccessFineLocationPermission")
-    return permissionRequestAction.invoke(AccessFineLocationPermission).cast()
-  }
 
   companion object {
     val screenData by lazy {
@@ -54,30 +52,32 @@ class FlighterSelectDepartureView @JvmOverloads constructor(context: Context, at
     }
   }
 
-  private var layoutMorphed = false
+  private val airportsAdapter = AirportsAdapter()
+
+  private var layoutAnimated = false
+
+  @Inject lateinit var presenter: SelectDeparturePresenter //todo: this presenter should be overriden from parent class //todo: and methods instantiatePresenter, attachToPresenter and detachFromPresenter - removed
 
 
-  @Inject
-  lateinit var presenter: SelectDeparturePresenter //todo: this presenter should be overriden from parent class //todo: and methods instantiatePresenter, attachToPresenter and detachFromPresenter - removed
-
-  init {
-    Timber.d("init")
+  override fun onAttachedToWindow() {
+    super.onAttachedToWindow()
+    airportsRecycler.adapter = airportsAdapter
+    airportsRecycler.layoutManager = LinearLayoutManager(context)
   }
 
   override fun searchWithTextIntent(): Observable<TextSearchIntent> {
-    return RxView.focusChanges(view_select_departure_input_edit_text)
+    return RxView.focusChanges(inputEditText)
         .filter { it }
         .map { TextSearchIntent(emptyString()) }
         .switchMap {
           RxTextView
-              .textChanges(view_select_departure_input_edit_text)
+              .textChanges(inputEditText)
               .map { TextSearchIntent(it.toString()) }
         }
-//    return RxTextView.textChanges(view_select_departure_input_edit_text).map { TextSearchIntent(it.toString()) }
   }
 
   override fun searchWithGpsIntent(): Observable<GpsSearchIntent> {
-    return RxView.clicks(view_select_departure_input_gps_button).map { GpsSearchIntent() }
+    return RxView.clicks(inputGpsButton).map { GpsSearchIntent() }
   }
 
   override fun render(state: SelectDepartureViewState) {
@@ -88,25 +88,26 @@ class FlighterSelectDepartureView @JvmOverloads constructor(context: Context, at
 
       }
       is QueryingWithTextViewState -> {
-        morphLayout()
+        animateLayout()
       }
       is FetchingResultWithTextViewState -> {
-        morphLayout()
+        animateLayout()
       }
       is FetchingResultWithGpsViewState -> {
-        morphLayout()
+        animateLayout()
       }
       is EmptySearchResult -> {
 
       }
       is SearchResult -> {
-
+        animateLayout()
+        airportsAdapter.update(state.results)
       }
     }
   }
 
-  private fun morphLayout() {
-    if (!layoutMorphed) {
+  private fun animateLayout() {
+    if (!layoutAnimated) {
       val constaintSet = ConstraintSet()
       constaintSet.clone(context, R.layout.screen_select_departure_final)
       val transition = ChangeBounds()
@@ -114,8 +115,13 @@ class FlighterSelectDepartureView @JvmOverloads constructor(context: Context, at
       transition.duration = 1000
       TransitionManager.beginDelayedTransition(this, transition)
       constaintSet.applyTo(this)
-      layoutMorphed = true
+      layoutAnimated = true
     }
+  }
+
+  override fun requestGpsPermission(): Single<PermissionCheckEvent<AccessFineLocationPermission>> {
+    Timber.d("requestGpsPermission, permission: $AccessFineLocationPermission")
+    return permissionRequestAction.invoke(AccessFineLocationPermission).cast()
   }
 
   override fun instantiatePresenter() {

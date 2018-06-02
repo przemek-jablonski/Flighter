@@ -68,9 +68,9 @@ class FlighterSelectDeparturePresenter @Inject constructor(override var interact
           .filter { locationFetchingEvent -> locationFetchingEvent is LocationFetchSuccessful }
           .cast(LocationFetchSuccessful::class.java) //todo: use this where applicable (at least one place)
           .flatMap { locationFetchingEvent -> interactor.getAirportsByGpsCoordinates(locationFetchingEvent.coordinates) }
-          .subscribe {
-            Timber.d("processSearchWithGpsIntent.onNext, event: $it")
-            view.render(SelectDepartureViewState.FetchingResultWithGpsViewState())
+          .subscribe {airports ->
+            Timber.d("processSearchWithGpsIntent.onNext, airports: $airports")
+            view.render(SelectDepartureViewState.SearchResult(airports))
           }
     }
   }

@@ -18,8 +18,8 @@ import javax.inject.Singleton
 private const val FIREBASE_QUERY_CHILD_CITY = "city"
 private const val FIREBASE_QUERY_CHILD_LATITUDE = "lat"
 private const val FIREBASE_QUERY_CHILD_LONGITUDE = "lon"
-private const val QUERY_GPS_COORDINATES_SIDE_BOUND = 1.50
-private const val QUERY_GPS_COORDINATES_SIDE_BOUND_EXTENDED = QUERY_GPS_COORDINATES_SIDE_BOUND * 2
+private const val QUERY_GPS_COORDINATES_SIDE_BOUND = 0.40
+private const val QUERY_GPS_COORDINATES_SIDE_BOUND_EXTENDED = QUERY_GPS_COORDINATES_SIDE_BOUND * 3
 
 @Singleton
 class FlighterSelectDepartureInteractor @Inject constructor(

@@ -6,10 +6,13 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Resources
+import android.support.annotation.LayoutRes
 import android.support.design.widget.Snackbar
 import android.support.design.widget.Snackbar.LENGTH_LONG
 import android.support.design.widget.Snackbar.LENGTH_SHORT
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 
 typealias ResourceInt = Int
@@ -41,3 +44,9 @@ fun View.toast(content: CharSequence, longDuration: Boolean = true) =
   this.context.toast(content, longDuration)
 
 infix fun ResourceInt.idAsString(resources: Resources) = resources.getResourceEntryName(this)
+
+fun Context.inflate(@LayoutRes layoutRes: Int, parent: ViewGroup) =
+    LayoutInflater.from(this).inflate(layoutRes, parent)
+
+fun Context.inflate(@LayoutRes layoutRes: Int, parent: ViewGroup, attachToRoot: Boolean) =
+    LayoutInflater.from(this).inflate(layoutRes, parent, attachToRoot)

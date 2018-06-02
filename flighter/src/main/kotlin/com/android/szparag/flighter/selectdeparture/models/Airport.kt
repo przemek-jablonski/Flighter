@@ -27,9 +27,12 @@ class AirportDTO() {
 data class AirportModel(
     val airportName: String,
     val airportIataCode: String,
-    val cityName: String,
-    val countryCode: String
+    val address: String
 )
 
-fun AirportDTO.mapToModel() = AirportModel(name, iata, city, country)
+fun AirportDTO.mapToModel() = AirportModel(
+    airportName = name,
+    airportIataCode = iata,
+    address = "$city, ${if(state.isNotEmpty()) "$state, " else ""}$country"
+)
 

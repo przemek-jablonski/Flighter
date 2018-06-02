@@ -7,7 +7,7 @@
     >
 
   <TextView
-      android:id="@+id/textView2"
+      android:id="@+id/view_select_departure_recycler_row_airport_name"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginBottom="8dp"
@@ -15,39 +15,43 @@
       android:layout_marginStart="8dp"
       android:layout_marginTop="16dp"
       android:fontFamily="@font/duru_sans"
-      android:text="London Heathrow"
+      tools:text="London Heathrow"
       android:textSize="18sp"
       android:textStyle="bold"
-      app:layout_constraintBottom_toTopOf="@+id/textView4"
+      app:layout_constraintBottom_toTopOf="@+id/view_select_departure_recycler_row_airport_address"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
       />
+
   <TextView
-      android:id="@+id/textView4"
+      android:id="@+id/view_select_departure_recycler_row_airport_address"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginBottom="8dp"
       android:layout_marginEnd="8dp"
       android:layout_marginStart="8dp"
       android:fontFamily="@font/duru_sans"
-      android:text="London, United Kingdom"
+      tools:text="London, UK"
       android:textSize="12sp"
       app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toStartOf="@+id/textView7"
+      app:layout_constraintEnd_toStartOf="@+id/view_select_departure_recycler_row_airport_code"
       app:layout_constraintStart_toStartOf="parent"
       />
+
+  <!--todo: maybe country flag?-->
+
   <TextView
-      android:id="@+id/textView7"
+      android:id="@+id/view_select_departure_recycler_row_airport_code"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginEnd="8dp"
       android:fontFamily="@font/duru_sans"
-      android:text="TextView"
-      android:textSize="12sp"
-      app:layout_constraintBottom_toBottomOf="@+id/textView4"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintTop_toTopOf="@+id/textView4"
       tools:text="LHR"
+      android:textSize="12sp"
+      app:layout_constraintBottom_toBottomOf="@+id/view_select_departure_recycler_row_airport_address"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="@+id/view_select_departure_recycler_row_airport_address"
       />
+
 </android.support.constraint.ConstraintLayout>
