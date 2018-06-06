@@ -5,9 +5,9 @@ import com.android.szparag.flighter.common.getChildren
 import com.android.szparag.flighter.common.location.LocationFetchingEvent
 import com.android.szparag.flighter.common.location.LocationServicesWrapper
 import com.android.szparag.flighter.common.location.WorldCoordinates
-import com.android.szparag.flighter.selectdeparture.models.AirportDTO
-import com.android.szparag.flighter.selectdeparture.models.AirportModel
+import com.android.szparag.flighter.selectdeparture.models.local.AirportModel
 import com.android.szparag.flighter.selectdeparture.models.mapToModel
+import com.android.szparag.flighter.selectdeparture.models.remote.AirportDTO
 import com.android.szparag.myextensionsandroid.isInRange
 import com.google.firebase.database.DatabaseReference
 import io.reactivex.Observable

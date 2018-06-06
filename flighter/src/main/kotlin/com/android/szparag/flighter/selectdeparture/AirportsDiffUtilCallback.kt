@@ -1,7 +1,7 @@
 package com.android.szparag.flighter.selectdeparture
 
 import android.support.v7.util.DiffUtil
-import com.android.szparag.flighter.selectdeparture.models.AirportModel
+import com.android.szparag.flighter.selectdeparture.models.local.AirportModel
 import timber.log.Timber
 
 class AirportsDiffUtilCallback(

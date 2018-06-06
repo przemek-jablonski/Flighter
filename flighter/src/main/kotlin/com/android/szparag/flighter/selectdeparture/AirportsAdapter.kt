@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.android.szparag.flighter.R
 import com.android.szparag.flighter.selectdeparture.AirportsAdapter.AirportsViewHolder
-import com.android.szparag.flighter.selectdeparture.models.AirportModel
+import com.android.szparag.flighter.selectdeparture.models.local.AirportModel
 import com.android.szparag.myextensionsandroid.inflate
 import com.android.szparag.myextensionsbase.emptyMutableList
 import java.lang.Character.toChars
