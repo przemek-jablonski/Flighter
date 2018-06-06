@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
+    android:clickable="true"
     >
 
   <TextView
@@ -15,13 +17,13 @@
       android:layout_marginStart="8dp"
       android:layout_marginTop="16dp"
       android:fontFamily="@font/duru_sans"
-      tools:text="London Heathrow"
       android:textSize="18sp"
       android:textStyle="bold"
       app:layout_constraintBottom_toTopOf="@+id/view_select_departure_recycler_row_airport_address"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
+      tools:text="London Heathrow"
       />
 
   <TextView
@@ -32,11 +34,11 @@
       android:layout_marginEnd="8dp"
       android:layout_marginStart="8dp"
       android:fontFamily="@font/duru_sans"
-      tools:text="London, UK"
       android:textSize="12sp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toStartOf="@+id/view_select_departure_recycler_row_airport_code"
       app:layout_constraintStart_toStartOf="parent"
+      tools:text="London, UK"
       />
 
   <!--todo: maybe country flag?-->
@@ -47,11 +49,11 @@
       android:layout_height="wrap_content"
       android:layout_marginEnd="8dp"
       android:fontFamily="@font/duru_sans"
-      tools:text="LHR"
       android:textSize="12sp"
       app:layout_constraintBottom_toBottomOf="@+id/view_select_departure_recycler_row_airport_address"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toTopOf="@+id/view_select_departure_recycler_row_airport_address"
+      tools:text="LHR"
       />
 
 </android.support.constraint.ConstraintLayout>
