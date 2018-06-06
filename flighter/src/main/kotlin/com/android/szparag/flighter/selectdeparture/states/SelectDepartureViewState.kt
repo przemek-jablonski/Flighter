@@ -1,6 +1,6 @@
 package com.android.szparag.flighter.selectdeparture.states
 
-import com.android.szparag.flighter.selectdeparture.models.AirportModel
+import com.android.szparag.flighter.selectdeparture.models.local.AirportModel
 
 /**
  * Created by Przemyslaw Jablonski (github.com/sharaquss, pszemek.me) on 01/04/2018.

@@ -1,5 +1,6 @@
 package com.android.szparag.flighter.common
 
+import com.android.szparag.flighter.flightsbrowser.FlightsBrowserModule
 import com.android.szparag.flighter.login.LoginModule
 import com.android.szparag.flighter.login.views.FlighterLoginView
 import com.android.szparag.flighter.selectdeparture.SelectDepartureModule
@@ -12,7 +13,7 @@ import javax.inject.Singleton
 /**
  * Created by Przemyslaw Jablonski (github.com/sharaquss, pszemek.me) on 01/04/2018.
  */
-@Component(modules = [(FlighterGlobalModule::class), (WorldMapModule::class), (LoginModule::class), (SelectDepartureModule::class)])
+@Component(modules = [(FlighterGlobalModule::class), (WorldMapModule::class), (LoginModule::class), (SelectDepartureModule::class), (FlightsBrowserModule::class)])
 @Singleton
 interface FlighterComponent {
 

@@ -6,6 +6,7 @@ import kotlin.math.max
 
 typealias Millis = Long
 typealias Seconds = Long
+typealias UnixTimestamp = Seconds
 
 fun nullString() = "NULL"
 fun emptyString() = ""

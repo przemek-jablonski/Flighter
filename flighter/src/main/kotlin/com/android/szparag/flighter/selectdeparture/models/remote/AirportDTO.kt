@@ -1,11 +1,14 @@
-package com.android.szparag.flighter.selectdeparture.models
+package com.android.szparag.flighter.selectdeparture.models.remote
 
+import com.android.szparag.flighter.selectdeparture.models.local.AirportModel
 import com.android.szparag.myextensionsbase.invalidDoubleValue
 import com.android.szparag.myextensionsbase.invalidIntValue
 import com.android.szparag.myextensionsbase.invalidStringValue
 import com.google.firebase.database.IgnoreExtraProperties
 
+
 //cannot really do data class here, because Firebase Database can't handle that stuff :/
+@Suppress("RemoveEmptyPrimaryConstructor")
 @IgnoreExtraProperties
 class AirportDTO() {
   var city: String = invalidStringValue()
@@ -20,21 +23,7 @@ class AirportDTO() {
   var tz: String = invalidStringValue()
 
   override fun toString() =
-    "AirportDTO(city='$city', country='$country', elevation=$elevation, iata='$iata', icao='$icao', lat=$lat, lon=$lon, name='$name', state='$state', tz='$tz')"
+      "AirportDTO(city='$city', country='$country', elevation=$elevation, iata='$iata', icao='$icao', lat=$lat, lon=$lon, name='$name', state='$state', tz='$tz')"
 
 }
-
-data class AirportModel(
-    val airportName: String,
-    val airportIataCode: String,
-    val address: String,
-    val countryCode: String
-)
-
-fun AirportDTO.mapToModel() = AirportModel(
-    airportName = name,
-    airportIataCode = iata,
-    address = "$city, ${if(state.isNotEmpty()) "$state, " else ""}$country",
-    countryCode = country
-)
 
