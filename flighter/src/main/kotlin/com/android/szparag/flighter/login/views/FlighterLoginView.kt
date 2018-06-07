@@ -127,14 +127,4 @@ class FlighterLoginView @JvmOverloads constructor(context: Context, attrs: Attri
     Injector.get().inject(this)
   }
 
-  override fun attachToPresenter() {
-    Timber.d("attachToPresenter")
-    presenter.attachView(this)
-  }
-
-  override fun detachFromPresenter() {
-    Timber.d("detachFromPresenter")
-    presenter.detachView(this)
-  }
-
 }

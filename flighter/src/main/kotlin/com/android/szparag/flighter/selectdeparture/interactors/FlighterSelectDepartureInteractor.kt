@@ -11,6 +11,7 @@ import com.android.szparag.flighter.selectdeparture.models.remote.AirportDTO
 import com.android.szparag.myextensionsandroid.isInRange
 import com.google.firebase.database.DatabaseReference
 import io.reactivex.Observable
+import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -46,28 +47,33 @@ class FlighterSelectDepartureInteractor @Inject constructor(
           else
             Observable.just(query)
         }
+//        .observeOn(Schedulers.computation())
         .map { query ->
-          query.getChildren().map { snapshotChild ->
-            snapshotChild.getValue(AirportDTO::class.java)!!.mapToModel()//todo: !!s
-          }
+          query
+              .getChildren()
+              .map { snapshotChild -> snapshotChild.getValue(AirportDTO::class.java)!! }
+              .filter { airportDto -> airportDto.iata.isNotBlank() }
         }
+        .map { airportDtosList -> airportDtosList.map { airportDto -> airportDto.mapToModel() } }
   }
 
   override fun getAirportsByGpsCoordinates(worldCoordinates: WorldCoordinates): Observable<List<AirportModel>> {
     Timber.d("getAirportsByGpsCoordinates, worldCoordinates: $worldCoordinates")
     return constructQueryAirportLatitude(worldCoordinates.latitude).asObservable()
         .flatMap { constructQueryAirportLongitude(worldCoordinates.longitude).asObservable() }
+//        .observeOn(Schedulers.computation())
         .map { query ->
           query
               .getChildren()
               .map { snapshotChild -> snapshotChild.getValue(AirportDTO::class.java)!! } //todo: !!s
-              .filter { airportDTO -> validateAirportCoordinates(worldCoordinates, airportDTO) }
+              .filter { airportDto -> validateAirportCoordinates(worldCoordinates, airportDto) }
+              .filter { airportDto -> airportDto.iata.isNotBlank() }
         }
-        .map { airportDTOs ->
-          airportDTOs.map { airportDTO -> airportDTO.mapToModel() }
-        }
+        .map { airportDtosList -> airportDtosList.map { airportDto -> airportDto.mapToModel() } }
   }
 
+  //todo: those queries should be in some FirebaseInteractor or something
+  //todo: firebase reference and queries.asObservable should be done from there too
   private fun constructQueryAirportCityNameEquality(queryInput: String) =
       firebaseReference
           .orderByChild(FIREBASE_QUERY_CHILD_CITY)
