@@ -13,14 +13,14 @@ import com.szparag.android.mypermissions.PermissionRequestAction
 /**
  * Created by Przemyslaw Jablonski (github.com/sharaquss, pszemek.me) on 02/04/2018.
  */
-abstract class BaseMviConstraintLayout<in VS : Any> @JvmOverloads constructor(
-  context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : ConstraintLayout(context, attrs, defStyleAttr), MviView<VS> {
+abstract class BaseMviConstraintLayout<in V : MviView<VS>, P : MviPresenter<V, VS>, in VS : Any> @JvmOverloads
+constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+    ConstraintLayout(context, attrs, defStyleAttr), MviView<VS> {
 
   private var firstStateRendered = false
   override lateinit var navigationDelegate: Navigator
   override lateinit var permissionRequestAction: PermissionRequestAction
-
+  abstract var presenter: P
 
   init {
     if (!isInEditMode) hide()
@@ -28,13 +28,21 @@ abstract class BaseMviConstraintLayout<in VS : Any> @JvmOverloads constructor(
 
   abstract fun instantiatePresenter()
 
-  abstract fun attachToPresenter()
+  @Suppress("UNCHECKED_CAST")
+  @CallSuper open fun attachToPresenter() {
+    presenter.attachView(this as V)
+  }
 
-  abstract fun detachFromPresenter()
+  @Suppress("UNCHECKED_CAST")
+  @CallSuper open fun detachFromPresenter() {
+    presenter.detachView(this as V)
+  }
 
   @CallSuper
   override fun render(state: VS) {
-    if (!firstStateRendered) { handleFirstRender(state) }
+    if (!firstStateRendered) {
+      handleFirstRender(state)
+    }
   }
 
   protected open fun handleFirstRender(state: VS) {

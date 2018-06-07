@@ -8,4 +8,4 @@ import com.android.szparag.mvi.presenters.MviPresenter
 /**
  * Created by Przemyslaw Jablonski (github.com/sharaquss, pszemek.me) on 01/04/2018.
  */
-interface SelectDeparturePresenter : MviPresenter<SelectDepartureView, SelectDepartureInteractor, SelectDepartureViewState>
+interface SelectDeparturePresenter : MviPresenter<SelectDepartureView, SelectDepartureViewState>

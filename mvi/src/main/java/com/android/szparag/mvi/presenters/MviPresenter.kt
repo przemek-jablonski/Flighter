@@ -6,18 +6,10 @@ import com.android.szparag.mvi.views.MviView
 /**
  * Created by Przemyslaw Jablonski (github.com/sharaquss, pszemek.me) on 02/04/2018.
  */
-interface MviPresenter<in V : MviView<VS>, in M: MviInteractor<VS>, VS : Any> {
-
-//  fun onViewBound(view: V)
+interface MviPresenter<in V : MviView<VS>, in VS: Any> {
 
   fun attachView(view: V)
 
   fun detachView(view: V)
-
-//  fun onViewAttached(view: V)
-//
-//  fun onViewDetached(view: V)
-
-
 
 }

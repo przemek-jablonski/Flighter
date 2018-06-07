@@ -4,7 +4,7 @@ import com.android.szparag.flighter.login.states.LoginViewState
 import com.android.szparag.mvi.models.MviInteractor
 import io.reactivex.Observable
 
-interface LoginInteractor : MviInteractor<LoginViewState> {
+interface LoginInteractor : MviInteractor {
 
   fun checkIfUserRegistered()
 

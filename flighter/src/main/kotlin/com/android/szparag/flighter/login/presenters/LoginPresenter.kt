@@ -8,4 +8,4 @@ import com.android.szparag.mvi.presenters.MviPresenter
 /**
  * Created by Przemyslaw Jablonski (github.com/sharaquss, pszemek.me) on 01/04/2018.
  */
-interface LoginPresenter : MviPresenter<LoginView, LoginInteractor, LoginViewState>
+interface LoginPresenter : MviPresenter<LoginView, LoginViewState>

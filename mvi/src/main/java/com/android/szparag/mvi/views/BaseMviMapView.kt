@@ -5,6 +5,7 @@ import android.content.Context
 import android.support.annotation.CallSuper
 import android.util.AttributeSet
 import com.android.szparag.columbus.Navigator
+import com.android.szparag.mvi.presenters.MviPresenter
 import com.android.szparag.myextensionsandroid.hide
 import com.android.szparag.myextensionsandroid.show
 import com.google.android.gms.maps.MapView
@@ -14,13 +15,14 @@ import timber.log.Timber
 //todo: extract that as a separate module, as it requires heavy gradle dependency (GooglePlayServices-maps)
 //todo: remove timber, add static logger with a static switch
 //todo: this has EXACT SAME code as BaseMviConstraintLayout, deal with this
-abstract class BaseMviMapView<in VS: Any> @JvmOverloads constructor(
+abstract class BaseMviMapView<in V : MviView<VS>, P : MviPresenter<V, VS>, in VS : Any> @JvmOverloads constructor(
   context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : MapView(context, attrs, defStyleAttr), MviView<VS> {
 
   private var firstStateRendered = false
   override lateinit var navigationDelegate: Navigator
   override lateinit var permissionRequestAction: PermissionRequestAction
+  abstract var presenter: P
 
   init {
     Timber.d("init")
@@ -29,9 +31,15 @@ abstract class BaseMviMapView<in VS: Any> @JvmOverloads constructor(
 
   abstract fun instantiatePresenter()
 
-  abstract fun attachToPresenter()
+  @Suppress("UNCHECKED_CAST")
+  @CallSuper open fun attachToPresenter() {
+    presenter.attachView(this as V)
+  }
 
-  abstract fun detachFromPresenter()
+  @Suppress("UNCHECKED_CAST")
+  @CallSuper open fun detachFromPresenter() {
+    presenter.detachView(this as V)
+  }
 
   @CallSuper
   override fun render(state: VS) {

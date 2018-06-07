@@ -33,7 +33,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class FlighterWorldMapView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
-    BaseMviMapView<WorldMapViewState>(context, attrs, defStyleAttr), WorldMapView {
+    BaseMviMapView<WorldMapView, WorldMapPresenter, WorldMapViewState>(context, attrs, defStyleAttr), WorldMapView {
 
   companion object {
     val screenData by lazy {
@@ -48,7 +48,7 @@ class FlighterWorldMapView @JvmOverloads constructor(context: Context, attrs: At
 
 
   @Inject
-  lateinit var presenter: WorldMapPresenter
+  override lateinit var presenter: WorldMapPresenter
 
   @Inject
   lateinit var lifecycleBus: Observable<ActivityLifecycleState>
@@ -82,7 +82,8 @@ class FlighterWorldMapView @JvmOverloads constructor(context: Context, attrs: At
       Timber.d("init.getMapAsync.callback, googleMap: $googleMap")
       googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, raw.googlemapstyle))
       if (state is OnboardingViewState) { //todo: this is temporary hack
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(state.initialCoordinates.latitude, state.initialCoordinates.longitude), 10f))
+        googleMap.moveCamera(
+            CameraUpdateFactory.newLatLngZoom(LatLng(state.initialCoordinates.latitude, state.initialCoordinates.longitude), 10f))
       }
       googleMap.uiSettings.apply {
         setAllGesturesEnabled(false)
@@ -127,16 +128,6 @@ class FlighterWorldMapView @JvmOverloads constructor(context: Context, attrs: At
   override fun instantiatePresenter() {
     Timber.d("instantiatePresenter")
     if (!isInEditMode) Injector.get().inject(this) //todo: this is doubled in init method
-  }
-
-  override fun attachToPresenter() {
-    Timber.d("attachToPresenter")
-    presenter.attachView(this)
-  }
-
-  override fun detachFromPresenter() {
-    Timber.d("detachFromPresenter")
-    presenter.detachView(this)
   }
 
   override fun getScreen(): Screen = screenData

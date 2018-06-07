@@ -5,6 +5,6 @@ import com.android.szparag.flighter.flightsbrowser.states.FlightsBrowserViewStat
 import com.android.szparag.flighter.flightsbrowser.views.FlightsBrowserView
 import com.android.szparag.mvi.presenters.MviPresenter
 
-interface FlightsBrowserPresenter : MviPresenter<FlightsBrowserView, FlightsBrowserInteractor, FlightsBrowserViewState> {
+interface FlightsBrowserPresenter : MviPresenter<FlightsBrowserView, FlightsBrowserViewState> {
 
 }

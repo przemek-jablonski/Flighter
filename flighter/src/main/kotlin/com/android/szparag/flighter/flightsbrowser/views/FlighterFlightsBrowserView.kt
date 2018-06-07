@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 class FlighterFlightsBrowserView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : BaseMviConstraintLayout<FlightsBrowserViewState>(context, attrs, defStyleAttr), FlightsBrowserView {
+) : BaseMviConstraintLayout<FlightsBrowserView, FlightsBrowserPresenter, FlightsBrowserViewState>(context, attrs, defStyleAttr), FlightsBrowserView {
 
   companion object {
     val screenData by lazy {
@@ -29,8 +29,15 @@ class FlighterFlightsBrowserView @JvmOverloads constructor(
     }
   }
 
+  //todo: this should be injected in base class maybe?
+  //todo: research that
   @Inject
-  lateinit var presenter: FlightsBrowserPresenter
+  override lateinit var presenter: FlightsBrowserPresenter
+
+  override fun instantiatePresenter() {
+    Timber.d("instantiatePresenter")
+    Injector.get().inject(this)
+  }
 
   override fun departureAirportChangeIntent(): Observable<ChangeDepartureAirportIntent> =
       Observable.never()
@@ -43,22 +50,6 @@ class FlighterFlightsBrowserView @JvmOverloads constructor(
 
   override fun flightSelectionIntent(): Observable<FlightSelectionIntent> =
       Observable.never()
-
-
-  override fun instantiatePresenter() {
-    Timber.d("instantiatePresenter")
-    Injector.get().inject(this)
-  }
-
-  override fun attachToPresenter() {
-    Timber.d("attachToPresenter")
-    presenter.attachView(this)
-  }
-
-  override fun detachFromPresenter() {
-    Timber.d("detachFromPresenter")
-    presenter.detachView(this)
-  }
 
   override fun getScreen() =
       screenData

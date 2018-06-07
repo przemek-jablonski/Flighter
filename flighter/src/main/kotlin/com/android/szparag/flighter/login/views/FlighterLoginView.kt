@@ -33,7 +33,7 @@ import javax.inject.Inject
  * Created by Przemyslaw Jablonski (github.com/sharaquss, pszemek.me) on 01/04/2018.
  */
 class FlighterLoginView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0) : BaseMviConstraintLayout<LoginViewState>(context, attrs, defStyleAttr), LoginView {
+    defStyleAttr: Int = 0) : BaseMviConstraintLayout<LoginView, LoginPresenter, LoginViewState>(context, attrs, defStyleAttr), LoginView {
 
   companion object {
     val screenData by lazy {
@@ -50,6 +50,7 @@ class FlighterLoginView @JvmOverloads constructor(context: Context, attrs: Attri
 
   @Inject
   @Suppress("MemberVisibilityCanBePrivate")
+  override
   lateinit var presenter: LoginPresenter
 
   private val frontImageView: ImageView by bindView(R.id.frontImageView)

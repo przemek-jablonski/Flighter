@@ -7,7 +7,7 @@ import com.android.szparag.flighter.selectdeparture.states.SelectDepartureViewSt
 import com.android.szparag.mvi.models.MviInteractor
 import io.reactivex.Observable
 
-interface SelectDepartureInteractor: MviInteractor<SelectDepartureViewState> {
+interface SelectDepartureInteractor: MviInteractor {
 
   fun getUserGpsCoordinates(): Observable<LocationFetchingEvent>
 

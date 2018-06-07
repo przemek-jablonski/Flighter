@@ -8,11 +8,11 @@ import timber.log.Timber
 /**
  * Created by Przemyslaw Jablonski (github.com/sharaquss, pszemek.me) on 02/04/2018.
  */
-abstract class BaseMviPresenter<V : MviView<VS>, I : MviInteractor<VS>, VS : Any> : MviPresenter<V, I, VS> {
+abstract class BaseMviPresenter<V : MviView<VS>, I: MviInteractor, VS : Any> : MviPresenter<V, VS> {
 
   protected var view: V? = null
   protected lateinit var state: VS
-  abstract val interactor: I
+  abstract val interactor: MviInteractor
   private var viewAttachedFirstTime = true
 
   @CallSuper
