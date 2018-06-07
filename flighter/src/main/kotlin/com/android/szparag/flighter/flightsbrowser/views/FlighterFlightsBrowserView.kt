@@ -3,6 +3,9 @@ package com.android.szparag.flighter.flightsbrowser.views
 import android.content.Context
 import android.util.AttributeSet
 import com.android.szparag.columbus.Screen
+import com.android.szparag.flighter.R
+import com.android.szparag.flighter.common.util.Injector
+import com.android.szparag.flighter.flightsbrowser.presenters.FlightsBrowserPresenter
 import com.android.szparag.flighter.flightsbrowser.states.FlightsBrowserIntent.ArrivalDateSelectionIntent
 import com.android.szparag.flighter.flightsbrowser.states.FlightsBrowserIntent.ChangeDepartureAirportIntent
 import com.android.szparag.flighter.flightsbrowser.states.FlightsBrowserIntent.DepartureDateSelectionIntent
@@ -10,6 +13,8 @@ import com.android.szparag.flighter.flightsbrowser.states.FlightsBrowserIntent.F
 import com.android.szparag.flighter.flightsbrowser.states.FlightsBrowserViewState
 import com.android.szparag.mvi.views.BaseMviConstraintLayout
 import io.reactivex.Observable
+import timber.log.Timber
+import javax.inject.Inject
 
 class FlighterFlightsBrowserView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -19,34 +24,43 @@ class FlighterFlightsBrowserView @JvmOverloads constructor(
     val screenData by lazy {
       Screen(
           viewClass = FlighterFlightsBrowserView::class.java,
-          layoutResource =
+          layoutResource = R.layout.screen_flights_browser_initial
       )
     }
   }
 
+  @Inject
+  lateinit var presenter: FlightsBrowserPresenter
+
+  override fun departureAirportChangeIntent(): Observable<ChangeDepartureAirportIntent> =
+      Observable.never()
+
+  override fun departureDateChangeIntent(): Observable<DepartureDateSelectionIntent> =
+      Observable.never()
+
+  override fun arrivalDateChangeIntent(): Observable<ArrivalDateSelectionIntent> =
+      Observable.never()
+
+  override fun flightSelectionIntent(): Observable<FlightSelectionIntent> =
+      Observable.never()
+
 
   override fun instantiatePresenter() {
+    Timber.d("instantiatePresenter")
+    Injector.get().inject(this)
   }
 
   override fun attachToPresenter() {
+    Timber.d("attachToPresenter")
+    presenter.attachView(this)
   }
 
   override fun detachFromPresenter() {
+    Timber.d("detachFromPresenter")
+    presenter.detachView(this)
   }
 
-  override fun getScreen(): Screen {
-  }
-
-  override fun departureAirportChangeIntent(): Observable<ChangeDepartureAirportIntent> {
-  }
-
-  override fun departureDateChangeIntent(): Observable<DepartureDateSelectionIntent> {
-  }
-
-  override fun arrivalDateChangeIntent(): Observable<ArrivalDateSelectionIntent> {
-  }
-
-  override fun flightSelectionIntent(): Observable<FlightSelectionIntent> {
-  }
+  override fun getScreen() =
+      screenData
 
 }

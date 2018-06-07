@@ -12,7 +12,7 @@ abstract class BaseMviPresenter<V : MviView<VS>, I : MviInteractor<VS>, VS : Any
 
   protected var view: V? = null
   protected lateinit var state: VS
-  abstract var interactor: I
+  abstract val interactor: I
   private var viewAttachedFirstTime = true
 
   @CallSuper

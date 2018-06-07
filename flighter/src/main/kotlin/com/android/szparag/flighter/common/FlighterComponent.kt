@@ -1,6 +1,7 @@
 package com.android.szparag.flighter.common
 
 import com.android.szparag.flighter.flightsbrowser.FlightsBrowserModule
+import com.android.szparag.flighter.flightsbrowser.views.FlighterFlightsBrowserView
 import com.android.szparag.flighter.login.LoginModule
 import com.android.szparag.flighter.login.views.FlighterLoginView
 import com.android.szparag.flighter.selectdeparture.SelectDepartureModule
@@ -21,5 +22,6 @@ interface FlighterComponent {
   fun inject(target: FlighterWorldMapView)
   fun inject(target: FlighterLoginView)
   fun inject(target: FlighterSelectDepartureView)
+  fun inject(target: FlighterFlightsBrowserView)
 
 }
