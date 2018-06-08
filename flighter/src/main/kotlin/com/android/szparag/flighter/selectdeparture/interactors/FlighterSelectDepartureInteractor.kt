@@ -1,7 +1,6 @@
 package com.android.szparag.flighter.selectdeparture.interactors
 
-import com.android.szparag.flighter.common.asObservable
-import com.android.szparag.flighter.common.getChildren
+import com.android.szparag.flighter.common.interactors.getChildren
 import com.android.szparag.flighter.common.location.LocationFetchingEvent
 import com.android.szparag.flighter.common.location.LocationServicesWrapper
 import com.android.szparag.flighter.common.location.WorldCoordinates
@@ -16,15 +15,10 @@ import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val FIREBASE_QUERY_CHILD_CITY = "city"
-private const val FIREBASE_QUERY_CHILD_LATITUDE = "lat"
-private const val FIREBASE_QUERY_CHILD_LONGITUDE = "lon"
-private const val QUERY_GPS_COORDINATES_SIDE_BOUND = 0.40
-private const val QUERY_GPS_COORDINATES_SIDE_BOUND_EXTENDED = QUERY_GPS_COORDINATES_SIDE_BOUND * 3
 
 @Singleton
 class FlighterSelectDepartureInteractor @Inject constructor(
-    private val firebaseReference: DatabaseReference,
+    private val firebaseInteractor: SelectDepartureFirebaseInteractor,
     private val locationServicesWrapper: LocationServicesWrapper
 ) : SelectDepartureInteractor {
 
@@ -40,84 +34,35 @@ class FlighterSelectDepartureInteractor @Inject constructor(
 
   override fun getAirportsByCity(input: String): Observable<List<AirportModel>> {
     Timber.d("getAirportsByCity, input: $input")
-    return constructQueryAirportCityNameEquality(input).asObservable()
+    return firebaseInteractor.getAirportsByCityNameEquality(input)
         .flatMap { query ->
           if (query.snapshot.childrenCount == 0L)
-            constructQueryAirportCityNameStartsWith(input).asObservable()
+            firebaseInteractor.getAirportsByCityNameStartsWith(input)
           else
             Observable.just(query)
         }
-//        .observeOn(Schedulers.computation())
         .map { query ->
           query
               .getChildren()
               .map { snapshotChild -> snapshotChild.getValue(AirportDTO::class.java)!! }
               .filter { airportDto -> airportDto.iata.isNotBlank() }
+
         }
-        .map { airportDtosList -> airportDtosList.map { airportDto -> airportDto.mapToModel() } }
+        .map { airportDtosList -> airportDtosList.map { airportDto -> airportDto.mapToModel() } } //todo: in one map
   }
 
   override fun getAirportsByGpsCoordinates(worldCoordinates: WorldCoordinates): Observable<List<AirportModel>> {
     Timber.d("getAirportsByGpsCoordinates, worldCoordinates: $worldCoordinates")
-    return constructQueryAirportLatitude(worldCoordinates.latitude).asObservable()
-        .flatMap { constructQueryAirportLongitude(worldCoordinates.longitude).asObservable() }
-//        .observeOn(Schedulers.computation())
+    return firebaseInteractor.getAirportsByLatitude(worldCoordinates.latitude)
+        .flatMap { firebaseInteractor.getAirportsByLongitude(worldCoordinates.longitude) }
         .map { query ->
           query
               .getChildren()
               .map { snapshotChild -> snapshotChild.getValue(AirportDTO::class.java)!! } //todo: !!s
-              .filter { airportDto -> validateAirportCoordinates(worldCoordinates, airportDto) }
+              .filter { airportDto -> firebaseInteractor.validateAirportCoordinates(worldCoordinates, airportDto) }
               .filter { airportDto -> airportDto.iata.isNotBlank() }
         }
-        .map { airportDtosList -> airportDtosList.map { airportDto -> airportDto.mapToModel() } }
+        .map { airportDtosList -> airportDtosList.map { airportDto -> airportDto.mapToModel() } } //todo: in one map
   }
-
-  //todo: those queries should be in some FirebaseInteractor or something
-  //todo: firebase reference and queries.asObservable should be done from there too
-  private fun constructQueryAirportCityNameEquality(queryInput: String) =
-      firebaseReference
-          .orderByChild(FIREBASE_QUERY_CHILD_CITY)
-          .equalTo(queryInput)
-          .limitToFirst(3)
-
-  private fun constructQueryAirportCityNameStartsWith(queryInput: String) =
-      firebaseReference
-          .orderByChild(FIREBASE_QUERY_CHILD_CITY)
-          .startAt(queryInput)
-          .limitToFirst(10)
-
-  private fun constructQueryAirportLatitude(userLatitude: Double) =
-      firebaseReference
-          .orderByChild(FIREBASE_QUERY_CHILD_LATITUDE)
-          .startAt(userLatitude - QUERY_GPS_COORDINATES_SIDE_BOUND)
-          .endAt(userLatitude + QUERY_GPS_COORDINATES_SIDE_BOUND)
-
-  private fun constructQueryAirportLongitude(userLongitude: Double) =
-      firebaseReference
-          .orderByChild(FIREBASE_QUERY_CHILD_LONGITUDE)
-          .startAt(userLongitude - QUERY_GPS_COORDINATES_SIDE_BOUND)
-          .endAt(userLongitude + QUERY_GPS_COORDINATES_SIDE_BOUND)
-
-  private fun constructQueryAirportLatitudeExtended(userLatitude: Double) =
-      firebaseReference
-          .orderByChild(FIREBASE_QUERY_CHILD_LATITUDE)
-          .startAt(userLatitude - QUERY_GPS_COORDINATES_SIDE_BOUND)
-          .endAt(userLatitude + QUERY_GPS_COORDINATES_SIDE_BOUND)
-
-  private fun constructQueryAirportLongitudeExtended(userLongitude: Double) =
-      firebaseReference
-          .orderByChild(FIREBASE_QUERY_CHILD_LONGITUDE)
-          .startAt(userLongitude - QUERY_GPS_COORDINATES_SIDE_BOUND_EXTENDED)
-          .endAt(userLongitude + QUERY_GPS_COORDINATES_SIDE_BOUND_EXTENDED)
-
-  private fun validateAirportCoordinates(originalCoordinates: WorldCoordinates, airportDTO: AirportDTO) =
-      airportDTO.lat.isInRange(
-          originalCoordinates.latitude - QUERY_GPS_COORDINATES_SIDE_BOUND,
-          originalCoordinates.latitude + QUERY_GPS_COORDINATES_SIDE_BOUND
-      ) &&
-          airportDTO.lon.isInRange(
-              originalCoordinates.longitude - QUERY_GPS_COORDINATES_SIDE_BOUND,
-              originalCoordinates.longitude + QUERY_GPS_COORDINATES_SIDE_BOUND)
-
 
 }

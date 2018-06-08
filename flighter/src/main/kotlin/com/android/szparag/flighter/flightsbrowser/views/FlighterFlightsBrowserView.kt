@@ -34,10 +34,8 @@ class FlighterFlightsBrowserView @JvmOverloads constructor(
   @Inject
   override lateinit var presenter: FlightsBrowserPresenter
 
-  override fun instantiatePresenter() {
-    Timber.d("instantiatePresenter")
+  override fun instantiatePresenter() =
     Injector.get().inject(this)
-  }
 
   override fun departureAirportChangeIntent(): Observable<ChangeDepartureAirportIntent> =
       Observable.never()

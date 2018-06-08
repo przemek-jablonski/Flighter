@@ -25,7 +25,6 @@ import javax.inject.Singleton
 class FlighterSelectDeparturePresenter @Inject constructor(override val interactor: SelectDepartureInteractor)
   : BaseMviPresenter<SelectDepartureView, SelectDepartureInteractor, SelectDepartureViewState>(), SelectDeparturePresenter {
 
-  private var cachedSearchTextInput = emptyString()
   private lateinit var intentsDisposable: CompositeDisposable //todo: this should be in BaseMviPresenter
 
   init {
@@ -42,7 +41,7 @@ class FlighterSelectDeparturePresenter @Inject constructor(override val interact
     super.onViewAttached(view)
     Timber.d("onViewAttached, view: $view")
     intentsDisposable = CompositeDisposable()
-    view.render(SelectDepartureViewState.SearchNotStartedViewState())
+    view.render(SelectDepartureViewState.SearchNotStartedViewState()) //todo: this should not happen every time (what about rotation during interaction?)
     processSearchWithTextIntent(view)
     processSearchWithGpsIntent(view)
   }

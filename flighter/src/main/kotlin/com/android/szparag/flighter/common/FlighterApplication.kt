@@ -4,6 +4,7 @@ import android.app.Application
 import com.android.szparag.flighter.worldmap.WorldMapModule
 import com.google.firebase.FirebaseApp
 import com.squareup.leakcanary.LeakCanary
+import io.realm.Realm
 import timber.log.Timber
 import timber.log.Timber.DebugTree
 
@@ -27,6 +28,7 @@ class FlighterApplication : Application() {
     Timber.d("onCreate")
     component = DaggerFlighterComponent.builder().flighterGlobalModule(FlighterGlobalModule(applicationContext)).build()
     FirebaseApp.initializeApp(applicationContext)
+    Realm.init(this)
   }
 
 
