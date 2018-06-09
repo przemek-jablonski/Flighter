@@ -39,7 +39,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
   }
 
   @CallSuper
-  override fun render(state: VS) {
+  override fun render(state: VS) { //todo: this should be abstract
     if (!firstStateRendered) {
       handleFirstRender(state)
     }

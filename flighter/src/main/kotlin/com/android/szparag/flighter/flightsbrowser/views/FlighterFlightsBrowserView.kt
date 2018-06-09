@@ -13,7 +13,6 @@ import com.android.szparag.flighter.flightsbrowser.states.FlightsBrowserIntent.F
 import com.android.szparag.flighter.flightsbrowser.states.FlightsBrowserViewState
 import com.android.szparag.mvi.views.BaseMviConstraintLayout
 import io.reactivex.Observable
-import timber.log.Timber
 import javax.inject.Inject
 
 class FlighterFlightsBrowserView @JvmOverloads constructor(
@@ -48,6 +47,10 @@ class FlighterFlightsBrowserView @JvmOverloads constructor(
 
   override fun flightSelectionIntent(): Observable<FlightSelectionIntent> =
       Observable.never()
+
+  override fun render(state: FlightsBrowserViewState) {
+    super.render(state)
+  }
 
   override fun getScreen() =
       screenData

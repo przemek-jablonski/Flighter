@@ -7,10 +7,7 @@ import com.android.szparag.flighter.common.location.WorldCoordinates
 import com.android.szparag.flighter.selectdeparture.models.local.AirportModel
 import com.android.szparag.flighter.selectdeparture.models.mapToModel
 import com.android.szparag.flighter.selectdeparture.models.remote.AirportDTO
-import com.android.szparag.myextensionsandroid.isInRange
-import com.google.firebase.database.DatabaseReference
 import io.reactivex.Observable
-import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton

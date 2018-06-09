@@ -1,15 +1,15 @@
 package com.android.szparag.flighter.login.interactors
 
+import com.android.szparag.flighter.common.preferences.UserPreferencesRepository
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
-import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
 import java.util.Random
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class FlighterLoginInteractor @Inject constructor(): LoginInteractor {
+class FlighterLoginInteractor @Inject constructor(private val userPreferencesRepository: UserPreferencesRepository) : LoginInteractor {
 
   private var random = Random()
   private var registrationSubject = BehaviorSubject.create<Boolean>()

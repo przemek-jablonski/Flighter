@@ -1,7 +1,7 @@
 package com.android.szparag.flighter.common
 
 import android.app.Application
-import com.android.szparag.flighter.worldmap.WorldMapModule
+import com.android.szparag.flighter.common.preferences.UserPreferencesModel
 import com.google.firebase.FirebaseApp
 import com.squareup.leakcanary.LeakCanary
 import io.realm.Realm
@@ -29,6 +29,15 @@ class FlighterApplication : Application() {
     component = DaggerFlighterComponent.builder().flighterGlobalModule(FlighterGlobalModule(applicationContext)).build()
     FirebaseApp.initializeApp(applicationContext)
     Realm.init(this)
+    resetUserPreferences()
+  }
+
+  private fun resetUserPreferences() {
+    with(Realm.getDefaultInstance()) {
+      executeTransaction {
+        copyToRealmOrUpdate(UserPreferencesModel())
+      }
+    }
   }
 
 
