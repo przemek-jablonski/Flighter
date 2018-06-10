@@ -3,6 +3,7 @@ package com.android.szparag.flighter.selectdeparture.presenters
 import com.android.szparag.flighter.common.location.LocationFetchingEvent.LocationFetchSuccessful
 import com.android.szparag.flighter.selectdeparture.interactors.SelectDepartureInteractor
 import com.android.szparag.flighter.selectdeparture.states.SelectDepartureViewState
+import com.android.szparag.flighter.selectdeparture.states.SelectDepartureViewState.AirportSelectedViewState
 import com.android.szparag.flighter.selectdeparture.states.SelectDepartureViewState.SearchNotStartedViewState
 import com.android.szparag.flighter.selectdeparture.states.SelectDepartureViewState.SearchResult
 import com.android.szparag.flighter.selectdeparture.views.SelectDepartureView
@@ -53,6 +54,12 @@ class FlighterSelectDeparturePresenter @Inject constructor(
         .flatMap { locationFetchingEvent -> interactor.getAirportsByGpsCoordinates(locationFetchingEvent.coordinates) }
         .observeOn(AndroidSchedulers.mainThread())
         .map { list -> SearchResult(list) }
+        .registerProcessing(this)
+
+    view
+        .airportSelectedIntent()
+        .subscribeOn(AndroidSchedulers.mainThread())
+        .map { intent -> AirportSelectedViewState(intent.airportIataCode, intent.airportName) }
         .registerProcessing(this)
   }
 

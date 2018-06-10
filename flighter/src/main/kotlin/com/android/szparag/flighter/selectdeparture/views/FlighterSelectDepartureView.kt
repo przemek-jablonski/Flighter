@@ -18,6 +18,7 @@ import com.android.szparag.flighter.selectdeparture.states.SelectDepartureIntent
 import com.android.szparag.flighter.selectdeparture.states.SelectDepartureIntent.GpsSearchIntent
 import com.android.szparag.flighter.selectdeparture.states.SelectDepartureIntent.TextSearchIntent
 import com.android.szparag.flighter.selectdeparture.states.SelectDepartureViewState
+import com.android.szparag.flighter.selectdeparture.states.SelectDepartureViewState.AirportSelectedViewState
 import com.android.szparag.flighter.selectdeparture.states.SelectDepartureViewState.EmptySearchResult
 import com.android.szparag.flighter.selectdeparture.states.SelectDepartureViewState.FetchingResultWithGpsViewState
 import com.android.szparag.flighter.selectdeparture.states.SelectDepartureViewState.FetchingResultWithTextViewState
@@ -26,14 +27,12 @@ import com.android.szparag.flighter.selectdeparture.states.SelectDepartureViewSt
 import com.android.szparag.flighter.selectdeparture.states.SelectDepartureViewState.SearchResult
 import com.android.szparag.mvi.views.BaseMviConstraintLayout
 import com.android.szparag.myextensionsbase.emptyString
+import com.android.szparag.myextensionsbase.exhaustive
 import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxTextView
 import com.szparag.android.mypermissions.AndroidPermission.AccessFineLocationPermission
 import com.szparag.android.mypermissions.PermissionCheckEvent
-import io.reactivex.Observable
 import io.reactivex.Single
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.cast
 import timber.log.Timber
 import javax.inject.Inject
@@ -62,11 +61,8 @@ class FlighterSelectDepartureView @JvmOverloads constructor(
     }
   }
 
-  @Inject
-  override lateinit var presenter: SelectDeparturePresenter
-
+  @Inject override lateinit var presenter: SelectDeparturePresenter
   private val airportsAdapter = AirportsAdapter()
-  private val airportsDisposable = CompositeDisposable() //todo: to BaseMviConstraintLayout disposable
   private var layoutAnimatedFlag = false
 
 
@@ -74,59 +70,48 @@ class FlighterSelectDepartureView @JvmOverloads constructor(
     super.onAttachedToWindow()
     airportsRecycler.adapter = airportsAdapter
     airportsRecycler.layoutManager = LinearLayoutManager(context)
-    airportsAdapter.getItemClicks().subscribe { airport ->
-      Timber.d("airportsAdapter.getItemClicks(), airport: $airport")
-      navigationDelegate.goToScreen(FlighterFlightsBrowserView.screenData) //todo: WROOONG
-    }.addTo(airportsDisposable)
   }
-
-  override fun onDetachedFromWindow() {
-    super.onDetachedFromWindow()
-    airportsDisposable.clear()
-  }
-
-  override fun searchWithTextIntent(): Observable<TextSearchIntent> =
-      RxView
-          .focusChanges(inputEditText)
-          .filter { it }
-          .map { TextSearchIntent(emptyString()) }
-          .switchMap {
-            RxTextView.textChanges(inputEditText).map { TextSearchIntent(it.toString()) }
-          }
-
-  override fun searchWithGpsIntent(): Observable<GpsSearchIntent> =
-      RxView.clicks(inputGpsButton).map { GpsSearchIntent() }
-
-  override fun airportSelectedIntent(): Observable<AirportSelectionIntent> =
-      Observable.never()
 
   override fun render(state: SelectDepartureViewState) {
     super.render(state)
     Timber.i("render, state: $state")
     when (state) {
-      is SearchNotStartedViewState -> {
-
-      }
+      is SearchNotStartedViewState -> Unit
       is QueryingWithTextViewState -> {
-        animateLayout()
+        showAndAnimateRecyclerView()
       }
       is FetchingResultWithTextViewState -> {
-        animateLayout()
+        showAndAnimateRecyclerView()
       }
       is FetchingResultWithGpsViewState -> {
-        animateLayout()
+        showAndAnimateRecyclerView()
       }
-      is EmptySearchResult -> {
-
-      }
+      is EmptySearchResult -> Unit
       is SearchResult -> {
-        animateLayout()
+        showAndAnimateRecyclerView()
         airportsAdapter.update(state.results)
       }
-    }
+      is AirportSelectedViewState -> {
+        navigationDelegate.goToScreen(FlighterFlightsBrowserView.screenData)
+      }
+    }.exhaustive
   }
 
-  private fun animateLayout() {
+  //<editor-fold desc="Intent generation">
+  override fun searchWithTextIntent() =
+      RxView.focusChanges(inputEditText)
+          .filter { it }
+          .map { TextSearchIntent(emptyString()) }
+          .switchMap { RxTextView.textChanges(inputEditText).map { TextSearchIntent(it.toString()) } }
+
+  override fun searchWithGpsIntent() =
+      RxView.clicks(inputGpsButton).map { GpsSearchIntent() }
+
+  override fun airportSelectedIntent() =
+      airportsAdapter.getItemClicks().map { airport -> AirportSelectionIntent(airport.airportIataCode, airport.airportName) }
+  //</editor-fold>
+
+  private fun showAndAnimateRecyclerView() {
     if (!layoutAnimatedFlag) {
       val constaintSet = ConstraintSet()
       constaintSet.clone(context, R.layout.screen_select_departure_final)
@@ -142,10 +127,8 @@ class FlighterSelectDepartureView @JvmOverloads constructor(
   override fun requestGpsPermission(): Single<PermissionCheckEvent<AccessFineLocationPermission>> =
       permissionRequestAction.invoke(AccessFineLocationPermission).cast() //todo: cast? what if it fails?
 
-  override fun instantiatePresenter() =
-      Injector.get().inject(this)
+  override fun instantiatePresenter() = Injector.get().inject(this)
 
-  override fun getScreen() =
-      screenData
+  override fun getScreen() = screenData
 
 }

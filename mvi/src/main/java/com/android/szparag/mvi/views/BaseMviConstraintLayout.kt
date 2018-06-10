@@ -9,18 +9,20 @@ import com.android.szparag.mvi.presenters.MviPresenter
 import com.android.szparag.myextensionsandroid.hide
 import com.android.szparag.myextensionsandroid.show
 import com.szparag.android.mypermissions.PermissionRequestAction
+import io.reactivex.disposables.CompositeDisposable
 
 /**
  * Created by Przemyslaw Jablonski (github.com/sharaquss, pszemek.me) on 02/04/2018.
  */
-abstract class BaseMviConstraintLayout<in V : MviView<VS>, P : MviPresenter<V, VS>, VS : Any> @JvmOverloads
+abstract class BaseMviConstraintLayout<in V : MviView<VS>, P : MviPresenter<V, VS>, in VS : Any> @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
     ConstraintLayout(context, attrs, defStyleAttr), MviView<VS> {
 
+  abstract var presenter: P
+  protected val viewDisposables = CompositeDisposable()
   private var firstStateRendered = false
   override lateinit var navigationDelegate: Navigator
   override lateinit var permissionRequestAction: PermissionRequestAction
-  abstract var presenter: P
 
   init {
     if (!isInEditMode) hide()
@@ -56,6 +58,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
     if (isInEditMode) return
+    viewDisposables.clear()
     instantiatePresenter()
     attachToPresenter()
   }
@@ -64,6 +67,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
     super.onDetachedFromWindow()
     if (isInEditMode) return
     detachFromPresenter()
+    viewDisposables.clear()
   }
 
 }

@@ -19,4 +19,6 @@ sealed class SelectDepartureViewState {
 
   data class SearchResult(val results: List<AirportModel>): SelectDepartureViewState()
 
+  data class AirportSelectedViewState(val airportIataCode: String, val airportName: String) : SelectDepartureViewState()
+
 }

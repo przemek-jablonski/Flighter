@@ -24,16 +24,20 @@ import com.android.szparag.flighter.login.states.LoginViewState.OperationErrorVi
 import com.android.szparag.flighter.selectdeparture.views.FlighterSelectDepartureView
 import com.android.szparag.kotterknife.bindView
 import com.android.szparag.mvi.views.BaseMviConstraintLayout
+import com.android.szparag.myextensionsbase.exhaustive
 import com.jakewharton.rxbinding2.view.RxView
-import io.reactivex.Observable
 import timber.log.Timber
 import javax.inject.Inject
 
 /**
  * Created by Przemyslaw Jablonski (github.com/sharaquss, pszemek.me) on 01/04/2018.
  */
-class FlighterLoginView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0) : BaseMviConstraintLayout<LoginView, LoginPresenter, LoginViewState>(context, attrs, defStyleAttr), LoginView {
+class FlighterLoginView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : BaseMviConstraintLayout<LoginView, LoginPresenter, LoginViewState>(context, attrs, defStyleAttr),
+    LoginView {
 
   companion object {
     val screenData by lazy {
@@ -45,86 +49,47 @@ class FlighterLoginView @JvmOverloads constructor(context: Context, attrs: Attri
     }
   }
 
-
-  override fun getScreen(): Screen = screenData
-
-  @Inject
-  @Suppress("MemberVisibilityCanBePrivate")
-  override
-  lateinit var presenter: LoginPresenter
-
+  @Inject override lateinit var presenter: LoginPresenter
   private val frontImageView: ImageView by bindView(R.id.frontImageView)
   private val descriptionTextView: TextView by bindView(R.id.descriptionTextView)
   private val skipTextView: TextView by bindView(R.id.skipTextView)
 
-  init {
-    Timber.d("init")
-  }
 
-  override fun loginRegisterIntent(): Observable<LoginRegisterIntent> =
-      RxView.clicks(frontImageView).map { LoginRegisterIntent() }
 
-  override fun skipIntent(): Observable<SkipIntent> =
-      RxView.clicks(skipTextView).map { SkipIntent() }
-
-  override fun dialogAcceptanceIntent(): Observable<DialogAcceptanceIntent> =
-      RxView.clicks(descriptionTextView).map { DialogAcceptanceIntent("Asdasdasd [${System.currentTimeMillis()}") }
-
-  override fun dialogDismissalIntent(): Observable<DialogDismissalIntent> =
-      RxView.clicks(descriptionTextView).map { DialogDismissalIntent() }
-
-  override fun onAttachedToWindow() {
-    Timber.d("onAttachedToWindow")
-    super.onAttachedToWindow()
-  }
-
-  override fun onDetachedFromWindow() {
-    Timber.d("onDetachedFromWindow")
-    super.onDetachedFromWindow()
-  }
 
   override fun render(state: LoginViewState) {
     super.render(state)
     Timber.i("render, state: $state")
     when (state) {
-      is OnboardingRegisterViewState -> renderRegisterViewState()
-      is OnboardingLoginViewState -> renderLoginViewState()
-      is AskForCredentialsViewState -> renderAskForCredentialsViewState()
-      is OperationErrorViewState -> renderErrorViewState()
-      is LoginSkippedViewState -> renderLoginSkippedViewState()
-      is LoginSuccessfulViewState -> renderLoginSuccessfulViewState()
-    }
+      is OnboardingRegisterViewState -> Unit
+      is OnboardingLoginViewState -> Unit
+      is AskForCredentialsViewState -> Unit
+      is OperationErrorViewState -> Unit
+      is LoginSkippedViewState -> {
+        navigationDelegate.goToScreen(FlighterSelectDepartureView.screenData)
+      }
+      is LoginSuccessfulViewState -> {
+        navigationDelegate.goToScreen(FlighterSelectDepartureView.screenData)
+      }
+    }.exhaustive
   }
 
-  private fun renderRegisterViewState() {
-    Timber.d("renderRegisterViewState")
-  }
+  //<editor-fold desc="Intent generation">
+  override fun loginRegisterIntent() =
+      RxView.clicks(frontImageView).map { LoginRegisterIntent() }
 
-  private fun renderLoginViewState() {
-    Timber.d("renderLoginViewState")
-  }
+  override fun skipIntent() =
+      RxView.clicks(skipTextView).map { SkipIntent() }
 
-  private fun renderAskForCredentialsViewState() {
-    Timber.d("renderAskForCredentialsViewState")
-  }
+  override fun dialogAcceptanceIntent() =
+      RxView.clicks(descriptionTextView).map { DialogAcceptanceIntent("Asdasdasd [${System.currentTimeMillis()}") }
 
-  private fun renderErrorViewState() {
-    Timber.d("renderErrorViewState")
-  }
+  override fun dialogDismissalIntent() =
+      RxView.clicks(descriptionTextView).map { DialogDismissalIntent() }
+  //</editor-fold>
 
-  private fun renderLoginSkippedViewState() {
-    Timber.d("renderLoginSkippedViewState")
-    navigationDelegate.goToScreen(FlighterSelectDepartureView.screenData)
-  }
+  override fun instantiatePresenter() = Injector.get().inject(this)
 
-  private fun renderLoginSuccessfulViewState() {
-    Timber.d("renderLoginSuccessfulViewState")
-    navigationDelegate.goToScreen(FlighterSelectDepartureView.screenData)
-  }
-
-  override fun instantiatePresenter() {
-    Timber.d("instantiatePresenter")
-    Injector.get().inject(this)
-  }
+  override fun getScreen(): Screen = screenData
 
 }

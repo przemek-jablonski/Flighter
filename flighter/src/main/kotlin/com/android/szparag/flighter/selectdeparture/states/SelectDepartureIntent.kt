@@ -6,6 +6,6 @@ sealed class SelectDepartureIntent {
 
   class GpsSearchIntent: SelectDepartureIntent()
 
-  data class AirportSelectionIntent(val airportIataCode: String): SelectDepartureIntent()
+  data class AirportSelectionIntent(val airportIataCode: String, val airportName: String) : SelectDepartureIntent()
 
 }

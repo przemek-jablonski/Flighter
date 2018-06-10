@@ -5,13 +5,9 @@ import io.reactivex.subjects.BehaviorSubject
 
 open class BaseMviModelDistributor<VS : Any> : ModelDistributor<VS> {
 
-  private var model: VS? = null
   private val modelSubject = BehaviorSubject.create<VS>()
 
-  override fun replaceModel(newModel: VS) = with(newModel) {
-    model = this
-    modelSubject.onNext(this)
-  }
+  override fun replaceModel(newModel: VS) = modelSubject.onNext(newModel)
 
   override fun getModels(): Observable<VS> = modelSubject
 

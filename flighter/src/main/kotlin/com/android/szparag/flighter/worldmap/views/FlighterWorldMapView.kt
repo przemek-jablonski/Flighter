@@ -24,6 +24,7 @@ import com.android.szparag.flighter.worldmap.states.WorldMapViewState.Interactiv
 import com.android.szparag.flighter.worldmap.states.WorldMapViewState.OnboardingViewState
 import com.android.szparag.flighter.worldmap.states.WorldMapViewState.ShowingLocationViewState
 import com.android.szparag.mvi.views.BaseMviMapView
+import com.android.szparag.myextensionsbase.exhaustive
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
@@ -32,6 +33,7 @@ import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
 import javax.inject.Inject
 
+//todo: no disposing here
 class FlighterWorldMapView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
     BaseMviMapView<WorldMapView, WorldMapPresenter, WorldMapViewState>(context, attrs, defStyleAttr), WorldMapView {
 
@@ -47,14 +49,9 @@ class FlighterWorldMapView @JvmOverloads constructor(context: Context, attrs: At
   }
 
 
-  @Inject
-  override lateinit var presenter: WorldMapPresenter
-
-  @Inject
-  lateinit var lifecycleBus: Observable<ActivityLifecycleState>
-
-  @Volatile
-  private var initialized = false
+  @Inject override lateinit var presenter: WorldMapPresenter
+  @Inject lateinit var lifecycleBus: Observable<ActivityLifecycleState>
+  @Volatile private var initialized = false
     set(value) {
       field = value
       mapInitializedSubject.onNext(value)
@@ -62,6 +59,7 @@ class FlighterWorldMapView @JvmOverloads constructor(context: Context, attrs: At
 
   private val mapInitializedSubject = PublishSubject.create<Boolean>().apply {
     this.doOnSubscribe { this.onNext(initialized) } //todo: is it correctly implemented?
+    //todo: mapview callbacks are not correct, after rotation map is getting C->S->R->P->S->D->C->S->R events chain
   }
 
   init {
@@ -96,15 +94,11 @@ class FlighterWorldMapView @JvmOverloads constructor(context: Context, attrs: At
     super.render(state)
     Timber.i("render, state: $state")
     when (state) {
-      is OnboardingViewState -> {
-      }
-      is ShowingLocationViewState -> {
-      }
-      is InteractiveViewState -> {
-      }
-      is ErrorViewState -> {
-      }
-    }
+      is OnboardingViewState -> Unit
+      is ShowingLocationViewState -> Unit
+      is InteractiveViewState -> Unit
+      is ErrorViewState -> Unit
+    }.exhaustive
   }
 
   @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA")
