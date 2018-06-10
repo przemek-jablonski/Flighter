@@ -2,7 +2,9 @@ package com.android.szparag.flighter.common
 
 import android.content.Context
 import com.android.szparag.flighter.common.preferences.FlighterUserPreferencesRepository
+import com.android.szparag.flighter.common.preferences.FlighterUserSettingsRepository
 import com.android.szparag.flighter.common.preferences.UserPreferencesRepository
+import com.android.szparag.flighter.common.preferences.UserSettingsRepository
 import com.android.szparag.flighter.common.util.ActivityLifecycleState
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.database.FirebaseDatabase
@@ -18,6 +20,9 @@ class FlighterGlobalModule(val context: Context) {
 
   @Provides
   fun provideUserPreferencesRepository(implementation: FlighterUserPreferencesRepository): UserPreferencesRepository = implementation
+
+  @Provides
+  fun provideUserSettingsRepository(implementation: FlighterUserSettingsRepository): UserSettingsRepository = implementation
 
   @Provides
   fun provideActivityStateBus(implementation: GlobalActivityLifecycleBus): Observable<ActivityLifecycleState> = implementation.getBus()

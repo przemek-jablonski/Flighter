@@ -3,16 +3,14 @@ package com.android.szparag.flighter.selectdeparture.presenters
 import com.android.szparag.flighter.common.location.LocationFetchingEvent.LocationFetchSuccessful
 import com.android.szparag.flighter.selectdeparture.interactors.SelectDepartureInteractor
 import com.android.szparag.flighter.selectdeparture.states.SelectDepartureViewState
+import com.android.szparag.flighter.selectdeparture.states.SelectDepartureViewState.SearchNotStartedViewState
 import com.android.szparag.flighter.selectdeparture.states.SelectDepartureViewState.SearchResult
 import com.android.szparag.flighter.selectdeparture.views.SelectDepartureView
+import com.android.szparag.mvi.models.ModelDistributor
 import com.android.szparag.mvi.presenters.BaseMviPresenter
-import com.android.szparag.myextensionsbase.emptyString
 import com.szparag.android.mypermissions.PermissionCheckEvent.PermissionGrantedEvent
-import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
-import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -22,26 +20,20 @@ import javax.inject.Singleton
  * Created by Przemyslaw Jablonski (github.com/sharaquss, pszemek.me) on 01/04/2018.
  */
 @Singleton
-class FlighterSelectDeparturePresenter @Inject constructor(override val interactor: SelectDepartureInteractor)
-  : BaseMviPresenter<SelectDepartureView, SelectDepartureInteractor, SelectDepartureViewState>(), SelectDeparturePresenter {
-
-  private lateinit var intentsDisposable: CompositeDisposable //todo: this should be in BaseMviPresenter
+class FlighterSelectDeparturePresenter @Inject constructor(
+    override val interactor: SelectDepartureInteractor,
+    override val modelDistributor: ModelDistributor<SelectDepartureViewState>
+) : BaseMviPresenter<SelectDepartureView, SelectDepartureViewState>(), SelectDeparturePresenter {
 
   init {
     Timber.d("init")
   }
 
-
-  override fun onFirstViewAttached() {
-    super.onFirstViewAttached()
-    Timber.d("onFirstViewAttached")
-  }
-
   override fun onViewAttached(view: SelectDepartureView) {
     super.onViewAttached(view)
     Timber.d("onViewAttached, view: $view")
-    intentsDisposable = CompositeDisposable()
-    view.render(SelectDepartureViewState.SearchNotStartedViewState()) //todo: this should not happen every time (what about rotation during interaction?)
+    modelDistributor.replaceModel(
+        SearchNotStartedViewState()) //todo: this should not happen every time (what about rotation during interaction?)
     processSearchWithTextIntent(view)
     processSearchWithGpsIntent(view)
   }
@@ -49,7 +41,6 @@ class FlighterSelectDeparturePresenter @Inject constructor(override val interact
   override fun onViewDetached(view: SelectDepartureView) {
     super.onViewDetached(view)
     Timber.d("onViewDetached, view: $view")
-    intentsDisposable.clear()
   }
 
   //todo: check threading!!!!!!!!!!!!!!!!
@@ -65,10 +56,10 @@ class FlighterSelectDeparturePresenter @Inject constructor(override val interact
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe { viewState ->
           Timber.d("processSearchWithTextIntent.onNext, viewState: $viewState")
-          view.render(viewState)
+          modelDistributor.replaceModel(
+              viewState) //todo: METHOD PROCESS_INTENT() SO THAT ADDTO(DISPOSABLE) AND SUBSCRIBE ARE NOT NEEDED EVERYWHERE
         }
-        .addTo(intentsDisposable)
-
+        .addTo(presenterDisposables)
   }
 
   //todo: check threading!!!!!!!!!!!!!!!!
@@ -91,9 +82,9 @@ class FlighterSelectDeparturePresenter @Inject constructor(override val interact
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe { viewState ->
           Timber.d("processSearchWithGpsIntent.onNext, viewState: $viewState")
-          view.render(viewState)
+          modelDistributor.replaceModel(viewState)
         }
-        .addTo(intentsDisposable)
+        .addTo(presenterDisposables)
   }
 
 }

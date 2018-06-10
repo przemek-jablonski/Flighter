@@ -1,8 +1,11 @@
 package com.android.szparag.flighter.common.preferences
 
 import io.reactivex.Flowable
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class FlighterUserSettingsRepository : UserSettingsRepository {
+@Singleton
+class FlighterUserSettingsRepository @Inject constructor() : UserSettingsRepository {
   override fun update(item: UserSettingsModel) {
     //todo: implement
   }

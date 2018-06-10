@@ -1,6 +1,5 @@
 package com.android.szparag.flighter.flightsbrowser.interactors
 
-import com.android.szparag.flighter.flightsbrowser.states.FlightsBrowserViewState
-import com.android.szparag.mvi.models.MviInteractor
+import com.android.szparag.mvi.interactors.MviInteractor
 
 interface FlightsBrowserInteractor : MviInteractor

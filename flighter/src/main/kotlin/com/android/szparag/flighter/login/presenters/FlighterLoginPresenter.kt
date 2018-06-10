@@ -8,6 +8,7 @@ import com.android.szparag.flighter.login.states.LoginViewState.LoginSuccessfulV
 import com.android.szparag.flighter.login.states.LoginViewState.OnboardingLoginViewState
 import com.android.szparag.flighter.login.states.LoginViewState.OnboardingRegisterViewState
 import com.android.szparag.flighter.login.views.LoginView
+import com.android.szparag.mvi.models.ModelDistributor
 import com.android.szparag.mvi.presenters.BaseMviPresenter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -19,16 +20,18 @@ import javax.inject.Singleton
  * Created by Przemyslaw Jablonski (github.com/sharaquss, pszemek.me) on 01/04/2018.
  */
 @Singleton
-class FlighterLoginPresenter @Inject constructor(override var interactor: LoginInteractor)
-  : BaseMviPresenter<LoginView, LoginInteractor, LoginViewState>(), LoginPresenter {
+class FlighterLoginPresenter @Inject constructor(
+    override val interactor: LoginInteractor,
+    override val modelDistributor: ModelDistributor<LoginViewState>
+) : BaseMviPresenter<LoginView, LoginViewState>(), LoginPresenter {
 
   init {
     Timber.d("init")
   }
 
-  override fun onFirstViewAttached() {
-    super.onFirstViewAttached()
-    Timber.d("onFirstViewAttached, view: $view")
+  override fun onViewAttached(view: LoginView) {
+    super.onViewAttached(view)
+    Timber.d("onViewAttached, view: $view")
 
     interactor
         .isUserRegistered()
@@ -39,7 +42,7 @@ class FlighterLoginPresenter @Inject constructor(override var interactor: LoginI
         }
         .subscribe { registered ->
           Timber.d("model.isUserRegistered().onNext, registered: $registered")
-          view?.render(if (registered) OnboardingLoginViewState() else OnboardingRegisterViewState())
+          modelDistributor.replaceModel(if (registered) OnboardingLoginViewState() else OnboardingRegisterViewState())
         }
 
     processLoginRegisterIntents()
@@ -56,7 +59,7 @@ class FlighterLoginPresenter @Inject constructor(override var interactor: LoginI
           .observeOn(Schedulers.single())
           .subscribe { intent ->
             Timber.d("processLoginRegisterIntents.onNext, intent: $intent")
-            view?.render(AskForCredentialsViewState())
+            modelDistributor.replaceModel(AskForCredentialsViewState())
           }
     }
   }
@@ -68,7 +71,7 @@ class FlighterLoginPresenter @Inject constructor(override var interactor: LoginI
           .subscribeOn(AndroidSchedulers.mainThread())
           .subscribe { intent ->
             Timber.d("processSkipIntents.onNext, intent: $intent")
-            view?.render(LoginSkippedViewState())
+            modelDistributor.replaceModel(LoginSkippedViewState())
           }
     }
   }
@@ -80,7 +83,7 @@ class FlighterLoginPresenter @Inject constructor(override var interactor: LoginI
           .subscribeOn(AndroidSchedulers.mainThread())
           .subscribe { intent ->
             Timber.d("processDialogAcceptanceIntents.onNext, intent: $intent")
-            view?.render(LoginSuccessfulViewState())
+            modelDistributor.replaceModel(LoginSuccessfulViewState())
           }
     }
   }
@@ -98,16 +101,4 @@ class FlighterLoginPresenter @Inject constructor(override var interactor: LoginI
     }
   }
 
-
-  //____________________________temporary
-
-  override fun onViewAttached(view: LoginView) {
-    super.onViewAttached(view)
-    Timber.d("onViewAttached, view: $view")
-  }
-
-  override fun onViewDetached(view: LoginView) {
-    super.onViewDetached(view)
-    Timber.d("onViewDetached, view: $view")
-  }
 }

@@ -1,9 +1,12 @@
 package com.android.szparag.flighter.selectdeparture.interactors
 
+import com.android.szparag.flighter.common.interactors.FlighterBaseInteractor
 import com.android.szparag.flighter.common.interactors.getChildren
 import com.android.szparag.flighter.common.location.LocationFetchingEvent
 import com.android.szparag.flighter.common.location.LocationServicesWrapper
 import com.android.szparag.flighter.common.location.WorldCoordinates
+import com.android.szparag.flighter.common.preferences.UserPreferencesRepository
+import com.android.szparag.flighter.common.preferences.UserSettingsRepository
 import com.android.szparag.flighter.selectdeparture.models.local.AirportModel
 import com.android.szparag.flighter.selectdeparture.models.mapToModel
 import com.android.szparag.flighter.selectdeparture.models.remote.AirportDTO
@@ -16,8 +19,10 @@ import javax.inject.Singleton
 @Singleton
 class FlighterSelectDepartureInteractor @Inject constructor(
     private val firebaseInteractor: SelectDepartureFirebaseInteractor,
-    private val locationServicesWrapper: LocationServicesWrapper
-) : SelectDepartureInteractor {
+    private val locationServicesWrapper: LocationServicesWrapper,
+    userPreferencesRepository: UserPreferencesRepository,
+    userSettingsRepository: UserSettingsRepository
+) : FlighterBaseInteractor(userPreferencesRepository, userSettingsRepository), SelectDepartureInteractor {
 
 
   init {

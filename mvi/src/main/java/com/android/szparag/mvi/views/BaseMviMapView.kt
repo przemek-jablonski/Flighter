@@ -16,7 +16,7 @@ import timber.log.Timber
 //todo: remove timber, add static logger with a static switch
 //todo: this has EXACT SAME code as BaseMviConstraintLayout, deal with this
 abstract class BaseMviMapView<in V : MviView<VS>, P : MviPresenter<V, VS>, in VS : Any> @JvmOverloads constructor(
-  context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : MapView(context, attrs, defStyleAttr), MviView<VS> {
 
   private var firstStateRendered = false
@@ -26,24 +26,28 @@ abstract class BaseMviMapView<in V : MviView<VS>, P : MviPresenter<V, VS>, in VS
 
   init {
     Timber.d("init")
-    if(!isInEditMode) hide()
+    if (!isInEditMode) hide()
   }
 
   abstract fun instantiatePresenter()
 
   @Suppress("UNCHECKED_CAST")
-  @CallSuper open fun attachToPresenter() {
+  @CallSuper
+  open fun attachToPresenter() {
     presenter.attachView(this as V)
   }
 
   @Suppress("UNCHECKED_CAST")
-  @CallSuper open fun detachFromPresenter() {
+  @CallSuper
+  open fun detachFromPresenter() {
     presenter.detachView(this as V)
   }
 
   @CallSuper
   override fun render(state: VS) {
-    if (!firstStateRendered) { handleFirstRender(state) }
+    if (!firstStateRendered) {
+      handleFirstRender(state)
+    }
   }
 
   protected open fun handleFirstRender(state: VS) {

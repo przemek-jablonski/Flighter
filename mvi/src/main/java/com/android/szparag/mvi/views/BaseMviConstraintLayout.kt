@@ -29,12 +29,14 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
   abstract fun instantiatePresenter()
 
   @Suppress("UNCHECKED_CAST")
-  @CallSuper open fun attachToPresenter() {
+  @CallSuper
+  open fun attachToPresenter() {
     presenter.attachView(this as V)
   }
 
   @Suppress("UNCHECKED_CAST")
-  @CallSuper open fun detachFromPresenter() {
+  @CallSuper
+  open fun detachFromPresenter() {
     presenter.detachView(this as V)
   }
 
