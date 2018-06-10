@@ -46,9 +46,12 @@ import kotlinx.android.synthetic.main.view_select_departure_input.view.view_sele
  */
 //todo: first letter in textview ALWAYS should be capitalized, even if input is from physical keyboard
 //todo: or user explicitly tapped-off shift key
-class FlighterSelectDepartureView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0) : BaseMviConstraintLayout<SelectDepartureView, SelectDeparturePresenter, SelectDepartureViewState>(context,
-    attrs, defStyleAttr), SelectDepartureView {
+class FlighterSelectDepartureView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : BaseMviConstraintLayout<SelectDepartureView, SelectDeparturePresenter, SelectDepartureViewState>(context, attrs, defStyleAttr),
+    SelectDepartureView {
 
   companion object {
     val screenData by lazy {
@@ -63,7 +66,7 @@ class FlighterSelectDepartureView @JvmOverloads constructor(context: Context, at
   override lateinit var presenter: SelectDeparturePresenter
 
   private val airportsAdapter = AirportsAdapter()
-  private val airportsDisposable = CompositeDisposable()
+  private val airportsDisposable = CompositeDisposable() //todo: to BaseMviConstraintLayout disposable
   private var layoutAnimatedFlag = false
 
 
@@ -73,7 +76,7 @@ class FlighterSelectDepartureView @JvmOverloads constructor(context: Context, at
     airportsRecycler.layoutManager = LinearLayoutManager(context)
     airportsAdapter.getItemClicks().subscribe { airport ->
       Timber.d("airportsAdapter.getItemClicks(), airport: $airport")
-      navigationDelegate.goToScreen(FlighterFlightsBrowserView.screenData)
+      navigationDelegate.goToScreen(FlighterFlightsBrowserView.screenData) //todo: WROOONG
     }.addTo(airportsDisposable)
   }
 

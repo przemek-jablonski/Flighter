@@ -3,6 +3,7 @@ package com.android.szparag.mvi.presenters
 import android.support.annotation.CallSuper
 import com.android.szparag.mvi.interactors.MviInteractor
 import com.android.szparag.mvi.models.ModelDistributor
+import com.android.szparag.mvi.util.addTo
 import com.android.szparag.mvi.views.MviView
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -22,6 +23,28 @@ abstract class BaseMviPresenter<V : MviView<VS>, VS : Any> : MviPresenter<V, VS>
   protected val presenterDisposables = CompositeDisposable()
   private var viewAttachedFirstTime = true
 
+  /**
+   * Defines what ViewState should be created for given View when attaching to this presenter for the first time.
+   * Called in onFirstViewAttached() callback.
+   *
+   * If you do not wish to assign first ViewState upon attaching view for the first time, return null with this method
+   *
+   * @see onFirstViewAttached
+   */
+  abstract fun distributeFirstViewState(): VS?
+
+  /**
+   * Defines action processing which should take place upon receiving any userIntent from the view.
+   * Ideally, all of the Intents defined for view of this presenter should be covered with some processing.
+   *
+   * Use registerIntentProcessing() method for adding processing to gain auto-dispose and auto-rendering feature for free.
+   *
+   * @see registerIntentProcessing
+   * @see onViewAttached
+   * @param view currently attached view to this presenter
+   */
+  abstract fun processUserIntents(view: V)
+
 
   /**
    * Attaches view to this presenter instance.
@@ -40,11 +63,11 @@ abstract class BaseMviPresenter<V : MviView<VS>, VS : Any> : MviPresenter<V, VS>
           "attachView, view already attached, this should not happen in usual circumstances, old view: ${this.view}, input view: $view")
     })
     this.view = view
+    onViewAttached(view)
     if (viewAttachedFirstTime) {
       viewAttachedFirstTime = false
       onFirstViewAttached()
     }
-    onViewAttached(view)
   }
 
   /**
@@ -79,8 +102,9 @@ abstract class BaseMviPresenter<V : MviView<VS>, VS : Any> : MviPresenter<V, VS>
    */
   @CallSuper
   open fun onFirstViewAttached() {
-    Timber.i("onFirstViewAttached")
+    Timber.i("onFirstViewAttached, first viewState: ${distributeFirstViewState()}, view: $view")
     requireNotNull(view) //todo: is it nessesary?
+    distributeFirstViewState()?.let { viewState -> modelDistributor.replaceModel(viewState) }
   }
 
   /**
@@ -101,20 +125,19 @@ abstract class BaseMviPresenter<V : MviView<VS>, VS : Any> : MviPresenter<V, VS>
   protected open fun onViewAttached(view: V) {
     Timber.i("onViewAttached, view: $view")
     presenterDisposables.clear()
-    presenterDisposables.add(
-        modelDistributor
-            .getModels()
-            .subscribeOn(Schedulers.computation())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { viewState ->
-              Timber.i("modelDistributor.getModels(), viewState: $viewState, view: $view")
-              view.render(viewState)
-            }
-    )
+    processUserIntents(view)
+    modelDistributor
+        .getModels()
+        .subscribeOn(Schedulers.computation())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe { viewState ->
+          Timber.i("modelDistributor.getModels(), viewState: $viewState, view: $view")
+          view.render(viewState)
+        }
+        .addTo(presenterDisposables)
   }
 
   /**
-   *
    * Informs that view was detached to this presenter.
    * Re-detaching view due to moving forward/backwards in stack or due to device rotation WILL trigger this callback every time.
    * This callback is synchronous, so operations on this soon-to-be detached view are possible although in limited time capacity.
@@ -132,9 +155,27 @@ abstract class BaseMviPresenter<V : MviView<VS>, VS : Any> : MviPresenter<V, VS>
     presenterDisposables.clear()
   }
 
-  override fun addIntentProcessing(intentProcessing: Observable<VS>) {
-    Timber.i("addIntentProcessing, intentProcessing: $intentProcessing")
-    presenterDisposables.add(intentProcessing.subscribe { viewState -> modelDistributor.replaceModel(viewState) })
+  /**
+   * Utility method for automatic observable disposal (with presenterDisposables field).
+   * Adds predefined subscribe operator code to the chain so that all viewStates are automatically distributed to modelDistributor.
+   *
+   * Designed to use with chain that converts user intents to view states.
+   *
+   * @see presenterDisposables
+   * @param intentProcessing processing that has been applied to given Intent
+   */
+  override fun registerIntentProcessing(intentProcessing: Observable<out VS>) {
+    Timber.i("registerIntentProcessing, intentProcessing: $intentProcessing")
+    intentProcessing.subscribe { viewState -> modelDistributor.replaceModel(viewState) }.addTo(presenterDisposables)
+  }
+
+  /**
+   * Extension to registerIntentProcessing method.
+   *
+   * @see registerIntentProcessing
+   */
+  fun Observable<out VS>.registerProcessing(presenter: BaseMviPresenter<V, VS>) {
+    presenter.registerIntentProcessing(this)
   }
 
 }

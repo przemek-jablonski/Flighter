@@ -5,7 +5,6 @@ import com.android.szparag.flighter.flightsbrowser.states.FlightsBrowserViewStat
 import com.android.szparag.flighter.flightsbrowser.views.FlightsBrowserView
 import com.android.szparag.mvi.models.ModelDistributor
 import com.android.szparag.mvi.presenters.BaseMviPresenter
-import timber.log.Timber
 import javax.inject.Inject
 
 class FlighterFlightsBrowserPresenter @Inject constructor(
@@ -13,12 +12,9 @@ class FlighterFlightsBrowserPresenter @Inject constructor(
     override val modelDistributor: ModelDistributor<FlightsBrowserViewState>
 ) : BaseMviPresenter<FlightsBrowserView, FlightsBrowserViewState>(), FlightsBrowserPresenter {
 
-  init {
-  }
 
-  override fun onFirstViewAttached() {
-    super.onFirstViewAttached()
-    Timber.d("onFirstViewAttached")
-//    view?.render(SearchNotStartedViewState())
-  }
+  override fun distributeFirstViewState() = null
+
+  override fun processUserIntents(view: FlightsBrowserView) = Unit
+
 }

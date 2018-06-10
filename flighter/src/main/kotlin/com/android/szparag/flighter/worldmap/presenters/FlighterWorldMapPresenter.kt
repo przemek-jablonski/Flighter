@@ -3,10 +3,10 @@ package com.android.szparag.flighter.worldmap.presenters
 import com.android.szparag.flighter.common.location.WorldCoordinates
 import com.android.szparag.flighter.worldmap.interactors.WorldMapInteractor
 import com.android.szparag.flighter.worldmap.states.WorldMapViewState
+import com.android.szparag.flighter.worldmap.states.WorldMapViewState.OnboardingViewState
 import com.android.szparag.flighter.worldmap.views.WorldMapView
 import com.android.szparag.mvi.models.ModelDistributor
 import com.android.szparag.mvi.presenters.BaseMviPresenter
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -15,30 +15,12 @@ import javax.inject.Singleton
  */
 @Singleton
 class FlighterWorldMapPresenter @Inject constructor(
-    override var interactor: WorldMapInteractor,
+    override val interactor: WorldMapInteractor,
     override val modelDistributor: ModelDistributor<WorldMapViewState>
 ) : BaseMviPresenter<WorldMapView, WorldMapViewState>(), WorldMapPresenter {
 
-  init {
-    Timber.d("null")
-  }
+  override fun distributeFirstViewState() = OnboardingViewState(WorldCoordinates(51.509865, -0.118092))
 
-  override fun onFirstViewAttached() {
-    super.onFirstViewAttached()
-    Timber.d("onFirstViewAttached")
-    modelDistributor.replaceModel(WorldMapViewState.OnboardingViewState(WorldCoordinates(51.509865, -0.118092))) //todo: this is temporary
-  }
-
-  //____________________________temporary
-
-  override fun onViewAttached(view: WorldMapView) {
-    super.onViewAttached(view)
-    Timber.d("onViewAttached, view: $view")
-  }
-
-  override fun onViewDetached(view: WorldMapView) {
-    super.onViewDetached(view)
-    Timber.d("onViewDetached, view: $view")
-  }
+  override fun processUserIntents(view: WorldMapView) = Unit
 
 }
