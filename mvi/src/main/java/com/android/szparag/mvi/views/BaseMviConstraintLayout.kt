@@ -13,7 +13,7 @@ import com.szparag.android.mypermissions.PermissionRequestAction
 /**
  * Created by Przemyslaw Jablonski (github.com/sharaquss, pszemek.me) on 02/04/2018.
  */
-abstract class BaseMviConstraintLayout<in V : MviView<VS>, P : MviPresenter<V, VS>, in VS : Any> @JvmOverloads
+abstract class BaseMviConstraintLayout<in V : MviView<VS>, P : MviPresenter<V, VS>, VS : Any> @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
     ConstraintLayout(context, attrs, defStyleAttr), MviView<VS> {
 

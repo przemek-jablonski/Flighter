@@ -1,16 +1,17 @@
 package com.android.szparag.mvi.presenters
 
 import com.android.szparag.mvi.views.MviView
+import io.reactivex.Observable
 
 /**
  * Created by Przemyslaw Jablonski (github.com/sharaquss, pszemek.me) on 02/04/2018.
  */
-interface MviPresenter<in V : MviView<VS>, in VS : Any> {
+interface MviPresenter<in V : MviView<VS>, VS : Any> {
 
   fun attachView(view: V)
 
   fun detachView(view: V)
 
-//  fun addIntentProcessing(intentProcessing: Observable<VS>)  //todo: invariant error
+  fun addIntentProcessing(intentProcessing: Observable<VS>)  //todo: invariant error
 
 }

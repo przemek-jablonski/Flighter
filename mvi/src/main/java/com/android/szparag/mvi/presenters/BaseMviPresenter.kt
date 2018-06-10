@@ -4,6 +4,7 @@ import android.support.annotation.CallSuper
 import com.android.szparag.mvi.interactors.MviInteractor
 import com.android.szparag.mvi.models.ModelDistributor
 import com.android.szparag.mvi.views.MviView
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -131,9 +132,9 @@ abstract class BaseMviPresenter<V : MviView<VS>, VS : Any> : MviPresenter<V, VS>
     presenterDisposables.clear()
   }
 
-  //todo: check if this covariant shit will break flighters extended classes
-//  override fun addIntentProcessing(intentProcessing: Observable<VS>) {
-//    presenterDisposables.add(intentProcessing.subscribe { viewState -> modelDistributor.replaceModel(viewState) })
-//  }
+  override fun addIntentProcessing(intentProcessing: Observable<VS>) {
+    Timber.i("addIntentProcessing, intentProcessing: $intentProcessing")
+    presenterDisposables.add(intentProcessing.subscribe { viewState -> modelDistributor.replaceModel(viewState) })
+  }
 
 }

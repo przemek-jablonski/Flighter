@@ -15,7 +15,7 @@ import timber.log.Timber
 //todo: extract that as a separate module, as it requires heavy gradle dependency (GooglePlayServices-maps)
 //todo: remove timber, add static logger with a static switch
 //todo: this has EXACT SAME code as BaseMviConstraintLayout, deal with this
-abstract class BaseMviMapView<in V : MviView<VS>, P : MviPresenter<V, VS>, in VS : Any> @JvmOverloads constructor(
+abstract class BaseMviMapView<in V : MviView<VS>, P : MviPresenter<V, VS>, VS : Any> @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : MapView(context, attrs, defStyleAttr), MviView<VS> {
 
