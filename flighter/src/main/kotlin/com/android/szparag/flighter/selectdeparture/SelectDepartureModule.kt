@@ -5,8 +5,9 @@ import com.android.szparag.flighter.selectdeparture.interactors.SelectDepartureI
 import com.android.szparag.flighter.selectdeparture.presenters.FlighterSelectDeparturePresenter
 import com.android.szparag.flighter.selectdeparture.presenters.SelectDeparturePresenter
 import com.android.szparag.flighter.selectdeparture.states.SelectDepartureViewState
-import com.android.szparag.mvi.models.BaseMviModelDistributor
+import com.android.szparag.mvi.models.BaseMviModelRepository
 import com.android.szparag.mvi.models.ModelDistributor
+import com.android.szparag.mvi.models.ModelRepository
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -19,7 +20,13 @@ class SelectDepartureModule {
 
   @Provides
   @Singleton
-  fun provideWorldMapViewStateDistributor(): ModelDistributor<SelectDepartureViewState> = BaseMviModelDistributor()
+  fun provideWorldMapViewStateRepository(): ModelRepository<SelectDepartureViewState> = BaseMviModelRepository()
+
+  @Provides
+  @Singleton
+  fun provideWorldMapViewStateDistributor(
+      repository: ModelRepository<SelectDepartureViewState>): ModelDistributor<SelectDepartureViewState> = repository
+
 
   @Provides
   fun providePresenter(implementation: FlighterSelectDeparturePresenter): SelectDeparturePresenter = implementation

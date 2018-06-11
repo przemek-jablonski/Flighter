@@ -5,8 +5,8 @@ import com.android.szparag.flighter.worldmap.interactors.WorldMapInteractor
 import com.android.szparag.flighter.worldmap.presenters.FlighterWorldMapPresenter
 import com.android.szparag.flighter.worldmap.presenters.WorldMapPresenter
 import com.android.szparag.flighter.worldmap.states.WorldMapViewState
-import com.android.szparag.mvi.models.BaseMviModelDistributor
-import com.android.szparag.mvi.models.ModelDistributor
+import com.android.szparag.mvi.models.BaseMviModelRepository
+import com.android.szparag.mvi.models.ModelRepository
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -19,7 +19,7 @@ class WorldMapModule {
 
   @Provides
   @Singleton
-  fun provideWorldMapViewStateDistributor(): ModelDistributor<WorldMapViewState> = BaseMviModelDistributor()
+  fun provideWorldMapViewStateDistributor(): ModelRepository<WorldMapViewState> = BaseMviModelRepository()
 
   @Provides
   fun providePresenter(implementation: FlighterWorldMapPresenter): WorldMapPresenter = implementation

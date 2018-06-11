@@ -8,7 +8,7 @@ import com.android.szparag.flighter.login.states.LoginViewState.LoginSuccessfulV
 import com.android.szparag.flighter.login.states.LoginViewState.OnboardingLoginViewState
 import com.android.szparag.flighter.login.states.LoginViewState.OnboardingRegisterViewState
 import com.android.szparag.flighter.login.views.LoginView
-import com.android.szparag.mvi.models.ModelDistributor
+import com.android.szparag.mvi.models.ModelRepository
 import com.android.szparag.mvi.presenters.BaseMviPresenter
 import com.android.szparag.mvi.util.addTo
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -23,7 +23,7 @@ import javax.inject.Singleton
 @Singleton
 class FlighterLoginPresenter @Inject constructor(
     override val interactor: LoginInteractor,
-    override val modelDistributor: ModelDistributor<LoginViewState>
+    override val modelDistributor: ModelRepository<LoginViewState>
 ) : BaseMviPresenter<LoginView, LoginViewState>(), LoginPresenter {
 
   override fun distributeFirstViewState() = null

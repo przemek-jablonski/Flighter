@@ -5,7 +5,7 @@ import com.android.szparag.flighter.worldmap.interactors.WorldMapInteractor
 import com.android.szparag.flighter.worldmap.states.WorldMapViewState
 import com.android.szparag.flighter.worldmap.states.WorldMapViewState.OnboardingViewState
 import com.android.szparag.flighter.worldmap.views.WorldMapView
-import com.android.szparag.mvi.models.ModelDistributor
+import com.android.szparag.mvi.models.ModelRepository
 import com.android.szparag.mvi.presenters.BaseMviPresenter
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -16,7 +16,7 @@ import javax.inject.Singleton
 @Singleton
 class FlighterWorldMapPresenter @Inject constructor(
     override val interactor: WorldMapInteractor,
-    override val modelDistributor: ModelDistributor<WorldMapViewState>
+    override val modelDistributor: ModelRepository<WorldMapViewState>
 ) : BaseMviPresenter<WorldMapView, WorldMapViewState>(), WorldMapPresenter {
 
   override fun distributeFirstViewState() = OnboardingViewState(WorldCoordinates(51.509865, -0.118092))

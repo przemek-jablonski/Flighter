@@ -2,7 +2,7 @@ package com.android.szparag.mvi.presenters
 
 import android.support.annotation.CallSuper
 import com.android.szparag.mvi.interactors.MviInteractor
-import com.android.szparag.mvi.models.ModelDistributor
+import com.android.szparag.mvi.models.ModelRepository
 import com.android.szparag.mvi.util.addTo
 import com.android.szparag.mvi.views.MviView
 import io.reactivex.Observable
@@ -18,7 +18,7 @@ abstract class BaseMviPresenter<V : MviView<VS>, VS : Any> : MviPresenter<V, VS>
 
   protected var view: V? = null
   abstract val interactor: MviInteractor
-  abstract val modelDistributor: ModelDistributor<VS>
+  abstract val modelDistributor: ModelRepository<VS>
 
   protected val presenterDisposables = CompositeDisposable()
   private var viewAttachedFirstTime = true

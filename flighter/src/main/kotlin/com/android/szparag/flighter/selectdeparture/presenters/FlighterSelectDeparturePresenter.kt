@@ -7,7 +7,7 @@ import com.android.szparag.flighter.selectdeparture.states.SelectDepartureViewSt
 import com.android.szparag.flighter.selectdeparture.states.SelectDepartureViewState.SearchNotStartedViewState
 import com.android.szparag.flighter.selectdeparture.states.SelectDepartureViewState.SearchResult
 import com.android.szparag.flighter.selectdeparture.views.SelectDepartureView
-import com.android.szparag.mvi.models.ModelDistributor
+import com.android.szparag.mvi.models.ModelRepository
 import com.android.szparag.mvi.presenters.BaseMviPresenter
 import com.szparag.android.mypermissions.PermissionCheckEvent.PermissionGrantedEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -26,7 +26,7 @@ import javax.inject.Singleton
 @Singleton
 class FlighterSelectDeparturePresenter @Inject constructor(
     override val interactor: SelectDepartureInteractor,
-    override val modelDistributor: ModelDistributor<SelectDepartureViewState>
+    override val modelDistributor: ModelRepository<SelectDepartureViewState>
 ) : BaseMviPresenter<SelectDepartureView, SelectDepartureViewState>(), SelectDeparturePresenter {
 
   override fun distributeFirstViewState() = SearchNotStartedViewState()

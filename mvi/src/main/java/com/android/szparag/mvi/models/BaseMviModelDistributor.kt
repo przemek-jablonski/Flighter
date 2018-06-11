@@ -2,7 +2,7 @@ package com.android.szparag.mvi.models
 
 import io.reactivex.subjects.BehaviorSubject
 
-open class BaseMviModelDistributor<VS : Any> : ModelDistributor<VS> {
+open class BaseMviModelRepository<VS : Any> : ModelRepository<VS> {
 
   private val modelSubject = BehaviorSubject.create<VS>()
 
