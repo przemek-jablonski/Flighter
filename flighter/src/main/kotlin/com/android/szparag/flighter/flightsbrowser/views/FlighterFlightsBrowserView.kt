@@ -13,6 +13,7 @@ import com.android.szparag.flighter.flightsbrowser.states.FlightsBrowserIntent.F
 import com.android.szparag.flighter.flightsbrowser.states.FlightsBrowserViewState
 import com.android.szparag.mvi.views.BaseMviConstraintLayout
 import io.reactivex.Observable
+import timber.log.Timber
 import javax.inject.Inject
 
 class FlighterFlightsBrowserView @JvmOverloads constructor(
@@ -30,11 +31,8 @@ class FlighterFlightsBrowserView @JvmOverloads constructor(
 
   //todo: this should be injected in base class maybe?
   //todo: research that
-  @Inject
-  override lateinit var presenter: FlightsBrowserPresenter
+  @Inject override lateinit var presenter: FlightsBrowserPresenter
 
-  override fun instantiatePresenter() =
-    Injector.get().inject(this)
 
   override fun departureAirportChangeIntent(): Observable<ChangeDepartureAirportIntent> =
       Observable.never()
@@ -49,10 +47,12 @@ class FlighterFlightsBrowserView @JvmOverloads constructor(
       Observable.never()
 
   override fun render(state: FlightsBrowserViewState) {
+    Timber.e("render, state: $state")
     super.render(state)
   }
 
-  override fun getScreen() =
-      screenData
+  override fun instantiatePresenter() = Injector.get().inject(this)
+
+  override fun getScreen() = screenData
 
 }

@@ -14,9 +14,10 @@ import io.reactivex.disposables.CompositeDisposable
 /**
  * Created by Przemyslaw Jablonski (github.com/sharaquss, pszemek.me) on 02/04/2018.
  */
-abstract class BaseMviConstraintLayout<in V : MviView<VS>, P : MviPresenter<V, VS>, in VS : Any> @JvmOverloads
-constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
-    ConstraintLayout(context, attrs, defStyleAttr), MviView<VS> {
+//todo: this and BaseMviMapView shares too much code, co something with that
+abstract class BaseMviConstraintLayout<in V : MviView<VS>, P : MviPresenter<V, VS>, in VS : Any>
+@JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
+  : ConstraintLayout(context, attrs, defStyleAttr), MviView<VS> {
 
   abstract var presenter: P
   protected val viewDisposables = CompositeDisposable()
@@ -43,7 +44,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
   }
 
   @CallSuper
-  override fun render(state: VS) { //todo: this should be abstract
+  override fun render(state: VS) { //todo: this should be abstract, this is mandatory to implement
     if (!firstStateRendered) {
       handleFirstRender(state)
     }

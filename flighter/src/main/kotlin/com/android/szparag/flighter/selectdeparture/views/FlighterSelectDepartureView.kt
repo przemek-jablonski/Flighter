@@ -9,7 +9,6 @@ import android.util.AttributeSet
 import android.view.animation.DecelerateInterpolator
 import com.android.szparag.columbus.Screen
 import com.android.szparag.flighter.R
-import com.android.szparag.flighter.R.layout
 import com.android.szparag.flighter.common.util.Injector
 import com.android.szparag.flighter.flightsbrowser.views.FlighterFlightsBrowserView
 import com.android.szparag.flighter.selectdeparture.AirportsAdapter
@@ -56,7 +55,7 @@ class FlighterSelectDepartureView @JvmOverloads constructor(
     val screenData by lazy {
       Screen(
           viewClass = FlighterSelectDepartureView::class.java,
-          layoutResource = layout.screen_select_departure_initial
+          layoutResource = R.layout.screen_select_departure_initial
       )
     }
   }

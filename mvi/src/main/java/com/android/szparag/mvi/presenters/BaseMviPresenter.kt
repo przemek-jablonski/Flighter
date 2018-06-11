@@ -165,7 +165,6 @@ abstract class BaseMviPresenter<V : MviView<VS>, VS : Any> : MviPresenter<V, VS>
    * @param intentProcessing processing that has been applied to given Intent
    */
   override fun registerIntentProcessing(intentProcessing: Observable<out VS>) {
-    Timber.i("registerIntentProcessing, intentProcessing: $intentProcessing")
     intentProcessing.subscribe { viewState -> modelDistributor.replaceModel(viewState) }.addTo(presenterDisposables)
   }
 
@@ -174,8 +173,7 @@ abstract class BaseMviPresenter<V : MviView<VS>, VS : Any> : MviPresenter<V, VS>
    *
    * @see registerIntentProcessing
    */
-  fun Observable<out VS>.registerProcessing(presenter: BaseMviPresenter<V, VS>) {
-    presenter.registerIntentProcessing(this)
-  }
+  fun Observable<out VS>.registerProcessing(presenter: BaseMviPresenter<V, VS>) =
+      presenter.registerIntentProcessing(this)
 
 }

@@ -1,6 +1,5 @@
 package com.android.szparag.mvi.models
 
-import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 
 open class BaseMviModelDistributor<VS : Any> : ModelDistributor<VS> {
@@ -9,6 +8,7 @@ open class BaseMviModelDistributor<VS : Any> : ModelDistributor<VS> {
 
   override fun replaceModel(newModel: VS) = modelSubject.onNext(newModel)
 
-  override fun getModels(): Observable<VS> = modelSubject
+  override fun getModels() = modelSubject
 
+  override fun getLatestModel(): VS? = modelSubject.value //todo: !!s
 }

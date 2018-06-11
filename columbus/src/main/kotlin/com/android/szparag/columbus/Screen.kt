@@ -15,4 +15,7 @@ data class Screen(
     val transitionOutPolicy: NavigationTransitionOutPolicy = NavigationTransitionOutPolicy.DEFAULT_NONE(),
     val transitionInAnimation: NavigationTransitionInAnimation = FADE_IN(),
     val transitionOutAnimation: NavigationTransitionOutAnimation = FADE_OUT()
-)
+) {
+  override fun toString() =
+      "Screen(viewClass=${viewClass.simpleName}, layoutResource=$layoutResource, layer=$layer, transitionInPolicy=$transitionInPolicy, transitionOutPolicy=$transitionOutPolicy, transitionInAnimation=$transitionInAnimation, transitionOutAnimation=$transitionOutAnimation)"
+}

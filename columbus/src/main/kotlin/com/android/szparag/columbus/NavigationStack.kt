@@ -2,7 +2,8 @@ package com.android.szparag.columbus
 
 import com.android.szparag.columbus.NavigationTransitionOutPolicy.PERSISTENT_IN_STACK
 import com.android.szparag.myextensionsbase.emptyMutableList
-import java.util.*
+import java.util.Arrays
+import java.util.Stack
 
 typealias OnScreenPushedListener = (Screen) -> (Unit)
 typealias OnScreenPoppedListener = (Screen?) -> (Unit)
@@ -64,10 +65,7 @@ internal class NavigationStack : Stack<Screen>() {
       removeLastItemsPreserveTop(size - 1, preserveCount)
 
   private fun logChanges() {
-    var log = "\n${this::class.java}(${hashCode()})\n"
-    (0 until size).forEach { log += "[$it]: ${get(it)}\n" }
-    ColumbusLogger.log(log)
+    ColumbusLogger.log("\nSTACK CHANGES:\n" + Arrays.toString(toArray()) + "\n")
   }
-
 
 }

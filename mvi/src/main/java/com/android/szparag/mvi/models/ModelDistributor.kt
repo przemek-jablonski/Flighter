@@ -8,4 +8,6 @@ interface ModelDistributor<VS : Any> {
 
   fun getModels(): Observable<VS> //todo: to flowable
 
+  fun getLatestModel(): VS?
+
 }
