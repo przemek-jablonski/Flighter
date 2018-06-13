@@ -18,7 +18,7 @@ abstract class BaseMviPresenter<V : MviView<VS>, VS : Any> : MviPresenter<V, VS>
 
   protected var view: V? = null
   abstract val interactor: MviInteractor
-  abstract val modelDistributor: ModelRepository<VS>
+  abstract val modelRepository: ModelRepository<VS>
 
   protected val presenterDisposables = CompositeDisposable()
   private var viewAttachedFirstTime = true
@@ -104,7 +104,7 @@ abstract class BaseMviPresenter<V : MviView<VS>, VS : Any> : MviPresenter<V, VS>
   open fun onFirstViewAttached() {
     Timber.i("onFirstViewAttached, first viewState: ${distributeFirstViewState()}, view: $view")
     requireNotNull(view) //todo: is it nessesary?
-    distributeFirstViewState()?.let { viewState -> modelDistributor.replaceModel(viewState) }
+    distributeFirstViewState()?.let { viewState -> modelRepository.replaceModel(viewState) }
   }
 
   /**
@@ -126,7 +126,7 @@ abstract class BaseMviPresenter<V : MviView<VS>, VS : Any> : MviPresenter<V, VS>
     Timber.i("onViewAttached, view: $view")
     presenterDisposables.clear()
     processUserIntents(view)
-    modelDistributor
+    modelRepository
         .getModels()
         .subscribeOn(Schedulers.computation())
         .observeOn(AndroidSchedulers.mainThread())
@@ -165,7 +165,7 @@ abstract class BaseMviPresenter<V : MviView<VS>, VS : Any> : MviPresenter<V, VS>
    * @param intentProcessing processing that has been applied to given Intent
    */
   override fun registerIntentProcessing(intentProcessing: Observable<out VS>) {
-    intentProcessing.subscribe { viewState -> modelDistributor.replaceModel(viewState) }.addTo(presenterDisposables)
+    intentProcessing.subscribe { viewState -> modelRepository.replaceModel(viewState) }.addTo(presenterDisposables)
   }
 
   /**

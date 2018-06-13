@@ -16,7 +16,7 @@ import javax.inject.Singleton
 @Singleton
 class FlighterWorldMapPresenter @Inject constructor(
     override val interactor: WorldMapInteractor,
-    override val modelDistributor: ModelRepository<WorldMapViewState>
+    override val modelRepository: ModelRepository<WorldMapViewState>
 ) : BaseMviPresenter<WorldMapView, WorldMapViewState>(), WorldMapPresenter {
 
   override fun distributeFirstViewState() = OnboardingViewState(WorldCoordinates(51.509865, -0.118092))

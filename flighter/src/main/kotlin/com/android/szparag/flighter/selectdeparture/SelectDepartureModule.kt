@@ -1,5 +1,7 @@
 package com.android.szparag.flighter.selectdeparture
 
+import com.android.szparag.flighter.selectdeparture.interactors.AirportsRepository
+import com.android.szparag.flighter.selectdeparture.interactors.FirebaseAirportsRepository
 import com.android.szparag.flighter.selectdeparture.interactors.FlighterSelectDepartureInteractor
 import com.android.szparag.flighter.selectdeparture.interactors.SelectDepartureInteractor
 import com.android.szparag.flighter.selectdeparture.presenters.FlighterSelectDeparturePresenter
@@ -31,8 +33,10 @@ class SelectDepartureModule {
   @Provides
   fun providePresenter(implementation: FlighterSelectDeparturePresenter): SelectDeparturePresenter = implementation
 
-
   @Provides
   fun provideInteractor(implementation: FlighterSelectDepartureInteractor): SelectDepartureInteractor = implementation
+
+  @Provides
+  fun provideAirportRepository(implementation: FirebaseAirportsRepository): AirportsRepository = implementation
 
 }

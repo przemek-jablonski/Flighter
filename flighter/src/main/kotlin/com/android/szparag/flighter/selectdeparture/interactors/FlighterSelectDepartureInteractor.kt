@@ -1,15 +1,13 @@
 package com.android.szparag.flighter.selectdeparture.interactors
 
 import com.android.szparag.flighter.common.interactors.FlighterBaseInteractor
-import com.android.szparag.flighter.common.interactors.getChildren
 import com.android.szparag.flighter.common.location.LocationFetchingEvent
 import com.android.szparag.flighter.common.location.LocationServicesWrapper
 import com.android.szparag.flighter.common.location.WorldCoordinates
 import com.android.szparag.flighter.common.preferences.UserPreferencesRepository
 import com.android.szparag.flighter.common.preferences.UserSettingsRepository
 import com.android.szparag.flighter.selectdeparture.models.local.AirportModel
-import com.android.szparag.flighter.selectdeparture.models.mapToModel
-import com.android.szparag.flighter.selectdeparture.models.remote.AirportDTO
+import com.android.szparag.myextensionsandroid.isInRange
 import io.reactivex.Observable
 import timber.log.Timber
 import javax.inject.Inject
@@ -18,12 +16,11 @@ import javax.inject.Singleton
 
 @Singleton
 class FlighterSelectDepartureInteractor @Inject constructor(
-    private val firebaseInteractor: SelectDepartureFirebaseInteractor,
+    private val airportsRepository: AirportsRepository,
     private val locationServicesWrapper: LocationServicesWrapper,
     userPreferencesRepository: UserPreferencesRepository,
     userSettingsRepository: UserSettingsRepository
 ) : FlighterBaseInteractor(userPreferencesRepository, userSettingsRepository), SelectDepartureInteractor {
-
 
   init {
     Timber.d("init")
@@ -36,35 +33,37 @@ class FlighterSelectDepartureInteractor @Inject constructor(
 
   override fun getAirportsByCity(input: String): Observable<List<AirportModel>> {
     Timber.d("getAirportsByCity, input: $input")
-    return firebaseInteractor.getAirportsByCityNameEquality(input)
-        .flatMap { query ->
-          if (query.snapshot.childrenCount == 0L)
-            firebaseInteractor.getAirportsByCityNameStartsWith(input)
+    return airportsRepository.getAirportsByCityNameEquality(input)
+        .flatMap { airports ->
+          if (airports.isEmpty()) //todo: this looks lame
+            airportsRepository.getAirportsByCityNameStartsWith(input)
           else
-            Observable.just(query)
+            Observable.just(airports)
         }
-        .map { query ->
-          query
-              .getChildren()
-              .map { snapshotChild -> snapshotChild.getValue(AirportDTO::class.java)!! }
-              .filter { airportDto -> airportDto.iata.isNotBlank() }
-
+        .map { airports ->
+          airports.filter { airport -> airport.airportIataCode.isNotBlank() }
         }
-        .map { airportDtosList -> airportDtosList.map { airportDto -> airportDto.mapToModel() } } //todo: in one map
   }
 
   override fun getAirportsByGpsCoordinates(worldCoordinates: WorldCoordinates): Observable<List<AirportModel>> {
     Timber.d("getAirportsByGpsCoordinates, worldCoordinates: $worldCoordinates")
-    return firebaseInteractor.getAirportsByLatitude(worldCoordinates.latitude)
-        .flatMap { firebaseInteractor.getAirportsByLongitude(worldCoordinates.longitude) }
-        .map { query ->
-          query
-              .getChildren()
-              .map { snapshotChild -> snapshotChild.getValue(AirportDTO::class.java)!! } //todo: !!s
-              .filter { airportDto -> firebaseInteractor.validateAirportCoordinates(worldCoordinates, airportDto) }
-              .filter { airportDto -> airportDto.iata.isNotBlank() }
+    return airportsRepository.getAirportsByLatitude(worldCoordinates.latitude)
+        .flatMap { airportsRepository.getAirportsByLongitude(worldCoordinates.longitude) }
+        .map { airports ->
+          airports
+              .filter { airport -> validateAirportCoordinates(worldCoordinates, airport) }
+              .filter { airport -> airport.airportIataCode.isNotBlank() }
         }
-        .map { airportDtosList -> airportDtosList.map { airportDto -> airportDto.mapToModel() } } //todo: in one map
   }
+
+  private fun validateAirportCoordinates(originalCoordinates: WorldCoordinates, airport: AirportModel) =
+      airport.coordinates.latitude.isInRange(
+          originalCoordinates.latitude - QUERY_GPS_COORDINATES_SIDE_BOUND,
+          originalCoordinates.latitude + QUERY_GPS_COORDINATES_SIDE_BOUND
+      ) &&
+          airport.coordinates.longitude.isInRange(
+              originalCoordinates.longitude - QUERY_GPS_COORDINATES_SIDE_BOUND,
+              originalCoordinates.longitude + QUERY_GPS_COORDINATES_SIDE_BOUND
+          )
 
 }

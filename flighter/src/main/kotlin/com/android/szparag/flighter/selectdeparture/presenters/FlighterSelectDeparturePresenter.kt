@@ -26,7 +26,7 @@ import javax.inject.Singleton
 @Singleton
 class FlighterSelectDeparturePresenter @Inject constructor(
     override val interactor: SelectDepartureInteractor,
-    override val modelDistributor: ModelRepository<SelectDepartureViewState>
+    override val modelRepository: ModelRepository<SelectDepartureViewState>
 ) : BaseMviPresenter<SelectDepartureView, SelectDepartureViewState>(), SelectDeparturePresenter {
 
   override fun distributeFirstViewState() = SearchNotStartedViewState()

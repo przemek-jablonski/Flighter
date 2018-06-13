@@ -3,23 +3,27 @@ package com.android.szparag.flighter.flightsbrowser.states
 import com.android.szparag.flighter.flightsbrowser.models.local.FlightDetailsModel
 import com.android.szparag.flighter.flightsbrowser.models.local.FlightOverviewModel
 
-sealed class FlightsBrowserViewState {
+sealed class FlightsBrowserViewState(
+    val airportName: String,
+    val departureDate: Long?,
+    val arrivalDate: Long?
+) {
 
-  data class SearchNotStartedViewState(
-      val airportName: String,
-      val departureDate: Long?,
-      val arrivalDate: Long?
-  ) : FlightsBrowserViewState()
+  class SearchNotStartedViewState(airportName: String, departureDate: Long?, arrivalDate: Long?)
+    : FlightsBrowserViewState(airportName, departureDate, arrivalDate)
 
-  data class FlightsListingViewState(
-      val airportName: String,
-      val departureDate: Long,
-      val arrivalDate: Long,
-      val flights: List<FlightOverviewModel>
-  ) : FlightsBrowserViewState()
+  class FlightsListingViewState(
+      airportName: String,
+      departureDate: Long?,
+      arrivalDate: Long?,
+      val flights: List<FlightOverviewModel>)
+    : FlightsBrowserViewState(airportName, departureDate, arrivalDate)
 
-  data class FlightDetailsViewState(
-      val flightDetailsModel: FlightDetailsModel
-  ) : FlightsBrowserViewState()
+  class FlightDetailsViewState(
+      airportName: String,
+      departureDate: Long?,
+      arrivalDate: Long?,
+      val flightDetailsModel: FlightDetailsModel)
+    : FlightsBrowserViewState(airportName, departureDate, arrivalDate)
 
 }

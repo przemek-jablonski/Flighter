@@ -23,7 +23,7 @@ import javax.inject.Singleton
 @Singleton
 class FlighterLoginPresenter @Inject constructor(
     override val interactor: LoginInteractor,
-    override val modelDistributor: ModelRepository<LoginViewState>
+    override val modelRepository: ModelRepository<LoginViewState>
 ) : BaseMviPresenter<LoginView, LoginViewState>(), LoginPresenter {
 
   override fun distributeFirstViewState() = null
@@ -62,7 +62,7 @@ class FlighterLoginPresenter @Inject constructor(
         .observeOn(AndroidSchedulers.mainThread())
         .doOnSubscribe { interactor.checkIfUserRegistered() }
         .subscribe { registered ->
-          modelDistributor.replaceModel(if (registered) OnboardingLoginViewState() else OnboardingRegisterViewState())
+          modelRepository.replaceModel(if (registered) OnboardingLoginViewState() else OnboardingRegisterViewState())
         }
         .addTo(presenterDisposables)
   }

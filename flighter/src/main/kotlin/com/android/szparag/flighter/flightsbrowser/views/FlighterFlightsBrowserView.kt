@@ -18,6 +18,8 @@ import com.android.szparag.mvi.views.BaseMviConstraintLayout
 import com.android.szparag.myextensionsandroid.show
 import com.android.szparag.myextensionsbase.UnixTimestamp
 import com.android.szparag.myextensionsbase.exhaustive
+import com.android.szparag.myextensionsbase.invalidLongValue
+import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.Observable
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -47,10 +49,14 @@ class FlighterFlightsBrowserView @JvmOverloads constructor(
       Observable.never() //todo: implement back button
 
   override fun departureDateChangeIntent(): Observable<DepartureDateSelectionIntent> =
-      Observable.never()
+      RxView.focusChanges(departureDateEditText)
+          .filter { it }
+          .map { DepartureDateSelectionIntent(convertDateStringToUnixTimestamp(departureDateEditText.text.toString())) }
 
   override fun arrivalDateChangeIntent(): Observable<ArrivalDateSelectionIntent> =
-      Observable.never()
+      RxView.focusChanges(arrivalDateEditText)
+          .filter { it }
+          .map { ArrivalDateSelectionIntent(convertDateStringToUnixTimestamp(arrivalDateEditText.text.toString())) }
 
   override fun flightSelectionIntent(): Observable<FlightSelectionIntent> =
       Observable.never()
@@ -60,15 +66,19 @@ class FlighterFlightsBrowserView @JvmOverloads constructor(
     when (state) {
       is SearchNotStartedViewState -> {
         airportHeaderTextView.show()
-        airportHeaderTextView.text = state.airportName
         arrivalDateEditText.show()
-        state.arrivalDate?.let { timestamp ->
-          arrivalDateEditText.setText(convertUnixTimestampToDateString(timestamp))
-        }
         departureDateEditText.show()
-        state.departureDate?.let { timestamp ->
-          departureDateEditText.setText(convertUnixTimestampToDateString(timestamp))
-        }
+        airportHeaderTextView.text = state.airportName
+        state.arrivalDate
+            ?.takeIf { unixTimestamp -> unixTimestamp != invalidLongValue() }
+            ?.let { timestamp ->
+              arrivalDateEditText.setText(convertUnixTimestampToDateString(timestamp))
+            }
+        state.departureDate
+            ?.takeIf { unixTimestamp -> unixTimestamp != invalidLongValue() }
+            ?.let { timestamp ->
+              departureDateEditText.setText(convertUnixTimestampToDateString(timestamp))
+            }
       }
       is FlightsListingViewState -> Unit
       is FlightDetailsViewState -> Unit
@@ -82,5 +92,8 @@ class FlighterFlightsBrowserView @JvmOverloads constructor(
   //todo: does it work with different time zone?
   private fun convertUnixTimestampToDateString(unixTimestamp: UnixTimestamp) =
       simpleDateFormat.format(Date(unixTimestamp * 1000L))
+
+  private fun convertDateStringToUnixTimestamp(dateString: String): UnixTimestamp =
+      if (dateString.isNotBlank()) simpleDateFormat.parse(dateString).time / 1000L else invalidLongValue()
 
 }
